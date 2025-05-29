@@ -15,7 +15,8 @@
     "db:client-generate": "prisma generate",
     "db:clean": "prisma migrate reset",
     "db:seeding": "node ./prisma/scripts/seeding.js",
-    "db:reset": "npm run add-perms && npm run db:clean && rm -rf ./prisma/migrations && npm run db:first && npm run db:clean && npm run db:deploy && npm run db:client-generate"
+    "db:reset": "npm run add-perms && npm run db:clean && npm run db:clean && npm run db:deploy && npm run db:client-generate",
+    "db:reset:force": "npm run add-perms && npm run db:clean && rm -rf ./prisma/migrations && npm run db:first && npm run db:clean && npm run db:deploy --force && npm run db:client-generate"
   },
   "keywords": [],
   "author": "",
