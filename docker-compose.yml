@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  products-service:
+    container_name: products_service
+    build:
+      context: ./services/products-service
+      dockerfile: Dockerfile
+    volumes:
+      - ./services/products-service:/usr/src/app
+    ports:
+      - "3001:3000"
+    depends_on:
+      - products-db
+    env_file:
+      - ./services/products-service/.env
+    networks:
+      - micro-net
+
+  products-db:
+    image: postgres:16
+    container_name: products_db
+    environment:
+      POSTGRES_DB: products
+      POSTGRES_USER: product_user
+      POSTGRES_PASSWORD: product_pass
+    # volumes:
+    #   - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - micro-net
+
+networks:
+  micro-net:
+    driver: bridge

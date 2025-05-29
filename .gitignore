@@ -1,0 +1,6 @@
+# products service
+# Retirer node_modules, dist, generated directories et .env files
+/services/products-service/node_modules
+/services/products-service/dist
+/services/products-service/generated
+/services/products-service/.env\
