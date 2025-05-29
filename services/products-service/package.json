@@ -1,0 +1,30 @@
+{
+  "name": "products-service",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "add-perms": "chmod -R u+rwx ./dist",
+    "build": "rm -rf ./dist && tsc && cp -r public dist/ && npm run add-perms",
+    "start": "NODE_ENV=production tsc; node ./dist/server.js",
+    "dev": "NODE_ENV=development npm run build; node --watch ./dist/server.js",
+    "db:format": "prisma format",
+    "db:first": "prisma migrate dev --create-only --name init",
+    "db:create-migration": "prisma migrate dev --create-only --name",
+    "db:deploy": "prisma migrate deploy",
+    "db:client-generate": "prisma generate",
+    "db:clean": "prisma migrate reset",
+    "db:seeding": "tsx ./prisma/scripts/seeding.ts",
+    "db:reset": "rm -rf ./prisma/migrations && npm run db:first && npm run db:clean && npm run db:deploy && npm run db:client-generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "prisma": "^6.8.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.8.2"
+  }
+}
