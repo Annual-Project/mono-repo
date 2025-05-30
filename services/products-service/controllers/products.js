@@ -1,8 +1,10 @@
 import prisma from '../config/db.js'
+import BadRequestError from '../exceptions/BadRequestError.js';
+import NotFoundError from '../exceptions/NotFoundError.js';
 
 const productsController = {
 
-    async getAllProducts(req, res) {
+    async getAllProducts(_, res) {
         const products = await prisma.product.findMany();
 
         res.status(200).json(products);
@@ -16,7 +18,7 @@ const productsController = {
         });
 
         if (!product) {
-            return res.status(404).json({ error: 'NOT_FOUND', message: 'Product not found' });
+            throw new NotFoundError('Product not found');
         }
 
         res.status(200).json(product);
@@ -31,10 +33,7 @@ const productsController = {
             });
 
             if (!categoryExists) {
-                return res.status(400).json({
-                error: 'BAD_REQUEST',
-                message: 'Invalid category ID',
-                });
+                throw new BadRequestError('Invalid category ID');
             }
         }
         const newProduct = await prisma.product.create({
@@ -62,10 +61,7 @@ const productsController = {
             });
 
             if (!categoryExists) {
-                return res.status(400).json({
-                    error: 'BAD_REQUEST',
-                    message: 'Invalid category ID',
-                });
+                throw new BadRequestError('Invalid category ID');
             }
         }
 
@@ -82,9 +78,7 @@ const productsController = {
         res.status(200).json({
             message: 'Product updated successfully',
             data: updatedProduct,
-        });    
-        res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', message: error.message });
-        
+        });            
     },
 
     async deleteProductById(req, res) {
@@ -94,7 +88,7 @@ const productsController = {
         });
 
         if (!productExists) {
-            return res.status(404).json({ error: 'NOT_FOUND', message: 'Product not found' });
+            throw new NotFoundError('Product not found');
         }
 
         // Leve une exception si le produit n'existe pas

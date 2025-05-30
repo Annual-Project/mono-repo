@@ -1,9 +1,9 @@
 import prisma from '../config/db.js'
+import NotFoundError from '../exceptions/NotFoundError.js';
 
 const categoriesController = {
 
-    async getAllCategories(req, res) {
-  
+    async getAllCategories(_, res) {
             const categories = await prisma.category.findMany();
 
             res.status(200).json(categories);
@@ -16,7 +16,7 @@ const categoriesController = {
             });
 
             if (!category) {
-                return res.status(404).json({ error: 'NOT_FOUND', message: 'Category not found' });
+                throw new NotFoundError('Category not found');
             }
 
             res.status(200).json(category);
@@ -63,7 +63,7 @@ const categoriesController = {
         });
 
         if (!categoryExists) {
-            return res.status(404).json({ error: 'NOT_FOUND', message: 'Category not found' });
+            throw new NotFoundError('Category not found');
         }
 
         const deletedCategory = await prisma.category.delete({
