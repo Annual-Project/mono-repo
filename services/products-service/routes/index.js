@@ -4,40 +4,41 @@ import categoriesController from '../controllers/categories.js';
 import validateData from '../middlewares/validations.js';
 import { createProductSchema, deleteProductSchema, getProductSchema, updateProductSchema } from '../validations/products.js';
 import { createCategorySchema, deleteCategorySchema, getCategorySchema, updateCategorySchema } from '../validations/categories.js';
+import errorHandler from '../middlewares/errors.js';
 
 const router = Router();
 
 // GET all products
-router.get('/api/v1/products', productsController.getAllProducts);
+router.get('/api/v1/products', errorHandler(productsController.getAllProducts));
 
 // GET a product by ID
-router.get('/api/v1/products/:id', validateData(getProductSchema, 'params'), productsController.getProductById);
+router.get('/api/v1/products/:id', validateData(getProductSchema, 'params'), errorHandler(productsController.getProductById));
 
 // POST a new product
-router.post('/api/v1/products', validateData(createProductSchema, 'body'), productsController.createProduct);
+router.post('/api/v1/products', validateData(createProductSchema, 'body'), errorHandler(productsController.createProduct));
 
 // PUT update a product by ID
-router.put('/api/v1/products', validateData(updateProductSchema, 'body'), productsController.updateProductById);
+router.put('/api/v1/products', validateData(updateProductSchema, 'body'), errorHandler(productsController.updateProductById));
 
 // DELETE a product by ID
-router.delete('/api/v1/products/:id', validateData(deleteProductSchema, 'params'), productsController.deleteProductById);
+router.delete('/api/v1/products/:id', validateData(deleteProductSchema, 'params'), errorHandler(productsController.deleteProductById));
 
 
 
 // GET all categories
-router.get('/api/v1/categories', categoriesController.getAllCategories);
+router.get('/api/v1/categories', errorHandler(categoriesController.getAllCategories));
 
 // GET a category by ID
-router.get('/api/v1/categories/:id', validateData(getCategorySchema, 'params'), categoriesController.getCategoryById);
+router.get('/api/v1/categories/:id', validateData(getCategorySchema, 'params'), errorHandler(categoriesController.getCategoryById));
 
 // POST a new category
-router.post('/api/v1/categories',  validateData(createCategorySchema, 'body'), categoriesController.createCategory);
+router.post('/api/v1/categories',  validateData(createCategorySchema, 'body'), errorHandler(categoriesController.createCategory));
 
 // PUT update a category by ID
-router.put('/api/v1/categories',  validateData(updateCategorySchema, 'body'), categoriesController.updateCategoryById);
+router.put('/api/v1/categories',  validateData(updateCategorySchema, 'body'), errorHandler(categoriesController.updateCategoryById));
 
 // DELETE a category by ID
-router.delete('/api/v1/categories/:id', validateData(deleteCategorySchema, 'params'), categoriesController.deleteCategoryById);
+router.delete('/api/v1/categories/:id', validateData(deleteCategorySchema, 'params'), errorHandler(categoriesController.deleteCategoryById));
 
 //404 Not Found
 router.use((req, res, next) => {
