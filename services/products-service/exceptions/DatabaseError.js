@@ -1,4 +1,4 @@
-import AppError from './AppError';
+import AppError from './AppError.js';
 
 class DatabaseError extends AppError {
   constructor(message = 'Database error') {
