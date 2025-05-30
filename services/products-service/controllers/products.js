@@ -6,10 +6,6 @@ const productsController = {
         try {
             const products = await prisma.product.findMany();
 
-            if (!products || products.length === 0) {
-                return res.status(404).json({ error: 'NOT_FOUND', message: 'No products found' });
-            }
-
             res.status(200).json(products);
         } catch (error) {
             res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', message: error.message });
@@ -18,10 +14,6 @@ const productsController = {
     
     async getProductById(req, res) {
         const { id } = req.params;
-
-        if (!id || isNaN(id)) {
-            return res.status(400).json({ error: 'BAD_REQUEST', message: 'Invalid product ID' });
-        }
 
         try {
             const product = await prisma.product.findUnique({
@@ -41,43 +33,58 @@ const productsController = {
     async createProduct(req, res) {
         const { name, price, description, categoryId } = req.body;
 
-        if (!categoryId || isNaN(categoryId)) {
-            return res.status(400).json({ error: 'BAD_REQUEST', message: 'Invalid category ID' });
-        }
-
-        if (!name || !price) {
-            return res.status(400).json({ error: 'BAD_REQUEST', message: 'Name and price are required' });
-        }
-
         try {
+            if (categoryId) {
+              const categoryExists = await prisma.category.findUnique({
+                  where: { id: parseInt(categoryId) },
+              });
+
+              if (!categoryExists) {
+                  return res.status(400).json({
+                      error: 'BAD_REQUEST',
+                      message: 'Invalid category ID',
+                  });
+              }
+            }
+
             const newProduct = await prisma.product.create({
                 data: {
                     name,
                     price,
                     description,
-                    categoryId: parseInt(categoryId),
+                    categoryId,
                 }
             });
 
-            if (!newProduct) {
-                return res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', message: 'Failed to create product' });
-            }
-
-            res.status(201).json(newProduct);
+            res.status(201).json({
+              message: 'Product created successfully',
+              data: newProduct,
+            });
         } catch (error) {
+            if (error.code === 'P2025') {
+              return res.status(404).json({ error: 'NOT_FOUND', message: 'Product not found' });
+            }
             res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', message: error.message });
         }
     },
 
     async updateProductById(req, res) {
-        const { id } = req.params;
-        const { name, price, description, categoryId } = req.body;
-
-        if (!id || isNaN(id)) {
-            return res.status(400).json({ error: 'BAD_REQUEST', message: 'Invalid product ID' });
-        }
+        const { id, name, price, description, categoryId } = req.body;
 
         try {
+            if (categoryId) {
+              const categoryExists = await prisma.category.findUnique({
+                  where: { id: parseInt(categoryId) },
+              });
+
+              if (!categoryExists) {
+                  return res.status(400).json({
+                      error: 'BAD_REQUEST',
+                      message: 'Invalid category ID',
+                  });
+              }
+            }
+
             const updatedProduct = await prisma.product.update({
                 where: { id: parseInt(id) },
                 data: {
@@ -88,12 +95,14 @@ const productsController = {
                 }
             });
 
-            if (!updatedProduct) {
-                return res.status(404).json({ error: 'NOT_FOUND', message: 'Product not found' });
-            }
-
-            res.status(200).json(updatedProduct);
+            res.status(200).json({
+              message: 'Product updated successfully',
+              data: updatedProduct,
+            });
         } catch (error) {
+            if (error.code === 'P2025') {
+              return res.status(404).json({ error: 'NOT_FOUND', message: 'Product not found' });
+            }
             res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', message: error.message });
         }
     },
@@ -101,20 +110,21 @@ const productsController = {
     async deleteProductById(req, res) {
         const { id } = req.params;
 
-        if (!id || isNaN(id)) {
-            return res.status(400).json({ error: 'BAD_REQUEST', message: 'Invalid product ID' });
-        }
-
         try {
-            const deletedProduct = await prisma.product.delete({
-                where: { id: parseInt(id) }
+            const productExists = await prisma.product.findUnique({
+              where: { id },
             });
 
-            if (!deletedProduct) {
+            if (!productExists) {
                 return res.status(404).json({ error: 'NOT_FOUND', message: 'Product not found' });
             }
 
-            res.status(200).json({ message: 'Product deleted successfully' });
+            // Leve une exception si le produit n'existe pas
+            const deletedProduct = await prisma.product.delete({
+                where: { id }
+            });
+
+            res.status(200).json({ message: 'Product deleted successfully', data: deletedProduct });
         } catch (error) {
             res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', message: error.message });
         }
