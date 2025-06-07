@@ -4,3 +4,8 @@
 /services/products-service/dist
 /services/products-service/generated
 /services/products-service/.env
+
+/services/stocks-service/node_modules
+/services/stocks-service/dist
+/services/stocks-service/generated
+/services/stocks-service/.env
