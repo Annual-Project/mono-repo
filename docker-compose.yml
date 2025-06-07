@@ -24,10 +24,36 @@ services:
       POSTGRES_DB: products
       POSTGRES_USER: product_user
       POSTGRES_PASSWORD: product_pass
-    # volumes:
-    #   - postgres_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
+    networks:
+      - micro-net
+
+  stocks-service:
+    container_name: stocks_service
+    build:
+      context: ./services/stocks-service
+      dockerfile: Dockerfile
+    volumes:
+      - ./services/stocks-service:/usr/src/app
+    ports:
+      - "3002:3000"
+    depends_on:
+      - stocks-db
+    env_file:
+      - ./services/stocks-service/.env
+    networks:
+      - micro-net
+
+  stocks-db:
+    image: postgres:16
+    container_name: stocks_db
+    environment:
+      POSTGRES_DB: stocks
+      POSTGRES_USER: stock_user
+      POSTGRES_PASSWORD: stock_pass
+    ports:
+      - "5434:5432"
     networks:
       - micro-net
 
