@@ -1,0 +1,42 @@
+import { z } from 'zod';
+
+const actionEnum = z.enum(['IN', 'OUT', 'ADJUSTMENT'], {
+  errorMap: () => ({ message: 'Action must be one of: IN, OUT, ADJUSTMENT' }),
+});
+
+// Validation pour : GET /stock-history/:id
+export const getHistorySchema = z.object({
+  id: z.coerce.number().positive("L'id doit être un nombre positif"),
+});
+
+// Validation pour : GET /stocks/:productId/history
+export const getProductHistorySchema = z.object({
+  productId: z.coerce.number().positive("Le productId doit être un nombre positif"),
+});
+
+// Validation pour : POST /stock-history/:productId
+export const createHistorySchema = z.object({
+  productId: z.number().positive("Le productId doit être un nombre positif"),
+  storeId: z.number().positive("Le storeId doit être un nombre positif"),
+  action: actionEnum,
+  quantity: z.number({
+    required_error: 'Quantity is required',
+    invalid_type_error: 'Quantity must be a number',
+  }),
+  comment: z.string().optional(),
+});
+
+// Validation pour : PUT /stock-history/:id
+export const updateHistorySchema = z.object({
+  id: z.number().positive("L'id doit être un nombre positif"),
+  productId: z.number().positive("Le productId doit être un nombre positif").optional(),
+  storeId: z.number().positive("Le storeId doit être un nombre positif").optional(),
+  action: actionEnum.optional(),
+  quantity: z.number().optional(),
+  comment: z.string().optional(),
+});
+
+// Validation pour : DELETE /stock-history/:id
+export const deleteHistorySchema = z.object({
+  id: z.coerce.number().positive("L'id doit être un nombre positif"),
+});
