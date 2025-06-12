@@ -9,3 +9,8 @@
 /services/stocks-service/dist
 /services/stocks-service/generated
 /services/stocks-service/.env
+
+/services/transfers-service/node_modules
+/services/transfers-service/dist
+/services/transfers-service/generated
+/services/transfers-service/.env
