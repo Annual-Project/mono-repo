@@ -57,6 +57,34 @@ services:
     networks:
       - micro-net
 
+  transfers-service:
+    container_name: transfers_service
+    build:
+      context: ./services/transfers-service
+      dockerfile: Dockerfile
+    volumes:
+      - ./services/transfers-service:/usr/src/app
+    ports:
+      - "3003:3000"
+    depends_on:
+      - transfers-db
+    env_file:
+      - ./services/transfers-service/.env
+    networks:
+      - micro-net
+
+  transfers-db:
+    image: postgres:16
+    container_name: transfers_db
+    environment:
+      POSTGRES_DB: transfers
+      POSTGRES_USER: transfer_user
+      POSTGRES_PASSWORD: transfer_pass
+    ports:
+      - "5435:5432"
+    networks:
+      - micro-net
+
 networks:
   micro-net:
     driver: bridge
