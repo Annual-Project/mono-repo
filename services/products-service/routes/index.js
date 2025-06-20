@@ -6,6 +6,8 @@ import { createProductSchema, deleteProductSchema, getProductSchema, updateProdu
 import { createCategorySchema, deleteCategorySchema, getCategorySchema, updateCategorySchema } from '../validations/categories.js';
 import errorHandler from '../middlewares/errors.js';
 
+import NotFoundError from '../../products-service/exceptions/NotFoundError.js';
+
 const router = Router();
 
 // GET all products
@@ -40,21 +42,11 @@ router.put('/api/v1/categories',  validateData(updateCategorySchema, 'body'), er
 // DELETE a category by ID
 router.delete('/api/v1/categories/:id', validateData(deleteCategorySchema, 'params'), errorHandler(categoriesController.deleteCategoryById));
 
-//404 Not Found
-router.use((req, res, next) => {
-  res.status(404).json({
-    error: 'NOT_FOUND',
-    message: 'Resource not found',
-  });
+// Dans le cas où aucune route ne correspond, on renvoie une erreur 404
+router.use((_, __, next) => {
+  next(
+    new NotFoundError('Resource not found'),
+  );
 });
 
 export default router;
-
-//Global Error Handler
-// app.use((err, req, res, next) => {
-//   console.error(err.stack);
-//   res.status(err.status || 500).json({
-//     error: err.code || 'INTERNAL_SERVER_ERROR',
-//     message: err.message || 'Something went wrong',
-//   });
-// });
