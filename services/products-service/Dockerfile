@@ -1,13 +1,19 @@
-FROM node:alpine
+FROM node:slim
 
-WORKDIR /usr/src/app
+# Crée le dossier de travail principal
+WORKDIR /app
 
-# COPY package*.json ./
+# Copy le mono-repo en entier
+COPY . ./
 
-# COPY . .
+# Install les packages nécessaires pour l'os
+RUN apt-get update -y && apt-get install -y openssl
 
-EXPOSE 3000
+# Install dependencies using workspaces
+RUN npm install --workspaces
 
-# Faire tourner le container a l'infini car il se stop s'il n'y a rien dedans
+# Va dans ce chemin depuis la racine du mono-repo
+WORKDIR /app/services/auth-service
+
 ENTRYPOINT [ "tail", "-f", "/dev/null" ]
 
