@@ -1,0 +1,10 @@
+{
+  "name": "annual-project",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "services/*"
+  ]
+}
