@@ -4,10 +4,11 @@ services:
   products-service:
     container_name: products_service
     build:
-      context: ./services/products-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/products-service/Dockerfile
+    working_dir: /app/services/products-service
     volumes:
-      - ./services/products-service:/usr/src/app
+      - .:/app
     ports:
       - "3001:3000"
     depends_on:
@@ -52,6 +53,33 @@ services:
       POSTGRES_DB: stocks
       POSTGRES_USER: stock_user
       POSTGRES_PASSWORD: stock_pass
+
+  auth-service:
+    container_name: auth_service
+    build:
+      context: .
+      dockerfile: services/auth-service/Dockerfile
+    working_dir: /app/services/auth-service
+    volumes:
+      - .:/app
+    ports:
+      - "3002:3000"
+    depends_on:
+      - auth-db
+    env_file:
+      - ./services/auth-service/.env
+    networks:
+      - micro-net
+
+  auth-db:
+    image: postgres:16
+    container_name: auth_db
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: auth_pass
+    # volumes:
+    #   - postgres_data:/var/lib/postgresql/data
     ports:
       - "5434:5432"
     networks:

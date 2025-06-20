@@ -1,3 +1,7 @@
+node_modules
+
+/shared/.env
+
 # products service
 # Retirer node_modules, dist, generated directories et .env files
 /services/products-service/node_modules
@@ -14,3 +18,8 @@
 /services/transfers-service/dist
 /services/transfers-service/generated
 /services/transfers-service/.env
+
+/services/auth-service/node_modules
+/services/auth-service/dist
+/services/auth-service/generated
+/services/auth-service/.env
