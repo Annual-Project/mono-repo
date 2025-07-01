@@ -2,11 +2,14 @@ import prisma from '../config/db.js';
 import NotFoundError from '../exceptions/NotFoundError.js';
 const stockController = {
   // GET all stocks
-  async getAllStocks(_, res) {
-      const stocks = await prisma.stock.findMany();
-      if (!stocks || stocks.length === 0) {
-        throw new NotFoundError('No stocks found');
-      }
+  async getAllStocks(req, res) {
+      const { limit, offset } = req.query;
+
+      const stocks = await prisma.stock.findMany({
+        take: limit,
+        skip: offset,
+      });
+
       res.status(200).json(stocks);
     },
 

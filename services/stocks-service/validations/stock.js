@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+export const getStocksSchema = z.object({
+  limit: z.coerce.number().positive("La limite doit être un nombre positif").default(20).optional(),
+  offset: z.coerce.number().nonnegative("Le décalage doit être un nombre positif ou zéro").default(0).optional(),
+});
+
 export const getStockSchema = z.object({
   id: z.coerce.number().positive("L'id doit être un nombre positif"),
 });
@@ -20,8 +25,11 @@ export const createStockSchema = z.object({
   criticalThreshold: z.boolean().optional().default(false).describe('Indicates if the stock is below the critical threshold'),
 });
 
+export const updateStockIdSchema = z.object({
+  id: z.coerce.number().positive("L'id doit être un nombre positif"),
+});
+
 export const updateStockSchema = z.object({
-  id: z.number().positive("L'id doit être un nombre positif"),
   productId: z.number().positive('Product ID must be a positive number').optional(),
   storeId: z.number().positive('Store ID must be a positive number').optional(),
   quantityAvailable: z.number().optional(),

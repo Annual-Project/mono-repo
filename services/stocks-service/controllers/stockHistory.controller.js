@@ -3,8 +3,12 @@ import NotFoundError from '../exceptions/NotFoundError.js';
 
 const historyController = {
   // GET all stock history records
- async getAllHistory(_, res) {
+  async getAllHistory(req, res) {
+      const { limit, offset } = req.query;
+
       const historyRecords = await prisma.stockHistory.findMany({
+        take: limit,
+        skip: offset,
         orderBy: { createdAt: 'desc' }
       });
 

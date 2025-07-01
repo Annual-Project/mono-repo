@@ -4,11 +4,14 @@ import BadRequestError from '../exceptions/BadRequestError.js';
 
 const storeController = {
   // GET all stores
-  async getAllStores(_, res) {
-    const stores = await prisma.store.findMany();
-    if (!stores || stores.length === 0) {
-      throw new NotFoundError('No stores found');
-    }
+  async getAllStores(req, res) {
+    const { limit, offset } = req.query;
+
+    const stores = await prisma.store.findMany({
+      take: limit,
+      skip: offset,
+    });
+
     res.status(200).json(stores);
   },
 
