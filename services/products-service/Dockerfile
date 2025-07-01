@@ -13,7 +13,7 @@ RUN apt-get update -y && apt-get install -y openssl
 RUN npm install --workspaces
 
 # Va dans ce chemin depuis la racine du mono-repo
-WORKDIR /app/services/auth-service
+WORKDIR /app/services/products-service
 
 ENTRYPOINT [ "tail", "-f", "/dev/null" ]
 

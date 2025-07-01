@@ -4,8 +4,13 @@ import NotFoundError from '../exceptions/NotFoundError.js';
 
 const productsController = {
 
-    async getAllProducts(_, res) {
-        const products = await prisma.product.findMany();
+    async getAllProducts(req, res) {
+        const { limit, offset } = req.query;
+
+        const products = await prisma.product.findMany({
+            take: limit,
+            skip: offset,
+        });
 
         res.status(200).json(products);
     },

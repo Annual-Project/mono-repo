@@ -3,10 +3,15 @@ import NotFoundError from '../exceptions/NotFoundError.js';
 
 const categoriesController = {
 
-    async getAllCategories(_, res) {
-            const categories = await prisma.category.findMany();
+    async getAllCategories(req, res) {
+        const { limit, offset } = req.query;
 
-            res.status(200).json(categories);
+        const categories = await prisma.category.findMany({
+            take: limit,
+            skip: offset,
+        });
+
+        res.status(200).json(categories);
     },
 
     async getCategoryById(req, res) {
