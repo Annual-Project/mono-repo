@@ -1,0 +1,111 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "debian-openssl-1.1.x"]
+  output        = "../generated"
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  categoryId  Int?      @map("category_id")
+  category    Category? @relation("CategoryProducts", fields: [categoryId], references: [id])
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Relations avec Transfer
+  transfers Transfer[]
+
+  @@map("products")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  products Product[] @relation("CategoryProducts")
+
+  @@map("categories")
+}
+
+model Store {
+  id          Int       @id @default(autoincrement()) @map("id")
+  name        String    @map("name")
+  description String?   @map("description")
+  // address     String?   @map("address")
+  // phone       String?   @map("phone")
+  // email       String?   @map("email")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
+
+  // products   Product[] @relation("StoreProducts")
+  Stock        Stock[]
+  StockHistory StockHistory[]
+
+  // Relations avec Transfer
+  sourceTransfers      Transfer[] @relation("SourceStore")
+  destinationTransfers Transfer[] @relation("DestinationStore")
+
+  @@map("store")
+}
+
+// Modèle Stock
+model Stock {
+  id                Int       @id @default(autoincrement()) @map("id")
+  productId         Int       @map("product_id")
+  storeId           Int       @map("store_id")
+  quantityAvailable Int       @map("quantity_available")
+  criticalThreshold Boolean?  @map("critical_threshold")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime? @updatedAt @map("updated_at")
+
+  store Store @relation(fields: [storeId], references: [id])
+  // product           Product   @relation(fields: [productId], references: [id])
+
+  @@map("stock")
+}
+
+// Modèle StockHistory
+model StockHistory {
+  id        Int       @id @default(autoincrement()) @map("id")
+  productId Int       @map("product_id")
+  storeId   Int       @map("store_id")
+  action    String    @map("action")
+  quantity  Int       @map("quantity")
+  comment   String?   @map("comment")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  store Store @relation(fields: [storeId], references: [id])
+  // product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("stock_history")
+}
+
+model Transfer {
+  id                 Int       @id @default(autoincrement())
+  productId          Int       @map("product_id")
+  sourceStoreId      Int       @map("source_store_id")
+  destinationStoreId Int       @map("destination_store_id")
+  quantity           Int
+  status             String
+  comment            String?
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime? @map("updated_at")
+
+  // Relations
+  product          Product @relation(fields: [productId], references: [id])
+  sourceStore      Store   @relation("SourceStore", fields: [sourceStoreId], references: [id])
+  destinationStore Store   @relation("DestinationStore", fields: [destinationStoreId], references: [id])
+
+  @@map("transfers")
+}
