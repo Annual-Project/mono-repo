@@ -1,4 +1,5 @@
 import {  z } from 'zod';
+import { safeString } from '../../../shared/validations/communs.js';
 
 export const getCategoriesSchema = z.object({
   limit: z.coerce.number().positive('La limite doit être un nombre positif').default(20).optional(),
@@ -10,8 +11,8 @@ export const getCategorySchema = z.object({
 });
 
 export const createCategorySchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  description: z.string().min(1, 'Description is required').optional(),
+  name: safeString.min(1, 'Name is required'),
+  description: safeString.min(1, 'Description is required').optional(),
 });
 
 export const updateCategoryIdSchema = z.object({
@@ -19,8 +20,8 @@ export const updateCategoryIdSchema = z.object({
 });
 
 export const updateCategorySchema = z.object({
-  name: z.string().min(1, 'Name is required').optional(),
-  description: z.string().min(1, 'Description is required').optional(),
+  name: safeString.min(1, 'Name is required').optional(),
+  description: safeString.min(1, 'Description is required').optional(),
 });
 
 export const deleteCategorySchema = z.object({

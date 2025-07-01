@@ -1,4 +1,5 @@
 import {  z } from 'zod';
+import { safeString } from '../../../shared/validations/communs.js';
 
 export const getUsersSchema = z.object({
   limit: z.coerce.number().positive('Limit must be a positive number').default(20).optional(),
@@ -10,9 +11,9 @@ export const getUserByIdSchema = z.object({
 });
 
 export const createUserSchema = z.object({
-  firstname: z.string().min(1, 'Firstname is required'),
-  lastname: z.string().min(1, 'Lastname is required'),
-  email: z.string().email('Invalid email format'),
+  firstname: safeString.min(1, 'Firstname is required'),
+  lastname: safeString.min(1, 'Lastname is required'),
+  email: safeString.email('Invalid email format'),
   hashPassword: z.string('Password is required'),
   salt: z.string('Salt is required'),
   isActive: z.boolean().optional(),
@@ -23,11 +24,11 @@ export const updateUserByIdParamsSchema = z.object({
 });
 
 export const updateUserByIdBodySchema = z.object({
-  firstname: z.string().min(1, 'Firstname is required').optional(),
-  lastname: z.string().min(1, 'Lastname is required').optional(),
-  email: z.string().email('Invalid email format').optional(),
-  hashPassword: z.string().optional(),
-  salt: z.string().optional(),
+  firstname: safeString.min(1, 'Firstname is required').optional(),
+  lastname: safeString.min(1, 'Lastname is required').optional(),
+  email: safeString.email('Invalid email format').optional(),
+  hashPassword: safeString.optional(),
+  salt: safeString.optional(),
   isActive: z.boolean().optional(),
 });
 

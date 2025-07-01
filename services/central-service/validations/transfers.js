@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { safeString } from '../../../shared/validations/communs.js';
 
 export const getTransfersSchema = z.object({
   limit: z.coerce.number().positive("La limite doit être un nombre positif").default(20).optional(),
@@ -14,8 +15,8 @@ export const createTransferSchema = z.object({
   sourceStoreId: z.number().positive("sourceStoreId est requis"),
   destinationStoreId: z.number().positive("destinationStoreId est requis"),
   quantity: z.number().positive("quantity doit être un entier positif"),
-  status: z.string().min(1, "status est requis"),
-  comment: z.string().optional(),
+  status: safeString.min(1, "status est requis"),
+  comment: safeString.optional(),
 });
 
 export const updateTransferIdSchema = z.object({
@@ -27,8 +28,8 @@ export const updateTransferSchema = z.object({
   sourceStoreId: z.number().positive("sourceStoreId est requis").optional(),
   destinationStoreId: z.number().positive("destinationStoreId est requis").optional(),
   quantity: z.number().positive("quantity doit être un entier positif").optional(),
-  status: z.string().min(1, "status est requis").optional(),
-  comment: z.string().optional(),
+  status: safeString.min(1, "status est requis").optional(),
+  comment: safeString.optional(),
 });
 
 export const deleteTransferSchema = z.object({

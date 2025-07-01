@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { safeString } from '../../../shared/validations/communs.js';
 
 export const getStoresSchema = z.object({
   limit: z.coerce.number().positive("La limite doit être un nombre positif").default(20).optional(),
@@ -10,8 +11,8 @@ export const getStoreSchema = z.object({
 });
 
 export const createStoreSchema = z.object({
-    name: z.string().min(1, "Le nom doit être renseigné"),
-    description: z.string().optional(),
+    name: safeString.min(1, "Le nom doit être renseigné"),
+    description: safeString.optional(),
 });
 
 export const updateStoreIdSchema = z.object({
@@ -19,8 +20,8 @@ export const updateStoreIdSchema = z.object({
 });
 
 export const updateStoreSchema = z.object({
-    name: z.string().min(1, "Le nom doit être renseigné").optional(),
-    description: z.string().optional(),
+    name: safeString.min(1, "Le nom doit être renseigné").optional(),
+    description: safeString.optional(),
 });
 
 export const deleteStoreSchema = z.object({

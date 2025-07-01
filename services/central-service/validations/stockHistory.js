@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { safeString } from '../../../shared/validations/communs.js';
 
 const actionEnum = z.enum(['IN', 'OUT', 'ADJUSTMENT'], {
   errorMap: () => ({ message: 'Action must be one of: IN, OUT, ADJUSTMENT' }),
@@ -28,7 +29,7 @@ export const createHistorySchema = z.object({
     required_error: 'Quantity is required',
     invalid_type_error: 'Quantity must be a number',
   }),
-  comment: z.string().optional(),
+  comment: safeString.optional(),
 });
 
 export const updateHistoryIdSchema = z.object({
@@ -41,7 +42,7 @@ export const updateHistorySchema = z.object({
   storeId: z.number().positive("Le storeId doit être un nombre positif").optional(),
   action: actionEnum.optional(),
   quantity: z.number().optional(),
-  comment: z.string().optional(),
+  comment: safeString.optional(),
 });
 
 // Validation pour : DELETE /stock-history/:id

@@ -1,4 +1,5 @@
 import {  z } from 'zod';
+import { safeString } from '../../../shared/validations/communs.js';
 
 export const getRolesSchema = z.object({
   limit: z.coerce.number().positive('Limit must be a positive number').default(20).optional(),
@@ -10,8 +11,8 @@ export const getRoleByIdSchema = z.object({
 });
 
 export const createRoleSchema = z.object({
-  name: z.string().min(1, 'Role name is required'),
-  description: z.string().optional(),
+  name: safeString.min(1, 'Role name is required'),
+  description: safeString.optional(),
 });
 
 export const updateRoleByIdParamsSchema = z.object({
@@ -19,8 +20,8 @@ export const updateRoleByIdParamsSchema = z.object({
 });
 
 export const updateRoleByIdBodySchema = z.object({
-  name: z.string().min(1, 'Role name is required').optional(),
-  description: z.string().optional(),
+  name: safeString.min(1, 'Role name is required').optional(),
+  description: safeString.optional(),
 });
 
 export const deleteRoleByIdSchema = z.object({
