@@ -89,10 +89,11 @@ services:
   stocks-service:
     container_name: stocks_service
     build:
-      context: ./services/stocks-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/stocks-service/Dockerfile
+    working_dir: /app/services/stocks-service
     volumes:
-      - ./services/stocks-service:/usr/src/app
+      - .:/app
     ports:
       - "3008:3000"
     depends_on:
@@ -148,10 +149,11 @@ services:
   transfers-service:
     container_name: transfers_service
     build:
-      context: ./services/transfers-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/transfers-service/Dockerfile
+    working_dir: /app/services/transfers-service
     volumes:
-      - ./services/transfers-service:/usr/src/app
+      - .:/app
     ports:
       - "3003:3000"
     depends_on:

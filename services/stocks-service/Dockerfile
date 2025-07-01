@@ -1,13 +1,22 @@
-FROM node:alpine
+FROM node:22-alpine
 
-WORKDIR /usr/src/app
+# Crée le dossier de travail principal
+WORKDIR /app
 
-# COPY package*.json ./
+# Copy le mono-repo en entier
+COPY . ./
 
-# COPY . .
+# Install les packages nécessaires pour l'os
+# apk est le gestionnaire de paquets Alpine.
+# --no-cache évite de stocker les index de paquets localement (utile dans des conteneurs).
+# openssl est disponible dans les dépôts Alpine de base.
+RUN apk add --no-cache openssl
 
-EXPOSE 3000
+# Install dependencies using workspaces
+RUN npm install --workspaces
 
-# Faire tourner le container a l'infini car il se stop s'il n'y a rien dedans
+# Va dans ce chemin depuis la racine du mono-repo
+WORKDIR /app/services/stocks-service
+
 ENTRYPOINT [ "tail", "-f", "/dev/null" ]
 

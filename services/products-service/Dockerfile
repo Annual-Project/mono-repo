@@ -1,4 +1,4 @@
-FROM node:slim
+FROM node:22-alpine
 
 # Crée le dossier de travail principal
 WORKDIR /app
@@ -7,7 +7,10 @@ WORKDIR /app
 COPY . ./
 
 # Install les packages nécessaires pour l'os
-RUN apt-get update -y && apt-get install -y openssl
+# apk est le gestionnaire de paquets Alpine.
+# --no-cache évite de stocker les index de paquets localement (utile dans des conteneurs).
+# openssl est disponible dans les dépôts Alpine de base.
+RUN apk add --no-cache openssl
 
 # Install dependencies using workspaces
 RUN npm install --workspaces
