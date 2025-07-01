@@ -11,8 +11,8 @@ export const getStoreSchema = z.object({
 });
 
 export const createStoreSchema = z.object({
-    name: safeString.min(1, "Le nom doit être renseigné"),
-    description: safeString.optional(),
+    name: safeString(1),
+    description: safeString().optional(),
 });
 
 export const updateStoreIdSchema = z.object({
@@ -20,8 +20,8 @@ export const updateStoreIdSchema = z.object({
 });
 
 export const updateStoreSchema = z.object({
-    name: safeString.min(1, "Le nom doit être renseigné").optional(),
-    description: safeString.optional(),
+    name: safeString(1).optional(),
+    description: safeString().optional(),
 });
 
 export const deleteStoreSchema = z.object({

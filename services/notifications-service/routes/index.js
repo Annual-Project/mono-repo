@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import NotificationController from '../controllers/notificationController.js';
+import NotificationController from '../controllers/NotificationController.js';
 
 // Import des schémas de validation
 import {
@@ -10,10 +10,10 @@ import {
 } from '../validations/notificationValidation.js';
 
 // OTHER
-import validateData from '../middlewares/validations.js';
-import authorization from "../middlewares/authorization.js";
+import validationsMiddleware from '../middlewares/validationsMiddleware.js';
+import authorizationMiddleware from "../middlewares/authorizationMiddleware.js";
 
-import controllerHandler from '../handlers/controllers.js';
+import controllersHandler from '../handlers/controllersHandler.js';
 
 import NotFoundError from '../exceptions/NotFoundError.js';
 
@@ -22,8 +22,8 @@ const router = Router();
 // Routes pour les appels internes (depuis d'autres microservices)
 router.post(
   '/api/v1/notifications',
-  validateData(createNotificationSchema, "body"),
-  controllerHandler(NotificationController.createNotification),
+  validationsMiddleware(createNotificationSchema, "body"),
+  controllersHandler(NotificationController.createNotification),
 );
 
 // Routes pour le client (lecture seule principalement)
@@ -35,29 +35,29 @@ router.post(
 
 router.get(
   '/api/v1/notifications',
-  authorization([], ["user"]),
-  validateData(getNotificationsSchema, "query"),
-  controllerHandler(NotificationController.getNotifications),
+  authorizationMiddleware([], ["user"]),
+  validationsMiddleware(getNotificationsSchema, "query"),
+  controllersHandler(NotificationController.getNotifications),
 );
 
 router.put(
   '/api/v1/notifications/:id/read',
-  authorization([], ["user"]),
-  validateData(notificationIdSchema, "params"),
-  controllerHandler(NotificationController.markAsRead),
+  authorizationMiddleware([], ["user"]),
+  validationsMiddleware(notificationIdSchema, "params"),
+  controllersHandler(NotificationController.markAsRead),
 );
 
 router.put(
   '/api/v1/notifications/mark-all-read',
-  authorization([], ["user"]),
-  controllerHandler(NotificationController.markAllAsRead),
+  authorizationMiddleware([], ["user"]),
+  controllersHandler(NotificationController.markAllAsRead),
 );
 
 router.delete(
   '/api/v1/notifications/:id',
-  authorization([], ["user"]),
-  validateData(notificationIdSchema, "params"),
-  controllerHandler(NotificationController.deleteNotification),
+  authorizationMiddleware([], ["user"]),
+  validationsMiddleware(notificationIdSchema, "params"),
+  controllersHandler(NotificationController.deleteNotification),
 );
 
 // Dans le cas où aucune route ne correspond, on renvoie une erreur 404

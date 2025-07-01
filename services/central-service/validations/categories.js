@@ -1,4 +1,4 @@
-import {  z } from 'zod';
+import { z } from 'zod';
 import { safeString } from '../../../shared/validations/communs.js';
 
 export const getCategoriesSchema = z.object({
@@ -11,8 +11,8 @@ export const getCategorySchema = z.object({
 });
 
 export const createCategorySchema = z.object({
-  name: safeString.min(1, 'Name is required'),
-  description: safeString.min(1, 'Description is required').optional(),
+  name: safeString(1),
+  description: safeString(1).optional(),
 });
 
 export const updateCategoryIdSchema = z.object({
@@ -20,8 +20,8 @@ export const updateCategoryIdSchema = z.object({
 });
 
 export const updateCategorySchema = z.object({
-  name: safeString.min(1, 'Name is required').optional(),
-  description: safeString.min(1, 'Description is required').optional(),
+  name: safeString(1).optional(),
+  description: safeString(1).optional(),
 });
 
 export const deleteCategorySchema = z.object({

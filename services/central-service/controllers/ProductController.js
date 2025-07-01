@@ -2,9 +2,9 @@ import prisma from '../config/db.js'
 import BadRequestError from '../exceptions/BadRequestError.js';
 import NotFoundError from '../exceptions/NotFoundError.js';
 
-const productsController = {
+class ProductController {
 
-    async getAllProducts(req, res) {
+    static async getAllProducts(req, res) {
         const { limit, offset } = req.query;
 
         const products = await prisma.product.findMany({
@@ -13,9 +13,9 @@ const productsController = {
         });
 
         res.status(200).json(products);
-    },
+    }
     
-    async getProductById(req, res) {
+    static async getProductById(req, res) {
         const { id } = req.params;
 
         const product = await prisma.product.findUnique({
@@ -27,9 +27,9 @@ const productsController = {
         }
 
         res.status(200).json(product);
-    },
+    }
 
-    async createProduct(req, res) {
+    static async createProduct(req, res) {
         const { name, price, description, categoryId } = req.body;
 
         if (categoryId) {
@@ -55,9 +55,9 @@ const productsController = {
             data: newProduct,
         });
         
-    },
+    }
 
-    async updateProductById(req, res) {
+    static async updateProductById(req, res) {
         const { id, name, price, description, categoryId } = req.body;
 
         if (categoryId) {
@@ -84,9 +84,9 @@ const productsController = {
             message: 'Product updated successfully',
             data: updatedProduct,
         });            
-    },
+    }
 
-    async deleteProductById(req, res) {
+    static async deleteProductById(req, res) {
     const { id } = req.params;
         const productExists = await prisma.product.findUnique({
             where: { id },
@@ -106,4 +106,4 @@ const productsController = {
 
 };
 
-export default productsController;
+export default ProductController;

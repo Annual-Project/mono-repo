@@ -2,9 +2,9 @@ import prisma from '../config/db.js';
 import NotFoundError from '../exceptions/NotFoundError.js';
 import BadRequestError from '../exceptions/BadRequestError.js';
 
-const transfersController = {
+class TransferController {
 
-  async getAllTransfers(req, res) {
+  static async getAllTransfers(req, res) {
     const { limit, offset } = req.query;
 
     const transfers = await prisma.transfer.findMany({
@@ -13,9 +13,9 @@ const transfersController = {
     });
 
     res.status(200).json(transfers);
-  },
+  }
 
-  async getTransferById(req, res) {
+  static async getTransferById(req, res) {
     const { id } = req.params;
 
     const transfer = await prisma.transfer.findUnique({
@@ -27,9 +27,9 @@ const transfersController = {
     }
 
     res.status(200).json(transfer);
-  },
+  }
 
-  async createTransfer(req, res) {
+  static async createTransfer(req, res) {
     const { productId, sourceStoreId, destinationStoreId, quantity, status, comment } = req.body;
 
     const newTransfer = await prisma.transfer.create({
@@ -40,7 +40,6 @@ const transfersController = {
         quantity,
         status,
         comment,
-        updatedAt: new Date(),  
       }
     });
 
@@ -52,9 +51,9 @@ const transfersController = {
       message: 'Transfer created successfully',
       data: newTransfer,
     });
-  },
+  }
 
-  async updateTransferById(req, res) {
+  static async updateTransferById(req, res) {
     const { id, productId, sourceStoreId, destinationStoreId, quantity, status, comment } = req.body;
 
     const updatedTransfer = await prisma.transfer.update({
@@ -77,9 +76,9 @@ const transfersController = {
       message: 'Transfer updated successfully',
       data: updatedTransfer,
     });
-  },
+  }
 
-  async deleteTransferById(req, res) {
+  static async deleteTransferById(req, res) {
     const { id } = req.params;
 
     const transferExists = await prisma.transfer.findUnique({
@@ -103,4 +102,4 @@ const transfersController = {
 
 };
 
-export default transfersController;
+export default TransferController;

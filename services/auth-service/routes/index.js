@@ -1,14 +1,14 @@
 import { Router } from "express";
 
 // Import des middlewares
-import authorization from "../middlewares/authorization.js";
-import validateData from "../middlewares/validations.js";
+import authorizationMiddleware from "../middlewares/authorizationMiddleware.js";
+import validationsMiddleware from "../middlewares/validationsMiddleware.js";
 
 // Import des gestionnaires de contrôleurs
-import controllerHandler from "../handlers/controllers.js";
+import controllersHandler from "../handlers/controllersHandler.js";
 
 // Import des contrôleurs
-import authController from "../controllers/auth.js";
+import AuthController from "../controllers/AuthController.js";
 import UserController from "../controllers/UserController.js";
 import RoleController from "../controllers/RoleController.js";
 import PermissionController from "../controllers/PermissionController.js";
@@ -65,186 +65,186 @@ const router = Router();
 // Routes pour l'authentification
 router.post(
   "/auth/signup",
-  validateData(signupSchema, "body"),
-  controllerHandler(authController.signup)
+  validationsMiddleware(signupSchema, "body"),
+  controllersHandler(AuthController.signup)
 );
 
 router.post(
   "/auth/signupValidate",
-  validateData(signupValidateSchema, "body"),
-  controllerHandler(authController.signupValidate)
+  validationsMiddleware(signupValidateSchema, "body"),
+  controllersHandler(AuthController.signupValidate)
 );
 
 router.post(
   "/auth/changePassword",
-  validateData(changePasswordSchema, "body"),
-  controllerHandler(authController.changePassword)
+  validationsMiddleware(changePasswordSchema, "body"),
+  controllersHandler(AuthController.changePassword)
 );
 
 router.post(
   "/auth/signin",
-  validateData(signinSchema, "body"),
-  controllerHandler(authController.signin)
+  validationsMiddleware(signinSchema, "body"),
+  controllersHandler(AuthController.signin)
 );
 
 router.post(
   "/auth/signinValidate",
-  validateData(signinValidateSchema, "body"),
-  controllerHandler(authController.signinValidate)
+  validationsMiddleware(signinValidateSchema, "body"),
+  controllersHandler(AuthController.signinValidate)
 );
 
 router.get(
   "/auth/verify",
-  controllerHandler(authController.verifyTokens)
+  controllersHandler(AuthController.verifyTokens)
 );
 
 router.get(
   "/auth/logout",
-  controllerHandler(authController.logout)
+  controllersHandler(AuthController.logout)
 );
 
 router.get(
   "/auth/generate",
-  controllerHandler(authController.generate)
+  controllersHandler(AuthController.generate)
 );
 
 // Routes pour les utilisateurs
 router.get(
   "/users",
-  authorization([], ["admin"]),
-  validateData(getUsersSchema, "query"),
-  controllerHandler(UserController.getUsers)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getUsersSchema, "query"),
+  controllersHandler(UserController.getUsers)
 );
 router.get(
   "/users/:id",
-  authorization([], ["admin"]),
-  validateData(getUserByIdSchema, "params"),
-  controllerHandler(UserController.getUserById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getUserByIdSchema, "params"),
+  controllersHandler(UserController.getUserById)
 );
 router.post(
   "/users",
-  authorization([], ["admin"]),
-  validateData(createUserSchema, "body"),
-  controllerHandler(UserController.createUser)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(createUserSchema, "body"),
+  controllersHandler(UserController.createUser)
 );
 router.put(
   "/users/:id",
-  authorization([], ["admin"]),
-  validateData(updateUserByIdParamsSchema, "params"),
-  validateData(updateUserByIdBodySchema, "body"),
-  controllerHandler(UserController.updateUserById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(updateUserByIdParamsSchema, "params"),
+  validationsMiddleware(updateUserByIdBodySchema, "body"),
+  controllersHandler(UserController.updateUserById)
 );
 router.delete(
   "/users/:id",
-  authorization([], ["superadmin"]),
-  validateData(deleteUserByIdSchema, "params"),
-  controllerHandler(UserController.deleteUserById)
+  authorizationMiddleware([], ["superadmin"]),
+  validationsMiddleware(deleteUserByIdSchema, "params"),
+  controllersHandler(UserController.deleteUserById)
 );
 
 // Routes pour les rôles
 router.get(
   "/roles",
-  authorization([], ["admin"]),
-  validateData(getRolesSchema, "query"),
-  controllerHandler(RoleController.getRoles)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getRolesSchema, "query"),
+  controllersHandler(RoleController.getRoles)
 );
 router.get(
   "/roles/:id",
-  authorization([], ["admin"]),
-  validateData(getRoleByIdSchema, "params"),
-  controllerHandler(RoleController.getRoleById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getRoleByIdSchema, "params"),
+  controllersHandler(RoleController.getRoleById)
 );
 router.post(
   "/roles",
-  authorization([], ["admin"]),
-  validateData(createRoleSchema, "body"),
-  controllerHandler(RoleController.createRole)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(createRoleSchema, "body"),
+  controllersHandler(RoleController.createRole)
 );
 router.put(
   "/roles/:id",
-  authorization([], ["admin"]),
-  validateData(updateRoleByIdParamsSchema, "params"),
-  validateData(updateRoleByIdBodySchema, "body"),
-  controllerHandler(RoleController.updateRoleById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(updateRoleByIdParamsSchema, "params"),
+  validationsMiddleware(updateRoleByIdBodySchema, "body"),
+  controllersHandler(RoleController.updateRoleById)
 );
 router.delete(
   "/roles/:id",
-  authorization([], ["superadmin"]),
-  validateData(deleteRoleByIdSchema, "params"),
-  controllerHandler(RoleController.deleteRoleById)
+  authorizationMiddleware([], ["superadmin"]),
+  validationsMiddleware(deleteRoleByIdSchema, "params"),
+  controllersHandler(RoleController.deleteRoleById)
 );
 
 // Routes pour les permissions
 router.get(
   "/permissions",
-  authorization([], ["admin"]),
-  validateData(getPermissionsSchema, "query"),
-  controllerHandler(PermissionController.getPermissions)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getPermissionsSchema, "query"),
+  controllersHandler(PermissionController.getPermissions)
 );
 router.get(
   "/permissions/:id",
-  authorization([], ["admin"]),
-  validateData(getPermissionByIdSchema, "params"),
-  controllerHandler(PermissionController.getPermissionById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getPermissionByIdSchema, "params"),
+  controllersHandler(PermissionController.getPermissionById)
 );
 router.post(
   "/permissions",
-  authorization([], ["admin"]),
-  validateData(createPermissionSchema, "body"),
-  controllerHandler(PermissionController.createPermission)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(createPermissionSchema, "body"),
+  controllersHandler(PermissionController.createPermission)
 );
 router.put(
   "/permissions/:id",
-  authorization([], ["admin"]),
-  validateData(updatePermissionByIdParamsSchema, "params"),
-  validateData(updatePermissionByIdBodySchema, "body"),
-  controllerHandler(PermissionController.updatePermissionById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(updatePermissionByIdParamsSchema, "params"),
+  validationsMiddleware(updatePermissionByIdBodySchema, "body"),
+  controllersHandler(PermissionController.updatePermissionById)
 );
 router.delete(
   "/permissions/:id",
-  authorization([], ["superadmin"]),
-  validateData(deletePermissionByIdSchema, "params"),
-  controllerHandler(PermissionController.deletePermissionById)
+  authorizationMiddleware([], ["superadmin"]),
+  validationsMiddleware(deletePermissionByIdSchema, "params"),
+  controllersHandler(PermissionController.deletePermissionById)
 );
 
 // Routes pour les roles des utilisateurs
 router.get(
   "/users/:userId/roles",
-  authorization([], ["admin"]),
-  validateData(getUserRolesByIdSchema, "params"),
-  controllerHandler(UserRoleController.getUserRoles)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getUserRolesByIdSchema, "params"),
+  controllersHandler(UserRoleController.getUserRoles)
 );
 router.post(
   "/users/roles",
-  authorization([], ["admin"]),
-  validateData(createUserRoleSchema, "body"),
-  controllerHandler(UserRoleController.assignRoleToUser)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(createUserRoleSchema, "body"),
+  controllersHandler(UserRoleController.assignRoleToUser)
 );
 router.delete(
   "/users/:userId/roles/:roleId",
-  authorization([], ["superadmin"]),
-  validateData(deleteUserRoleSchema, "params"),
-  controllerHandler(UserRoleController.removeRoleFromUser)
+  authorizationMiddleware([], ["superadmin"]),
+  validationsMiddleware(deleteUserRoleSchema, "params"),
+  controllersHandler(UserRoleController.removeRoleFromUser)
 );
 
 // Routes pour les permissions des utilisateurs
 router.get(
   "/users/:userId/permissions",
-  authorization([], ["admin"]),
-  validateData(getUserPermissionsByIdSchema, "params"),
-  controllerHandler(UserPermissionController.getUserPermissions)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getUserPermissionsByIdSchema, "params"),
+  controllersHandler(UserPermissionController.getUserPermissions)
 );
 router.post(
   "/users/permissions",
-  authorization([], ["admin"]),
-  validateData(createUserPermissionSchema, "body"),
-  controllerHandler(UserPermissionController.assignPermissionToUser)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(createUserPermissionSchema, "body"),
+  controllersHandler(UserPermissionController.assignPermissionToUser)
 );
 router.delete(
   "/users/:userId/permissions/:permissionId",
-  authorization([], ["superadmin"]),
-  validateData(deleteUserPermissionSchema, "params"),
-  controllerHandler(UserPermissionController.removePermissionFromUser)
+  authorizationMiddleware([], ["superadmin"]),
+  validationsMiddleware(deleteUserPermissionSchema, "params"),
+  controllersHandler(UserPermissionController.removePermissionFromUser)
 );
 
 // Dans le cas où aucune route ne correspond, on renvoie une erreur 404

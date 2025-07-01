@@ -8,9 +8,9 @@ import InternalServerError from '../exceptions/InternalServerError.js';
 import RolesStore from "../../../shared/stores/RolesStore.js";
 import PermissionsStore from "../../../shared/stores/PermissionsStore.js";
 
-const authController = {
+class AuthController {
 
-  async signup(req, res) {
+  static async signup(req, res) {
 
     const { email } = req.body;
 
@@ -55,9 +55,9 @@ const authController = {
       },
     });
 
-  },
+  }
 
-  async signupValidate(req, res) {
+  static async signupValidate(req, res) {
 
     const body = req.body;
 
@@ -161,9 +161,9 @@ const authController = {
       refreshToken,
     });
 
-  },
+  }
 
-  async verifyTokens (req, res) {
+  static async verifyTokens (req, res) {
 
     if (!req.auth)
       return res.status(200).json({
@@ -174,9 +174,9 @@ const authController = {
       ok: true,
     });
 
-  },
+  }
 
-  async signin(req, res) {
+  static async signin(req, res) {
 
     const { email } = req.body;
 
@@ -206,9 +206,9 @@ const authController = {
       },
     });
 
-  },
+  }
 
-  async signinValidate(req, res) {
+  static async signinValidate(req, res) {
 
     const body = req.body;
 
@@ -321,9 +321,9 @@ const authController = {
       refreshToken,
     });
 
-  },
+  }
   
-  async logout(req, res) {
+  static async logout(req, res) {
 
     const userId = Number.parseInt(req.auth?.userId);
 
@@ -349,9 +349,9 @@ const authController = {
       ok: true
     });
 
-  },
+  }
   
-  async generate(req, res) {
+  static async generate(req, res) {
 
     if (!req.auth) {
       throw new ForbiddenError('Authentication required');
@@ -396,9 +396,9 @@ const authController = {
       refreshToken,
     });
 
-  },
+  }
 
-  async changePassword(req, res) {
+  static async changePassword(req, res) {
 
     const { email, hashOldPassword, hashNewPassword, hashNewConfirmPassword, newSalt, signature, challenge, proof } = req.body;
 
@@ -474,10 +474,10 @@ const authController = {
       refreshToken,
     });  
 
-  },
+  }
 
-  async signupConfirmEmail(req, res) {},
+  static async signupConfirmEmail(req, res) {}
 
 };
 
-export default authController;
+export default AuthController;

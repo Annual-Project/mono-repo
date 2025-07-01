@@ -1,4 +1,4 @@
-import {  z } from 'zod';
+import { z } from 'zod';
 import { safeString } from '../../../shared/validations/communs.js';
 
 export const getRolesSchema = z.object({
@@ -11,8 +11,8 @@ export const getRoleByIdSchema = z.object({
 });
 
 export const createRoleSchema = z.object({
-  name: safeString.min(1, 'Role name is required'),
-  description: safeString.optional(),
+  name: safeString(1),
+  description: safeString().optional(),
 });
 
 export const updateRoleByIdParamsSchema = z.object({
@@ -20,8 +20,8 @@ export const updateRoleByIdParamsSchema = z.object({
 });
 
 export const updateRoleByIdBodySchema = z.object({
-  name: safeString.min(1, 'Role name is required').optional(),
-  description: safeString.optional(),
+  name: safeString(1).optional(),
+  description: safeString().optional(),
 });
 
 export const deleteRoleByIdSchema = z.object({

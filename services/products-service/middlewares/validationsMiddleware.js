@@ -1,10 +1,13 @@
+import { ZodError } from 'zod';
+import { StatusCodes } from 'http-status-codes';
+
 /**
  * Middleware de validation des données avec Zod
  * @param {Object} schema - Le schéma Zod à utiliser pour la validation
  * @param {string} source - La source des données à valider ('params', 'body', 'query')
  */
-const validateData = (schema, source) => {
-  return (req, _, next) => {
+export default (schema, source) => {
+  return (req, res, next) => {
     try {
       // Vérifie si la source est valide
       if (!['params', 'body', 'query'].includes(source)) {
@@ -23,10 +26,17 @@ const validateData = (schema, source) => {
       req[source] = validatedData;
 
       next();
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      if (error instanceof ZodError) {
+
+        const errorMessages = error.errors.map((issue) => ({
+          message: `${issue.path.join('.')} is ${issue.message}`,
+        }))
+
+        res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid data', details: errorMessages });
+      } else {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
+      }
     }
   };
 };
-
-export default validateData;

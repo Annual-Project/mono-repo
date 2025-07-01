@@ -1,10 +1,11 @@
 import { Router } from "express";
 
-import transfersController from "../controllers/transfers.js";
+import TransferController from "../controllers/TransferController.js";
 
-import validateData from "../middlewares/validations.js";
-import authorization from "../middlewares/authorization.js";
-import controllerHandler from "../handlers/controllers.js";
+import controllersHandler from "../handlers/controllersHandler.js";
+
+import validationsMiddleware from "../middlewares/validationsMiddleware.js";
+import authorizationMiddleware from "../middlewares/authorizationMiddleware.js";
 
 import {
   createTransferSchema,
@@ -20,42 +21,42 @@ const router = Router();
 // GET all transfers
 router.get(
   "/api/v1/transfers",
-  authorization([], ["admin"]),
-  validateData(getTransfersSchema, "query"),
-  controllerHandler(transfersController.getAllTransfers)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getTransfersSchema, "query"),
+  controllersHandler(TransferController.getAllTransfers)
 );
 
 // GET a transfer by ID
 router.get(
   "/api/v1/transfers/:id",
-  authorization([], ["admin"]),
-  validateData(getTransferSchema, "params"),
-  controllerHandler(transfersController.getTransferById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getTransferSchema, "params"),
+  controllersHandler(TransferController.getTransferById)
 );
 
 // POST a new transfer
 router.post(
   "/api/v1/transfers",
-  authorization([], ["admin"]),
-  validateData(createTransferSchema, "body"),
-  controllerHandler(transfersController.createTransfer)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(createTransferSchema, "body"),
+  controllersHandler(TransferController.createTransfer)
 );
 
 // PUT update a transfer by ID
 router.put(
   "/api/v1/transfers",
-  authorization([], ["admin"]),
-  validateData(updateTransferIdSchema, "params"),
-  validateData(updateTransferSchema, "body"),
-  controllerHandler(transfersController.updateTransferById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(updateTransferIdSchema, "params"),
+  validationsMiddleware(updateTransferSchema, "body"),
+  controllersHandler(TransferController.updateTransferById)
 );
 
 // DELETE a transfer by ID
 router.delete(
   "/api/v1/transfers/:id",
-  authorization([], ["superadmin"]),
-  validateData(deleteTransferSchema, "params"),
-  controllerHandler(transfersController.deleteTransferById)
+  authorizationMiddleware([], ["superadmin"]),
+  validationsMiddleware(deleteTransferSchema, "params"),
+  controllersHandler(TransferController.deleteTransferById)
 );
 
 export default router;

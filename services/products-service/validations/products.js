@@ -11,8 +11,8 @@ export const getProductSchema = z.object({
 });
 
 export const createProductSchema = z.object({
-  name: safeString.min(1, 'Name is required'),
-  description: safeString.min(1, 'Description is required').optional(),
+  name: safeString(1),
+  description: safeString(1).optional(),
   price: z.number().min(0, 'Price must be a positive number'),
   categoryId: z.number().positive().optional(),
 });
@@ -22,8 +22,8 @@ export const updateProductIdSchema = z.object({
 });
 
 export const updateProductSchema = z.object({
-  name: safeString.min(1, 'Name is required').optional(),
-  description: safeString.min(1, 'Description is required').optional(),
+  name: safeString(1).optional(),
+  description: safeString(1).optional(),
   price: z.number().min(0, 'Price must be a positive number').optional(),
   categoryId: z.number().positive().optional(),
 });

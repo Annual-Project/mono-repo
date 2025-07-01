@@ -29,7 +29,7 @@ export const createHistorySchema = z.object({
     required_error: 'Quantity is required',
     invalid_type_error: 'Quantity must be a number',
   }),
-  comment: safeString.optional(),
+  comment: safeString().optional(),
 });
 
 export const updateHistoryIdSchema = z.object({
@@ -42,7 +42,7 @@ export const updateHistorySchema = z.object({
   storeId: z.number().positive("Le storeId doit être un nombre positif").optional(),
   action: actionEnum.optional(),
   quantity: z.number().optional(),
-  comment: safeString.optional(),
+  comment: safeString().optional(),
 });
 
 // Validation pour : DELETE /stock-history/:id

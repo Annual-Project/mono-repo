@@ -6,7 +6,7 @@ import { StatusCodes } from 'http-status-codes';
  * @param {Object} schema - Le schéma Zod à utiliser pour la validation
  * @param {string} source - La source des données à valider ('params', 'body', 'query')
  */
-const validateData = (schema, source) => {
+export default (schema, source) => {
   return (req, res, next) => {
     try {
       // Vérifie si la source est valide
@@ -42,5 +42,3 @@ const validateData = (schema, source) => {
     }
   };
 };
-
-export default validateData;

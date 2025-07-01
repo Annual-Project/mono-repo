@@ -2,21 +2,21 @@ import prisma from '../config/db.js';
 import NotFoundError from '../exceptions/NotFoundError.js';
 import BadRequestError from '../exceptions/BadRequestError.js';
 
-const storeController = {
+class StoreController {
   // GET all stores
-  async getAllStores(req, res) {
+  static async getAllStores(req, res) {
     const { limit, offset } = req.query;
 
     const stores = await prisma.store.findMany({
-      take: limit,
-      skip: offset,
+        take: limit,
+        skip: offset,
     });
 
     res.status(200).json(stores);
-  },
+  }
 
   // GET store by ID
-  async getStoreById(req, res) {
+  static async getStoreById(req, res) {
     const { id } = req.params;
 
     const store = await prisma.store.findUnique({
@@ -28,10 +28,10 @@ const storeController = {
     }
 
     res.status(200).json(store);
-  },
+  }
 
   // CREATE a new store
-  async createStore(req, res) {
+  static async createStore(req, res) {
     const { name, description } = req.body;
 
     const newStore = await prisma.store.create({
@@ -46,10 +46,10 @@ const storeController = {
     }
 
     res.status(201).json(newStore);
-  },
+  }
 
   // UPDATE store by ID
-  async updateStoreById(req, res) {
+  static async updateStoreById(req, res) {
     const { id, name, description } = req.body;
 
     const updatedStore = await prisma.store.update({
@@ -57,7 +57,6 @@ const storeController = {
       data: {
         name,
         description,
-        updatedAt: new Date(),
       },
     });
 
@@ -66,10 +65,10 @@ const storeController = {
     }
 
     res.status(200).json(updatedStore);
-  },
+  }
 
   // DELETE store by ID
-  async deleteStoreById(req, res) {
+  static async deleteStoreById(req, res) {
     const { id } = req.params;
 
     const deletedStore = await prisma.store.delete({
@@ -81,7 +80,7 @@ const storeController = {
     }
 
     res.status(200).json({ message: `Store with ID ${id} has been successfully deleted.` });
-  },
+  }
 };
 
-export default storeController;
+export default StoreController;

@@ -1,8 +1,8 @@
 import { Router } from "express";
 
 // PRODUCTS / CATEGORIES
-import productsController from "../controllers/products.js";
-import categoriesController from "../controllers/categories.js";
+import ProductController from "../controllers/ProductController.js";
+import CategoryController from "../controllers/CategoryController.js";
 import {
   createProductSchema,
   deleteProductSchema,
@@ -21,7 +21,7 @@ import {
 } from "../validations/categories.js";
 
 // TRANSFERS
-import transfersController from "../controllers/transfers.js";
+import TransferController from "../controllers/TransferController.js";
 import {
   createTransferSchema,
   deleteTransferSchema,
@@ -32,9 +32,9 @@ import {
 } from "../validations/transfers.js";
 
 // STOCKS / STORES
-import stockController from "../controllers/stock.controller.js";
-import historyController from "../controllers/stockHistory.controller.js";
-import storeController from "../controllers/store.controller.js";
+import StockController from "../controllers/StockController.js";
+import StockHistoryController from "../controllers/StockHistoryController.js";
+import StoreController from "../controllers/StoreController.js";
 import {
   getStockSchema,
   createStockSchema,
@@ -62,9 +62,9 @@ import {
 } from "../validations/store.js";
 
 // OTHER
-import validateData from "../middlewares/validations.js";
+import validationsMiddleware from "../middlewares/validationsMiddleware.js";
 
-import controllerHandler from "../handlers/controllers.js";
+import controllersHandler from "../handlers/controllersHandler.js";
 
 import NotFoundError from "../exceptions/NotFoundError.js";
 
@@ -73,196 +73,196 @@ const router = Router();
 // GET all products
 router.get(
   "/api/central/products",
-  validateData(getProductsSchema, "query"),
-  controllerHandler(productsController.getAllProducts)
+  validationsMiddleware(getProductsSchema, "query"),
+  controllersHandler(ProductController.getAllProducts)
 );
 
 // GET a product by ID
 router.get(
   "/api/central/products/:id",
-  validateData(getProductSchema, "params"),
-  controllerHandler(productsController.getProductById)
+  validationsMiddleware(getProductSchema, "params"),
+  controllersHandler(ProductController.getProductById)
 );
 
 // POST a new product
 router.post(
   "/api/central/products",
-  validateData(createProductSchema, "body"),
-  controllerHandler(productsController.createProduct)
+  validationsMiddleware(createProductSchema, "body"),
+  controllersHandler(ProductController.createProduct)
 );
 
 // PUT update a product by ID
 router.put(
   "/api/central/products/:id",
-  validateData(updateProductIdSchema, "params"),
-  validateData(updateProductSchema, "body"),
-  controllerHandler(productsController.updateProductById)
+  validationsMiddleware(updateProductIdSchema, "params"),
+  validationsMiddleware(updateProductSchema, "body"),
+  controllersHandler(ProductController.updateProductById)
 );
 
 // DELETE a product by ID
 router.delete(
   "/api/central/products/:id",
-  validateData(deleteProductSchema, "params"),
-  controllerHandler(productsController.deleteProductById)
+  validationsMiddleware(deleteProductSchema, "params"),
+  controllersHandler(ProductController.deleteProductById)
 );
 
 // GET all categories
 router.get(
   "/api/central/categories",
-  validateData(getCategoriesSchema, "query"),
-  controllerHandler(categoriesController.getAllCategories)
+  validationsMiddleware(getCategoriesSchema, "query"),
+  controllersHandler(CategoryController.getAllCategories)
 );
 
 // GET a category by ID
 router.get(
   "/api/central/categories/:id",
-  validateData(getCategorySchema, "params"),
-  controllerHandler(categoriesController.getCategoryById)
+  validationsMiddleware(getCategorySchema, "params"),
+  controllersHandler(CategoryController.getCategoryById)
 );
 
 // POST a new category
 router.post(
   "/api/central/categories",
-  validateData(createCategorySchema, "body"),
-  controllerHandler(categoriesController.createCategory)
+  validationsMiddleware(createCategorySchema, "body"),
+  controllersHandler(CategoryController.createCategory)
 );
 
 // PUT update a category by ID
 router.put(
   "/api/central/categories/:id",
-  validateData(updateCategoryIdSchema, "params"),
-  validateData(updateCategorySchema, "body"),
-  controllerHandler(categoriesController.updateCategoryById)
+  validationsMiddleware(updateCategoryIdSchema, "params"),
+  validationsMiddleware(updateCategorySchema, "body"),
+  controllersHandler(CategoryController.updateCategoryById)
 );
 
 // DELETE a category by ID
 router.delete(
   "/api/central/categories/:id",
-  validateData(deleteCategorySchema, "params"),
-  controllerHandler(categoriesController.deleteCategoryById)
+  validationsMiddleware(deleteCategorySchema, "params"),
+  controllersHandler(CategoryController.deleteCategoryById)
 );
 
 router.get(
   "/api/central/stores",
-  validateData(getStoresSchema, "query"),
-  controllerHandler(storeController.getAllStores)
+  validationsMiddleware(getStoresSchema, "query"),
+  controllersHandler(StoreController.getAllStores)
 );
 router.get(
   "/api/central/stores/:id",
-  validateData(getStoreSchema, "params"),
-  controllerHandler(storeController.getStoreById)
+  validationsMiddleware(getStoreSchema, "params"),
+  controllersHandler(StoreController.getStoreById)
 );
 router.get(
   "/api/central/stocks",
-  validateData(getStocksSchema, "query"),
-  controllerHandler(stockController.getAllStocks)
+  validationsMiddleware(getStocksSchema, "query"),
+  controllersHandler(StockController.getAllStocks)
 );
 router.get(
   "/api/central/stocks/history",
-  validateData(getStocksHistorySchema, "query"),
-  controllerHandler(historyController.getAllHistory)
+  validationsMiddleware(getStocksHistorySchema, "query"),
+  controllersHandler(StockHistoryController.getAllHistory)
 );
 router.get(
   "/api/central/stocks/:id",
-  validateData(getStockSchema, "params"),
-  controllerHandler(stockController.getStockById)
+  validationsMiddleware(getStockSchema, "params"),
+  controllersHandler(StockController.getStockById)
 );
 router.get(
   "/api/central/stocks/history/:id",
-  validateData(getHistorySchema, "params"),
-  controllerHandler(historyController.getHistoryById)
+  validationsMiddleware(getHistorySchema, "params"),
+  controllersHandler(StockHistoryController.getHistoryById)
 );
 router.get(
   "/api/central/stocks/:productId/history",
-  validateData(getProductHistorySchema, "params"),
-  controllerHandler(historyController.getHistoryByProductId)
+  validationsMiddleware(getProductHistorySchema, "params"),
+  controllersHandler(StockHistoryController.getHistoryByProductId)
 );
 
 router.post(
   "/api/central/stores",
-  validateData(createStoreSchema, "body"),
-  controllerHandler(storeController.createStore)
+  validationsMiddleware(createStoreSchema, "body"),
+  controllersHandler(StoreController.createStore)
 );
 router.post(
   "/api/central/stocks",
-  validateData(createStockSchema, "body"),
-  controllerHandler(stockController.createStock)
+  validationsMiddleware(createStockSchema, "body"),
+  controllersHandler(StockController.createStock)
 );
 router.post(
   "/api/central/stocks/history",
-  validateData(createHistorySchema, "body"),
-  controllerHandler(historyController.createHistory)
+  validationsMiddleware(createHistorySchema, "body"),
+  controllersHandler(StockHistoryController.createHistory)
 );
 
 router.put(
   "/api/central/stores/:id",
-  validateData(updateStoreIdSchema, "params"),
-  validateData(updateStoreSchema, "body"),
-  controllerHandler(storeController.updateStoreById)
+  validationsMiddleware(updateStoreIdSchema, "params"),
+  validationsMiddleware(updateStoreSchema, "body"),
+  controllersHandler(StoreController.updateStoreById)
 );
 router.put(
   "/api/central/stocks/:id",
-  validateData(updateStockIdSchema, "params"),
-  validateData(updateStockSchema, "body"),
-  controllerHandler(stockController.updateStockById)
+  validationsMiddleware(updateStockIdSchema, "params"),
+  validationsMiddleware(updateStockSchema, "body"),
+  controllersHandler(StockController.updateStockById)
 );
 router.put(
   "/api/central/stocks/history/:id",
-  validateData(updateHistoryIdSchema, "params"),
-  validateData(updateHistorySchema, "body"),
-  controllerHandler(historyController.updateHistoryById)
+  validationsMiddleware(updateHistoryIdSchema, "params"),
+  validationsMiddleware(updateHistorySchema, "body"),
+  controllersHandler(StockHistoryController.updateHistoryById)
 );
 
 router.delete(
   "/api/central/stores/:id",
-  validateData(deleteStoreSchema, "params"),
-  controllerHandler(storeController.deleteStoreById)
+  validationsMiddleware(deleteStoreSchema, "params"),
+  controllersHandler(StoreController.deleteStoreById)
 );
 router.delete(
   "/api/central/stocks/:id",
-  validateData(deleteStockSchema, "params"),
-  controllerHandler(stockController.deleteStockById)
+  validationsMiddleware(deleteStockSchema, "params"),
+  controllersHandler(StockController.deleteStockById)
 );
 router.delete(
   "/api/central/stocks/history/:id",
-  validateData(deleteHistorySchema, "params"),
-  controllerHandler(historyController.deleteHistoryById)
+  validationsMiddleware(deleteHistorySchema, "params"),
+  controllersHandler(StockHistoryController.deleteHistoryById)
 );
 
 // GET all transfers
 router.get(
   "/api/central/transfers",
-  validateData(getTransfersSchema, "query"),
-  controllerHandler(transfersController.getAllTransfers)
+  validationsMiddleware(getTransfersSchema, "query"),
+  controllersHandler(TransferController.getAllTransfers)
 );
 
 // GET a transfer by ID
 router.get(
   "/api/central/transfers/:id",
-  validateData(getTransferSchema, "params"),
-  controllerHandler(transfersController.getTransferById)
+  validationsMiddleware(getTransferSchema, "params"),
+  controllersHandler(TransferController.getTransferById)
 );
 
 // POST a new transfer
 router.post(
   "/api/central/transfers",
-  validateData(createTransferSchema, "body"),
-  controllerHandler(transfersController.createTransfer)
+  validationsMiddleware(createTransferSchema, "body"),
+  controllersHandler(TransferController.createTransfer)
 );
 
 // PUT update a transfer by ID
 router.put(
   "/api/central/transfers/:id",
-  validateData(updateTransferIdSchema, "params"),
-  validateData(updateTransferSchema, "body"),
-  controllerHandler(transfersController.updateTransferById)
+  validationsMiddleware(updateTransferIdSchema, "params"),
+  validationsMiddleware(updateTransferSchema, "body"),
+  controllersHandler(TransferController.updateTransferById)
 );
 
 // DELETE a transfer by ID
 router.delete(
   "/api/central/transfers/:id",
-  validateData(deleteTransferSchema, "params"),
-  controllerHandler(transfersController.deleteTransferById)
+  validationsMiddleware(deleteTransferSchema, "params"),
+  controllersHandler(TransferController.deleteTransferById)
 );
 
 // Dans le cas où aucune route ne correspond, on renvoie une erreur 404

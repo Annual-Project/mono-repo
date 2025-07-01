@@ -1,37 +1,37 @@
 import { z } from 'zod';
-import { safeString } from '../../../shared/validations/communs.js';
+import { safeString, safeStringEmail } from '../../../shared/validations/communs.js';
 
 export const signinSchema = z.object({
-  email: safeString.email(),
+  email: safeStringEmail(),
 });
 
 export const signinValidateSchema = z.object({
-  email: safeString.email(),
-  hashPassword: safeString,
-  challenge: safeString,
+  email: safeStringEmail(),
+  hashPassword: safeString(),
+  challenge: safeString(),
   proof: z.number().nonnegative(),
-  signature: safeString,
+  signature: safeString(),
 });
 
 export const signupSchema = z.object({
-  email: safeString.email(),
+  email: safeStringEmail(),
 });
 
 export const signupValidateSchema = z.object({
-  email: safeString.email(),
-  hashPassword: safeString,
-  challenge: safeString,
+  email: safeStringEmail(),
+  hashPassword: safeString(),
+  challenge: safeString(),
   proof: z.number().nonnegative(),
-  signature: safeString,
+  signature: safeString(),
 });
 
 export const changePasswordSchema = z.object({
-  email: safeString.email(),
-  hashOldPassword: safeString,
-  hashNewPassword: safeString,
-  hashNewConfirmPassword: safeString,
-  challenge: safeString,
-  newSalt: safeString,
+  email: safeStringEmail(),
+  hashOldPassword: safeString(),
+  hashNewPassword: safeString(),
+  hashNewConfirmPassword: safeString(),
+  challenge: safeString(),
+  newSalt: safeString(),
   proof: z.number().nonnegative(),
-  signature: safeString,
+  signature: safeString(),
 });

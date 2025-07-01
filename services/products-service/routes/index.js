@@ -1,7 +1,8 @@
 import { Router } from "express";
-import productsController from "../controllers/products.js";
-import categoriesController from "../controllers/categories.js";
-import validateData from "../middlewares/validations.js";
+
+import ProductController from "../controllers/ProductController.js";
+import CategoryController from "../controllers/CategoryController.js";
+
 import {
   createProductSchema,
   deleteProductSchema,
@@ -19,9 +20,10 @@ import {
   updateCategorySchema,
 } from "../validations/categories.js";
 
-import controllerHandler from "../handlers/controllers.js";
+import controllersHandler from "../handlers/controllersHandler.js";
 
-import authorization from "../middlewares/authorization.js";
+import authorizationMiddleware from "../middlewares/authorizationMiddleware.js";
+import validationsMiddleware from "../middlewares/validationsMiddleware.js";
 
 import NotFoundError from "../../products-service/exceptions/NotFoundError.js";
 
@@ -30,83 +32,83 @@ const router = Router();
 // GET all products
 router.get(
   "/api/v1/products",
-  authorization([], ["user"]),
-  validateData(getProductsSchema, "query"),
-  controllerHandler(productsController.getAllProducts)
+  authorizationMiddleware([], ["user"]),
+  validationsMiddleware(getProductsSchema, "query"),
+  controllersHandler(ProductController.getAllProducts)
 );
 
 // GET a product by ID
 router.get(
   "/api/v1/products/:id",
-  authorization([], ["user"]),
-  validateData(getProductSchema, "params"),
-  controllerHandler(productsController.getProductById)
+  authorizationMiddleware([], ["user"]),
+  validationsMiddleware(getProductSchema, "params"),
+  controllersHandler(ProductController.getProductById)
 );
 
 // POST a new product
 router.post(
   "/api/v1/products",
-  authorization([], ["admin"]),
-  validateData(createProductSchema, "body"),
-  controllerHandler(productsController.createProduct)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(createProductSchema, "body"),
+  controllersHandler(ProductController.createProduct)
 );
 
 // PUT update a product by ID
 router.put(
   "/api/v1/products",
-  authorization([], ["admin"]),
-  validateData(updateProductIdSchema, "params"),
-  validateData(updateProductSchema, "body"),
-  controllerHandler(productsController.updateProductById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(updateProductIdSchema, "params"),
+  validationsMiddleware(updateProductSchema, "body"),
+  controllersHandler(ProductController.updateProductById)
 );
 
 // DELETE a product by ID
 router.delete(
   "/api/v1/products/:id",
-  authorization([], ["superadmin"]),
-  validateData(deleteProductSchema, "params"),
-  controllerHandler(productsController.deleteProductById)
+  authorizationMiddleware([], ["superadmin"]),
+  validationsMiddleware(deleteProductSchema, "params"),
+  controllersHandler(ProductController.deleteProductById)
 );
 
 // GET all categories
 router.get(
   "/api/v1/categories",
-  authorization([], ["user"]),
-  validateData(getCategoriesSchema, "query"),
-  controllerHandler(categoriesController.getAllCategories)
+  authorizationMiddleware([], ["user"]),
+  validationsMiddleware(getCategoriesSchema, "query"),
+  controllersHandler(CategoryController.getAllCategories)
 );
 
 // GET a category by ID
 router.get(
   "/api/v1/categories/:id",
-  authorization([], ["user"]),
-  validateData(getCategorySchema, "params"),
-  controllerHandler(categoriesController.getCategoryById)
+  authorizationMiddleware([], ["user"]),
+  validationsMiddleware(getCategorySchema, "params"),
+  controllersHandler(CategoryController.getCategoryById)
 );
 
 // POST a new category
 router.post(
   "/api/v1/categories",
-  authorization([], ["admin"]),
-  validateData(createCategorySchema, "body"),
-  controllerHandler(categoriesController.createCategory)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(createCategorySchema, "body"),
+  controllersHandler(CategoryController.createCategory)
 );
 
 // PUT update a category by ID
 router.put(
   "/api/v1/categories",
-  authorization([], ["admin"]),
-  validateData(updateCategoryIdSchema, "params"),
-  validateData(updateCategorySchema, "body"),
-  controllerHandler(categoriesController.updateCategoryById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(updateCategoryIdSchema, "params"),
+  validationsMiddleware(updateCategorySchema, "body"),
+  controllersHandler(CategoryController.updateCategoryById)
 );
 
 // DELETE a category by ID
 router.delete(
   "/api/v1/categories/:id",
-  authorization([], ["superadmin"]),
-  validateData(deleteCategorySchema, "params"),
-  controllerHandler(categoriesController.deleteCategoryById)
+  authorizationMiddleware([], ["superadmin"]),
+  validationsMiddleware(deleteCategorySchema, "params"),
+  controllersHandler(CategoryController.deleteCategoryById)
 );
 
 // Dans le cas où aucune route ne correspond, on renvoie une erreur 404

@@ -5,8 +5,6 @@ import { getSocketServer } from "../config/sockerServer.js";
 import NotFoundError from '../exceptions/NotFoundError.js';
 import InternalServerError from '../exceptions/InternalServerError.js';
 
-// const { getSocketServer } = require('../socketServer');
-
 class NotificationController {
   static #io = null;
 
@@ -28,6 +26,10 @@ class NotificationController {
           }
         }
       });
+
+      if (!notification) {
+        throw new InternalServerError('Erreur lors de la création de la notification');
+      }
 
       // Envoyer la notification via WebSocket à tous les destinataires
       this.#io = getSocketServer();
@@ -97,6 +99,10 @@ class NotificationController {
         },
       });
 
+      if (!notification) {
+        throw new NotFoundError('Notification non trouvée ou déjà lue');
+      }
+
       res.json({
         success: true,
         data: notification,
@@ -129,9 +135,13 @@ class NotificationController {
   static async deleteNotification(req, res) {
       const { notificationId } = req.params;
 
-      await prisma.notification.delete({
+      const deletedNotification = await prisma.notification.delete({
         where: { id: notificationId },
       });
+
+      if (!deletedNotification) {
+        throw new NotFoundError('Notification non trouvée');
+      }
 
       res.json({
         success: true,

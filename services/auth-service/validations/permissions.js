@@ -1,4 +1,4 @@
-import {  z } from 'zod';
+import { z } from 'zod';
 
 export const getPermissionsSchema = z.object({
   limit: z.coerce.number().positive('Limit must be a positive number').default(20).optional(),

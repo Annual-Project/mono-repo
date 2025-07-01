@@ -1,4 +1,4 @@
-const socketHandler = (io) => {
+export default (io) => {
   io.on('connection', (socket) => {
     console.log(`Client connecté: ${socket.id}`);
 
@@ -62,5 +62,3 @@ const socketHandler = (io) => {
 
   return io;
 };
-
-export default socketHandler;

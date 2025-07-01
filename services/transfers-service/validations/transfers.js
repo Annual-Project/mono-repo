@@ -15,8 +15,8 @@ export const createTransferSchema = z.object({
   sourceStoreId: z.number().positive("sourceStoreId est requis"),
   destinationStoreId: z.number().positive("destinationStoreId est requis"),
   quantity: z.number().positive("quantity doit être un entier positif"),
-  status: safeString.min(1, "status est requis"),
-  comment: safeString.optional(),
+  status: safeString(1),
+  comment: safeString().optional(),
 });
 
 export const updateTransferIdSchema = z.object({
@@ -28,8 +28,8 @@ export const updateTransferSchema = z.object({
   sourceStoreId: z.number().positive("sourceStoreId est requis").optional(),
   destinationStoreId: z.number().positive("destinationStoreId est requis").optional(),
   quantity: z.number().positive("quantity doit être un entier positif").optional(),
-  status: safeString.min(1, "status est requis").optional(),
-  comment: safeString.optional(),
+  status: safeString(1).optional(),
+  comment: safeString().optional(),
 });
 
 export const deleteTransferSchema = z.object({

@@ -1,11 +1,13 @@
 import { Router } from "express";
 
-import stockController from "../controllers/stock.controller.js";
-import historyController from "../controllers/stockHistory.controller.js";
+import StockController from "../controllers/StockController.js";
+import StockHistoryController from "../controllers/StockHistoryController.js";
+import StoreController from "../controllers/StoreController.js";
 
-import controllerHandler from "../handlers/controllers.js";
-import validateData from "../middlewares/validations.js";
-import authorization from "../middlewares/authorization.js";
+import controllersHandler from "../handlers/controllersHandler.js";
+
+import validationsMiddleware from "../middlewares/validationsMiddleware.js";
+import authorizationMiddleware from "../middlewares/authorizationMiddleware.js";
 
 import {
   getStockSchema,
@@ -15,6 +17,7 @@ import {
   updateStockIdSchema,
   getStocksSchema,
 } from "../validations/stock.js";
+
 import {
   getHistorySchema,
   createHistorySchema,
@@ -24,7 +27,7 @@ import {
   updateHistoryIdSchema,
   getStocksHistorySchema,
 } from "../validations/stockHistory.js";
-import storeController from "../controllers/store.controller.js";
+
 import {
   createStoreSchema,
   deleteStoreSchema,
@@ -38,105 +41,105 @@ const router = Router();
 
 router.get(
   "/api/v1/stores",
-  authorization([], ["user"]),
-  validateData(getStoresSchema, "query"),
-  controllerHandler(storeController.getAllStores)
+  authorizationMiddleware([], ["user"]),
+  validationsMiddleware(getStoresSchema, "query"),
+  controllersHandler(StoreController.getAllStores)
 );
 router.get(
   "/api/v1/stores/:id",
-  authorization([], ["user"]),
-  validateData(getStoreSchema, "params"),
-  controllerHandler(storeController.getStoreById)
+  authorizationMiddleware([], ["user"]),
+  validationsMiddleware(getStoreSchema, "params"),
+  controllersHandler(StoreController.getStoreById)
 );
 router.get(
   "/api/v1/stocks",
-  authorization([], ["user"]),
-  validateData(getStocksSchema, "query"),
-  controllerHandler(stockController.getAllStocks)
+  authorizationMiddleware([], ["user"]),
+  validationsMiddleware(getStocksSchema, "query"),
+  controllersHandler(StockController.getAllStocks)
 );
 router.get(
   "/api/v1/stocks/history",
-  authorization([], ["admin"]),
-  validateData(getStocksHistorySchema, "query"),
-  controllerHandler(historyController.getAllHistory)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getStocksHistorySchema, "query"),
+  controllersHandler(StockHistoryController.getAllHistory)
 );
 router.get(
   "/api/v1/stocks/:id",
-  authorization([], ["user"]),
-  validateData(getStockSchema, "params"),
-  controllerHandler(stockController.getStockById)
+  authorizationMiddleware([], ["user"]),
+  validationsMiddleware(getStockSchema, "params"),
+  controllersHandler(StockController.getStockById)
 );
 router.get(
   "/api/v1/stocks/history/:id",
-  authorization([], ["admin"]),
-  validateData(getHistorySchema, "params"),
-  controllerHandler(historyController.getHistoryById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getHistorySchema, "params"),
+  controllersHandler(StockHistoryController.getHistoryById)
 );
 router.get(
   "/api/v1/stocks/:productId/history",
-  authorization([], ["admin"]),
-  validateData(getProductHistorySchema, "params"),
-  controllerHandler(historyController.getHistoryByProductId)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getProductHistorySchema, "params"),
+  controllersHandler(StockHistoryController.getHistoryByProductId)
 );
 
 router.post(
   "/api/v1/stores",
-  authorization([], ["admin"]),
-  validateData(createStoreSchema, "body"),
-  controllerHandler(storeController.createStore)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(createStoreSchema, "body"),
+  controllersHandler(StoreController.createStore)
 );
 router.post(
   "/api/v1/stocks",
-  authorization([], ["admin"]),
-  validateData(createStockSchema, "body"),
-  controllerHandler(stockController.createStock)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(createStockSchema, "body"),
+  controllersHandler(StockController.createStock)
 );
 router.post(
   "/api/v1/stocks/history",
-  authorization([], ["admin"]),
-  validateData(createHistorySchema, "body"),
-  controllerHandler(historyController.createHistory)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(createHistorySchema, "body"),
+  controllersHandler(StockHistoryController.createHistory)
 );
 
 router.put(
   "/api/v1/stores",
-  authorization([], ["admin"]),
-  validateData(updateStoreIdSchema, "params"),
-  validateData(updateStoreSchema, "body"),
-  controllerHandler(storeController.updateStoreById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(updateStoreIdSchema, "params"),
+  validationsMiddleware(updateStoreSchema, "body"),
+  controllersHandler(StoreController.updateStoreById)
 );
 router.put(
   "/api/v1/stocks",
-  authorization([], ["admin"]),
-  validateData(updateStockIdSchema, "params"),
-  validateData(updateStockSchema, "body"),
-  controllerHandler(stockController.updateStockById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(updateStockIdSchema, "params"),
+  validationsMiddleware(updateStockSchema, "body"),
+  controllersHandler(StockController.updateStockById)
 );
 router.put(
   "/api/v1/stocks/history",
-  authorization([], ["admin"]),
-  validateData(updateHistoryIdSchema, "params"),
-  validateData(updateHistorySchema, "body"),
-  controllerHandler(historyController.updateHistoryById)
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(updateHistoryIdSchema, "params"),
+  validationsMiddleware(updateHistorySchema, "body"),
+  controllersHandler(StockHistoryController.updateHistoryById)
 );
 
 router.delete(
   "/api/v1/stores/:id",
-  authorization([], ["superadmin"]),
-  validateData(deleteStoreSchema, "params"),
-  controllerHandler(storeController.deleteStoreById)
+  authorizationMiddleware([], ["superadmin"]),
+  validationsMiddleware(deleteStoreSchema, "params"),
+  controllersHandler(StoreController.deleteStoreById)
 );
 router.delete(
   "/api/v1/stocks/:id",
-  authorization([], ["superadmin"]),
-  validateData(deleteStockSchema, "params"),
-  controllerHandler(stockController.deleteStockById)
+  authorizationMiddleware([], ["superadmin"]),
+  validationsMiddleware(deleteStockSchema, "params"),
+  controllersHandler(StockController.deleteStockById)
 );
 router.delete(
   "/api/v1/stocks/history/:id",
-  authorization([], ["superadmin"]),
-  validateData(deleteHistorySchema, "params"),
-  controllerHandler(historyController.deleteHistoryById)
+  authorizationMiddleware([], ["superadmin"]),
+  validationsMiddleware(deleteHistorySchema, "params"),
+  controllersHandler(StockHistoryController.deleteHistoryById)
 );
 
 export default router;

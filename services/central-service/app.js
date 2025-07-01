@@ -2,7 +2,7 @@ import express from "express";
 
 import router from "./routes/index.js";
 
-import errorMiddleware from "./middlewares/errors.js";
+import errorMiddleware from "./middlewares/errorsMiddleware.js";
 
 const app = express();
 

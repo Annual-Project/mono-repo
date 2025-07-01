@@ -1,9 +1,9 @@
 import prisma from '../config/db.js'
 import NotFoundError from '../exceptions/NotFoundError.js';
 
-const categoriesController = {
+class CategoryController {
 
-    async getAllCategories(req, res) {
+    static async getAllCategories(req, res) {
         const { limit, offset } = req.query;
 
         const categories = await prisma.category.findMany({
@@ -12,9 +12,9 @@ const categoriesController = {
         });
 
             res.status(200).json(categories);
-    },
+    }
 
-    async getCategoryById(req, res) {
+    static async getCategoryById(req, res) {
         const { id } = req.params;
             const category = await prisma.category.findUnique({
                 where: { id: parseInt(id) }
@@ -25,9 +25,9 @@ const categoriesController = {
             }
 
             res.status(200).json(category);
-    },
+    }
     
-    async createCategory(req, res) {
+    static async createCategory(req, res) {
         const { name, description } = req.body;
 
         const newCategory = await prisma.category.create({
@@ -41,9 +41,9 @@ const categoriesController = {
           message: 'Category created successfully',
           data: newCategory,
         });
-    },
+    }
 
-    async updateCategoryById(req, res) {
+    static async updateCategoryById(req, res) {
         const { id, name, description } = req.body;
 
         const updatedCategory = await prisma.category.update({
@@ -58,9 +58,9 @@ const categoriesController = {
             message: 'Category updated successfully',
             data: updatedCategory,
         });
-    },
+    }
 
-    async deleteCategoryById(req, res) {
+    static async deleteCategoryById(req, res) {
         const { id } = req.params;
 
         const categoryExists = await prisma.category.findUnique({
@@ -79,8 +79,8 @@ const categoriesController = {
           message: `Category with ID ${id} has been successfully deleted.`,
           data: deletedCategory,
         });
-    },
+    }
 
 };
 
-export default categoriesController;
+export default CategoryController;
