@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+export const getTransfersSchema = z.object({
+  limit: z.coerce.number().positive("La limite doit être un nombre positif").default(20).optional(),
+  offset: z.coerce.number().nonnegative("Le décalage doit être un nombre positif ou zéro").default(0).optional(),
+});
+
 export const getTransferSchema = z.object({
   id: z.coerce.number().positive("L'id doit être un nombre positif"),
 });
@@ -13,8 +18,11 @@ export const createTransferSchema = z.object({
   comment: z.string().optional(),
 });
 
+export const updateTransferIdSchema = z.object({
+  id: z.coerce.number().positive("L'id doit être un nombre positif"),
+});
+
 export const updateTransferSchema = z.object({
-  id: z.number().positive("L'id est requis pour mettre à jour le transfert"),
   productId: z.number().positive("productId est requis").optional(),
   sourceStoreId: z.number().positive("sourceStoreId est requis").optional(),
   destinationStoreId: z.number().positive("destinationStoreId est requis").optional(),

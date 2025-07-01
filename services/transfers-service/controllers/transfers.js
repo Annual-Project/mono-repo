@@ -4,8 +4,13 @@ import BadRequestError from '../exceptions/BadRequestError.js';
 
 const transfersController = {
 
-  async getAllTransfers(_, res) {
-    const transfers = await prisma.transfer.findMany();
+  async getAllTransfers(req, res) {
+    const { limit, offset } = req.query;
+
+    const transfers = await prisma.transfer.findMany({
+      take: limit,
+      skip: offset,
+    });
     res.status(200).json(transfers);
   },
 
