@@ -1,0 +1,46 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "debian-openssl-1.1.x"]
+  output        = "../generated"
+}
+
+model Notification {
+  id                  Int                   @id @default(autoincrement())
+  title               String
+  message             String
+  type                NotificationType
+  data                Json? // Pour des données additionnelles si besoin
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  UserHasNotification UserHasNotification[]
+
+  @@map("notification")
+}
+
+model UserHasNotification {
+  id             String   @id @default(cuid())
+  userId         Int      @map("user_id")
+  notificationId Int      @map("notification_id")
+  read           Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  notification Notification @relation(fields: [notificationId], references: [id])
+
+  @@map("user_has_notification")
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+  ORDER
+  PRODUCT
+  USER
+}
