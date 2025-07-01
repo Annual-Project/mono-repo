@@ -5,8 +5,13 @@ import ForbiddenError from '../exceptions/ForbiddenError.js';
 import NotFoundError from '../exceptions/NotFoundError.js';
 
 class PermissionController {
-  static async getPermissions(_, res) {
-    const permissions = await prisma.permission.findMany();
+  static async getPermissions(req, res) {
+    const { limit, offset } = req.query;
+
+    const permissions = await prisma.permission.findMany({
+      take: limit,
+      skip: offset,
+    });
 
     return res.status(200).json(permissions);
   }

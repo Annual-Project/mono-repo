@@ -1,5 +1,10 @@
 import {  z } from 'zod';
 
+export const getUsersSchema = z.object({
+  limit: z.coerce.number().positive('Limit must be a positive number').default(20).optional(),
+  offset: z.coerce.number().nonnegative('Offset must be a non-negative number').default(0).optional(),
+});
+
 export const getUserByIdSchema = z.object({
   id: z.coerce.number().int().positive('ID must be a positive integer'),
 });

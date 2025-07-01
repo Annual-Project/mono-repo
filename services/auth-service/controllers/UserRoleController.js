@@ -5,7 +5,7 @@ import BadRequestError from '../exceptions/BadRequestError.js';
 import NotFoundError from '../exceptions/NotFoundError.js';
 
 class UserRoleController {
-  static async getUserRolesById(req, res) {
+  static async getUserRoles(req, res) {
     const { userId } = req.params;
 
     // Recuperer la liste des roles de l'utilisateur si il est isActive

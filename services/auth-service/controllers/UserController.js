@@ -1,17 +1,19 @@
 import prisma from "../config/db.js";
 
-import AuthProvider from "../providers/auth.js";
-
 import BadRequestError from '../exceptions/BadRequestError.js';
 import NotFoundError from '../exceptions/NotFoundError.js';
 
 class UserController {
 
-  static async getUsers(_, res) {
+  static async getUsers(req, res) {
+    const { limit, offset } = req.query;
+
     const users = await prisma.user.findMany({
       where: {
         isActive: true,
       },
+      take: limit,
+      skip: offset,
     });
 
     return res.status(200).json(users);

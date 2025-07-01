@@ -1,5 +1,5 @@
 import prisma from "../config/db.js";
-import AuthProvider from '../providers/auth.js';
+import AuthService from "../../../shared/services/AuthService.js";
 
 import BadRequestError from '../exceptions/BadRequestError.js';
 import ForbiddenError from '../exceptions/ForbiddenError.js';
@@ -25,7 +25,7 @@ const authController = {
       throw new BadRequestError('Email already in use');
     }
 
-    const salt = AuthProvider.generateSalt(16, 'hex');
+    const salt = AuthService.generateSalt(16, 'hex');
 
     const user = await prisma.user.create({
       data: {
@@ -40,7 +40,7 @@ const authController = {
     }
 
     // Generation du challenge avec une duree de 5 minutes
-    const { challenge, signature } = AuthProvider.generateSignedChallenge();
+    const { challenge, signature } = AuthService.generateSignedChallenge();
 
     if (!challenge || !signature) {
       throw new InternalServerError('Error generating challenge during signup');
@@ -72,20 +72,20 @@ const authController = {
     }
 
     // Verification du challenge avec la signature
-    const signedChallenge = AuthProvider.verifySignedChallenge(body.challenge, body.signature);
+    const signedChallenge = AuthService.verifySignedChallenge(body.challenge, body.signature);
 
     if (!signedChallenge) {
       throw new ForbiddenError('Invalid challenge or signature');
     }
 
     // Verification de la preuve de travail (proof)
-    const proofVerify = AuthProvider.verifyProofOfChallenge(body.challenge, body.proof);
+    const proofVerify = AuthService.verifyProofOfChallenge(body.challenge, body.proof);
 
     if (!proofVerify) {
       throw new ForbiddenError('Invalid proof of challenge');
     }
 
-    const { accessToken, refreshToken } = AuthProvider.generateJWTTokens({
+    const { accessToken, refreshToken } = AuthService.generateJWTTokens({
       sub: userFound.id,
       fingerprint: {
         ip: req.ip,
@@ -122,9 +122,9 @@ const authController = {
     //! ======================================
     const userPermissions = await prisma.permission.findMany({
       where: {
-        UserHasPermission: {
+        users: {
           some: {
-            userId: id,
+            userId: userFound.id,
           },
         },
       },
@@ -137,7 +137,7 @@ const authController = {
       where: {
         users: {
           some: {
-            userId: id,
+            userId: userFound.id,
           },
         },
       },
@@ -191,7 +191,7 @@ const authController = {
     }
 
     // Generation du challenge avec une duree de 5 minutes
-    const { challenge, signature } = AuthProvider.generateSignedChallenge();
+    const { challenge, signature } = AuthService.generateSignedChallenge();
 
     if (!challenge || !signature) {
       throw new InternalServerError('Error generating challenge during signin');
@@ -233,20 +233,20 @@ const authController = {
     }
 
     // Verification du challenge avec la signature
-    const signedChallenge = AuthProvider.verifySignedChallenge(body.challenge, body.signature);
+    const signedChallenge = AuthService.verifySignedChallenge(body.challenge, body.signature);
 
     if (!signedChallenge) {
       throw new ForbiddenError('Invalid challenge or signature');
     }
 
     // Verification de la preuve de travail (proof)
-    const proofVerify = AuthProvider.verifyProofOfChallenge(body.challenge, body.proof);
+    const proofVerify = AuthService.verifyProofOfChallenge(body.challenge, body.proof);
 
     if (!proofVerify) {
       throw new ForbiddenError('Invalid proof of challenge');
     }
 
-    const { accessToken, refreshToken } = AuthProvider.generateJWTTokens({
+    const { accessToken, refreshToken } = AuthService.generateJWTTokens({
       sub: id,
       fingerprint: {
         ip: req.ip,
@@ -271,7 +271,7 @@ const authController = {
     //! ======================================
     const userPermissions = await prisma.permission.findMany({
       where: {
-        UserHasPermission: {
+        users: {
           some: {
             userId: id,
           },
@@ -358,7 +358,7 @@ const authController = {
     }
 
     const { userId } = req.auth;
-    const { accessToken, refreshToken } = AuthProvider.generateJWTTokens({
+    const { accessToken, refreshToken } = AuthService.generateJWTTokens({
       sub: userId,
       fingerprint: {
         ip: req.ip,
@@ -421,20 +421,20 @@ const authController = {
     }
 
     // Verification du challenge avec la signature
-    const signedChallenge = AuthProvider.verifySignedChallenge(challenge, signature);
+    const signedChallenge = AuthService.verifySignedChallenge(challenge, signature);
 
     if (!signedChallenge) {
       throw new ForbiddenError('Invalid challenge or signature');
     }
 
     // Verification de la preuve de travail (proof)
-    const proofVerify = AuthProvider.verifyProofOfChallenge(challenge, proof);
+    const proofVerify = AuthService.verifyProofOfChallenge(challenge, proof);
 
     if (!proofVerify) {
       throw new ForbiddenError('Invalid proof of challenge');
     }
 
-    const { accessToken, refreshToken } = AuthProvider.generateJWTTokens({
+    const { accessToken, refreshToken } = AuthService.generateJWTTokens({
       sub: user.id,
       fingerprint: {
         ip: req.ip,

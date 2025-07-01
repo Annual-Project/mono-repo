@@ -1,10 +1,4 @@
-import AuthProvider from "../providers/auth.js";
-import prisma from "../config/db.js";
-
-import UnauthorizedError from "../exceptions/UnauthorizedError.js";
-import InvalidTokenError from "../exceptions/InvalidTokenError.js";
-import NotFoundError from "../exceptions/NotFoundError.js";
-import ForbiddenError from "../exceptions/ForbiddenError.js";
+import AuthService from "../../../shared/services/AuthService.js";
 
 /**
  * MW qui va vérifier si l'utilisateur possède un token d'accès valide et non expiré
@@ -13,55 +7,34 @@ import ForbiddenError from "../exceptions/ForbiddenError.js";
  * @param {NextFunction} next - Fonction pour passer au prochain MW
  */
 export default async (req, _, next) => {
-
   const { accessTokenM, refreshTokenM } = req.cookies;
   req.auth = null;
 
-  if (!accessTokenM || !refreshTokenM)
-    return next(
-      new UnauthorizedError('Access and refresh tokens are required'),
-    );
+  if (!accessTokenM || !refreshTokenM) {
+    return next(); // Laisser passer sans authentification
+  }
 
-  const goodAccessToken = AuthProvider.verifyAccessToken(accessTokenM, {
+  const goodAccessToken = AuthService.verifyAccessToken(accessTokenM, {
     ip: req.ip,
     userAgent: req.headers['user-agent'],
   });
 
-  if (!goodAccessToken)
-    return next(
-      new InvalidTokenError('Access'),
-    );
+  if (!goodAccessToken) {
+    return next(); // Laisser passer sans authentification
+  }
 
-  const goodRefreshToken = AuthProvider.verifyRefreshToken(refreshTokenM, {
+  const goodRefreshToken = AuthService.verifyRefreshToken(refreshTokenM, {
     ip: req.ip,
     userAgent: req.headers['user-agent'],
   });
 
-  if (!goodRefreshToken)
-    return next(
-      new InvalidTokenError('Refresh'),
-    );
-
-  const user = await prisma.user.findUnique({
-    where: {
-      id: goodAccessToken.sub,
-    },
-  });
-
-  if (!user)
-    return next(
-      new NotFoundError('User not found'),
-    );
-
-  if (user.accessToken !== accessTokenM || user.refreshToken !== refreshTokenM)
-    return next(
-      new ForbiddenError('Token mismatch with server records'),
-    );
+  if (!goodRefreshToken) {
+    return next(); // Laisser passer sans authentification
+  }
 
   req.auth = {
     userId: goodAccessToken.sub,
   };
 
   return next();
-
-}
+};

@@ -5,8 +5,13 @@ import ForbiddenError from '../exceptions/ForbiddenError.js';
 import NotFoundError from '../exceptions/NotFoundError.js';
 
 class RoleController {
-  static async getRoles(_, res) {
-    const roles = await prisma.role.findMany();
+  static async getRoles(req, res) {
+    const { limit, offset } = req.query;
+
+    const roles = await prisma.role.findMany({
+      take: limit,
+      skip: offset,
+    });
 
     return res.status(200).json(roles);
   }
