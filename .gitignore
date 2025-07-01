@@ -2,24 +2,40 @@ node_modules
 
 /shared/.env
 
-# products service
 # Retirer node_modules, dist, generated directories et .env files
+
+# products service
 /services/products-service/node_modules
 /services/products-service/dist
 /services/products-service/generated
 /services/products-service/.env
 
+# stocks service
 /services/stocks-service/node_modules
 /services/stocks-service/dist
 /services/stocks-service/generated
 /services/stocks-service/.env
 
+# transfers service
 /services/transfers-service/node_modules
 /services/transfers-service/dist
 /services/transfers-service/generated
 /services/transfers-service/.env
 
+# auth services
 /services/auth-service/node_modules
 /services/auth-service/dist
 /services/auth-service/generated
 /services/auth-service/.env
+
+# central service
+/services/central-service/node_modules
+/services/central-service/dist
+/services/central-service/generated
+/services/central-service/.env
+
+# notifications service
+/services/notifications-service/node_modules
+/services/notifications-service/dist
+/services/notifications-service/generated
+/services/notifications-service/.env
