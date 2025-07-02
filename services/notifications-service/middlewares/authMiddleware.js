@@ -1,4 +1,4 @@
-import AuthService from "../../../shared/services/AuthService.js";
+import AuthUtils from "../../../shared/utils/AuthUtils.js";
 
 /**
  * MW qui va vérifier si l'utilisateur possède un token d'accès valide et non expiré
@@ -14,7 +14,7 @@ export default async (req, _, next) => {
     return next(); // Laisser passer sans authentification
   }
 
-  const goodAccessToken = AuthService.verifyAccessToken(accessTokenM, {
+  const goodAccessToken = AuthUtils.verifyAccessToken(accessTokenM, {
     ip: req.ip,
     userAgent: req.headers['user-agent'],
   });
@@ -23,7 +23,7 @@ export default async (req, _, next) => {
     return next(); // Laisser passer sans authentification
   }
 
-  const goodRefreshToken = AuthService.verifyRefreshToken(refreshTokenM, {
+  const goodRefreshToken = AuthUtils.verifyRefreshToken(refreshTokenM, {
     ip: req.ip,
     userAgent: req.headers['user-agent'],
   });

@@ -1,86 +1,42 @@
-import prisma from '../config/db.js'
-import NotFoundError from '../exceptions/NotFoundError.js';
+import CategoryService from '../services/CategoryService.js';
 
 class CategoryController {
+  static async getAllCategories(req, res) {
+    const { limit, offset } = req.query;
+    const categories = await CategoryService.getAllCategories(limit, offset);
+    res.status(200).json(categories);
+  }
 
-    static async getAllCategories(req, res) {
-        const { limit, offset } = req.query;
+  static async getCategoryById(req, res) {
+    const { id } = req.params;
+    const category = await CategoryService.getCategoryById(id);
+    res.status(200).json(category);
+  }
 
-        const categories = await prisma.category.findMany({
-            take: limit,
-            skip: offset,
-        });
+  static async createCategory(req, res) {
+    const newCategory = await CategoryService.createCategory(req.body);
+    res.status(201).json({
+      message: 'Category created successfully',
+      data: newCategory,
+    });
+  }
 
-            res.status(200).json(categories);
-    }
+  static async updateCategoryById(req, res) {
+    const updatedCategory = await CategoryService.updateCategoryById(req.body);
+    res.status(200).json({
+      message: 'Category updated successfully',
+      data: updatedCategory,
+    });
+  }
 
-    static async getCategoryById(req, res) {
-        const { id } = req.params;
-            const category = await prisma.category.findUnique({
-                where: { id: parseInt(id) }
-            });
-
-            if (!category) {
-                throw new NotFoundError('Category not found');
-            }
-
-            res.status(200).json(category);
-    }
-    
-    static async createCategory(req, res) {
-        const { name, description } = req.body;
-
-        const newCategory = await prisma.category.create({
-            data: {
-                name,
-                description, 
-            }
-        });
-
-        res.status(201).json({
-          message: 'Category created successfully',
-          data: newCategory,
-        });
-    }
-
-    static async updateCategoryById(req, res) {
-        const { id, name, description } = req.body;
-
-        const updatedCategory = await prisma.category.update({
-            where: { id },
-            data: {
-                name,
-                description,
-            }
-        });
-
-        res.status(200).json({
-            message: 'Category updated successfully',
-            data: updatedCategory,
-        });
-    }
-
-    static async deleteCategoryById(req, res) {
-        const { id } = req.params;
-
-        const categoryExists = await prisma.category.findUnique({
-          where: { id },
-        });
-
-        if (!categoryExists) {
-            throw new NotFoundError('Category not found');
-        }
-
-        const deletedCategory = await prisma.category.delete({
-            where: { id }
-        });
-
-        res.status(200).json({
-          message: `Category with ID ${id} has been successfully deleted.`,
-          data: deletedCategory,
-        });
-    }
-
-};
+  static async deleteCategoryById(req, res) {
+    const { id } = req.params;
+    const deletedCategory = await CategoryService.deleteCategoryById(id);
+    res.status(200).json({
+      message: `Category with ID ${id} has been successfully deleted.`,
+      data: deletedCategory,
+    });
+  }
+}
 
 export default CategoryController;
