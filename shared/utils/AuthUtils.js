@@ -1,15 +1,15 @@
 /**
  * Module d'authentification
- * @module authService
+ * @module authUtils
  */
 
 import crypto from 'node:crypto';
 
 /**
- * Auth service -
+ * Auth utilitaires -
  * Permet de fournir les méthodes liées à l'authentification.
  */
-export default class AuthService {
+class AuthUtils {
 
   /**
    * Permet de vérifier un token JWT de manière globale sans le Bearer.
@@ -18,7 +18,7 @@ export default class AuthService {
    * @returns {Object} Le corps du JWT parsé en un objet JavaScript
    * @function
    * @name #verifyJWTToken
-   * @memberof AuthService
+   * @memberof AuthUtils
    * @static
    * @private
    */
@@ -53,7 +53,7 @@ export default class AuthService {
    * @returns {string} Le token JWT en chaîne de caractères (hadear.payload.signature)
    * @function
    * @name #createJWTToken
-   * @memberof AuthService
+   * @memberof AuthUtils
    * @static
    * @private
    */
@@ -83,7 +83,7 @@ export default class AuthService {
    * @returns {Object} Un objet JavaScript contant le challenge et la signautre en chaîne de caractères.
    * @function
    * @name #createSignedChallenge
-   * @memberof AuthService
+   * @memberof AuthUtils
    * @static
    * @private
    */
@@ -113,7 +113,7 @@ export default class AuthService {
    * @returns {boolean} Un objet JavaScript contant le challenge et la signautre en chaîne de caractères.
    * @function
    * @name #fingerprintTokenVerify
-   * @memberof AuthService
+   * @memberof AuthUtils
    * @static
    * @private
    */
@@ -128,7 +128,7 @@ export default class AuthService {
    * @returns {string} Le hash encodé en chaîne de caractères
    * @function
    * @name generateHashSHA256
-   * @memberof AuthService
+   * @memberof AuthUtils
    * @static
    */
   static generateHashSHA256(message = '', salt = '', encoding = 'hex') {
@@ -142,7 +142,7 @@ export default class AuthService {
    * @returns {string} Le hash encodé en chaîne de caractères
    * @function
    * @name generateHmacSHA256
-   * @memberof AuthService
+   * @memberof AuthUtils
    * @static
    */ 
   static generateHmacSHA256(message = '', encoding = 'hex') {
@@ -156,7 +156,7 @@ export default class AuthService {
    * @returns {string} Le salt encodé en chaîne de caractères
    * @function
    * @name generateSalt
-   * @memberof AuthService
+   * @memberof AuthUtils
    * @static
    */ 
   static generateSalt(size = 16, encoding = 'hex') {
@@ -171,7 +171,7 @@ export default class AuthService {
    * @returns {string} Le token accesseur et rafraîchisseur
    * @function
    * @name generateJWTTokens
-   * @memberof AuthService
+   * @memberof AuthUtils
    * @static
    */ 
   static generateJWTTokens(claims = {}) {
@@ -201,7 +201,7 @@ export default class AuthService {
    * @returns {boolean} True ou False en fonction de la vérification
    * @function
    * @name verifyAccessToken
-   * @memberof AuthService
+   * @memberof AuthUtils
    * @static
    */ 
   static verifyAccessToken(token = '', fingerprint = {}) {
@@ -229,7 +229,7 @@ export default class AuthService {
    * @returns {boolean} True ou False en fonction de la vérification
    * @function
    * @name verifyRefreshToken
-   * @memberof AuthService
+   * @memberof AuthUtils
    * @static
    */
   static verifyRefreshToken(token = '', fingerprint = {}) {
@@ -252,7 +252,7 @@ export default class AuthService {
    * @returns {Object} Un objet JavaScript contant le challenge et la signautre en chaîne de caractères.
    * @function
    * @name generateSignedChallenge
-   * @memberof AuthService
+   * @memberof AuthUtils
    * @static
    */
   static generateSignedChallenge() {
@@ -269,7 +269,7 @@ export default class AuthService {
    * @returns {boolean} True ou False en fonction de la vérification.
    * @function
    * @name verifyProofOfChallenge
-   * @memberof AuthService
+   * @memberof AuthUtils
    * @static
    */
   static verifyProofOfChallenge(challenge = '', proof = 0) {
@@ -300,7 +300,7 @@ export default class AuthService {
    * @returns {boolean} True ou False en fonction de la vérification.
    * @function
    * @name verifySignedChallenge
-   * @memberof AuthService
+   * @memberof AuthUtils
    * @static
    */
   static verifySignedChallenge(challenge = '', signature = '') {
@@ -317,3 +317,5 @@ export default class AuthService {
   }
 
 }
+
+export default AuthUtils;
