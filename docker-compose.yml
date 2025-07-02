@@ -175,6 +175,19 @@ services:
     networks:
       - micro-net
 
+  # rabbitmq
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"  # RabbitMQ Management UI
+      - "5672:5672"    # RabbitMQ AMQP protocol
+    environment:
+      RABBITMQ_DEFAULT_USER: rbmq_user
+      RABBITMQ_DEFAULT_PASS: rbmq_pass
+    networks:
+      - micro-net
+
 networks:
   micro-net:
     driver: bridge
