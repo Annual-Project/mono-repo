@@ -14,10 +14,11 @@ export async function connectToRabbitMQ() {
     return connection;
   } catch (error) {
     console.error('Failed to connect to RabbitMQ:', error);
+    throw error; // Propagation de l'erreur pour que l'appelant puisse la gérer
   }
 }
 
-function getChannel() {
+export function getChannel() {
   return channel;
 }
 
@@ -34,7 +35,7 @@ async function assertQueue(queue) {
 // Le message est sérialisé en une chaîne de caractères JSON
 // Et ensuite converti en Buffer pour l'envoi
 // Note: Un Buffer est un objet de type binaire qui peut être envoyé sur le réseau
-async function sendToQueue(queue, message) {
+export async function sendToQueue(queue, message) {
   await assertQueue(queue);
   channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
 }
@@ -43,7 +44,7 @@ async function sendToQueue(queue, message) {
  * @param {string} queue - Nom de la queue
  * @param {Function} handler - Fonction de traitement des messages
  */
-async function consume(queue, handler) {
+export async function consume(queue, handler) {
   await assertQueue(queue);
 
   channel.consume(queue, async (msg) => {
@@ -60,10 +61,3 @@ async function consume(queue, handler) {
 
   });
 }
-
-export default {
-  connectToRabbitMQ,
-  getChannel,
-  sendToQueue,
-  consume,
-};
