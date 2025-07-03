@@ -9,33 +9,39 @@ node_modules
 /services/products-service/dist
 /services/products-service/generated
 /services/products-service/.env
+/services/products-service/prisma/migrations
 
 # stocks service
 /services/stocks-service/node_modules
 /services/stocks-service/dist
 /services/stocks-service/generated
 /services/stocks-service/.env
+/services/stocks-service/prisma/migrations
 
 # transfers service
 /services/transfers-service/node_modules
 /services/transfers-service/dist
 /services/transfers-service/generated
 /services/transfers-service/.env
+/services/transfers-service/prisma/migrations
 
 # auth services
 /services/auth-service/node_modules
 /services/auth-service/dist
 /services/auth-service/generated
 /services/auth-service/.env
+/services/auth-service/prisma/migrations
 
 # central service
 /services/central-service/node_modules
 /services/central-service/dist
 /services/central-service/generated
 /services/central-service/.env
+/services/central-service/prisma/migrations
 
 # notifications service
 /services/notifications-service/node_modules
 /services/notifications-service/dist
 /services/notifications-service/generated
 /services/notifications-service/.env
+/services/notifications-service/prisma/migrations

@@ -1,7 +1,23 @@
-node_modules
-**/node_modules
+# Le fichier sera utile seulement en production (quand le volume sera supprimé du docker-compose)
+
 npm-debug.log
 .git
 dist
+
+# Ignore node_modules directories
+node_modules
+**/node_modules/
+services/**/node_modules/
+
+# Ignore generated directories
+generated
+**/generated/
+services/**/generated
+
+# Ignore migrations directories
+prisma/migrations
+**/prisma/migrations/
+services/**/prisma/migrations/
+
 # **/.env
 # .env
