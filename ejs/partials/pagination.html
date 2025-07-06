@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagination Component</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Styles de pagination à ajouter à votre CSS existant */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .pagination-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.5rem;
+            height: 2.5rem;
+            padding: 0.5rem;
+            border: 2px solid hsl(214.3 31.8% 91.4%);
+            background: white;
+            color: hsl(222.2 84% 4.9%);
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .pagination-btn:hover {
+            border-color: hsl(222.2 47.4% 11.2%);
+            background: hsl(210 40% 96%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .pagination-btn.active {
+            background: hsl(222.2 47.4% 11.2%);
+            color: white;
+            border-color: hsl(222.2 47.4% 11.2%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(31, 41, 55, 0.2);
+        }
+
+        .pagination-btn.active:hover {
+            background: hsl(222.2 47.4% 20%);
+            border-color: hsl(222.2 47.4% 20%);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .pagination-btn.nav-btn {
+            min-width: 3rem;
+            font-weight: 600;
+        }
+
+        .pagination-ellipsis {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.5rem;
+            height: 2.5rem;
+            color: hsl(215.4 16.3% 46.9%);
+            font-weight: 500;
+        }
+
+        .pagination-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            color: hsl(215.4 16.3% 46.9%);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive design */
+        @media (max-width: 640px) {
+            .pagination {
+                gap: 0.25rem;
+            }
+            
+            .pagination-btn {
+                min-width: 2rem;
+                height: 2rem;
+                font-size: 0.75rem;
+            }
+            
+            .pagination-btn.nav-btn {
+                min-width: 2.5rem;
+            }
+            
+            .pagination-ellipsis {
+                min-width: 2rem;
+                height: 2rem;
+            }
+            
+            /* Masquer certains numéros sur mobile */
+            .pagination-btn.hide-mobile {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body style="padding: 2rem; background: #f8fafc;">
+
+    <!-- Exemple de pagination - Version complète -->
+    <div class="pagination">
+        <button class="pagination-btn nav-btn" disabled>
+            <i data-lucide="chevron-left" style="width: 1rem; height: 1rem;"></i>
+            Précédent
+        </button>
+        
+        <button class="pagination-btn active">1</button>
+        <button class="pagination-btn">2</button>
+        <button class="pagination-btn">3</button>
+        <button class="pagination-btn hide-mobile">4</button>
+        <button class="pagination-btn hide-mobile">5</button>
+        
+        <span class="pagination-ellipsis">...</span>
+        
+        <button class="pagination-btn hide-mobile">8</button>
+        <button class="pagination-btn">9</button>
+        <button class="pagination-btn">10</button>
+        
+        <button class="pagination-btn nav-btn">
+            Suivant
+            <i data-lucide="chevron-right" style="width: 1rem; height: 1rem; margin-left: 0.25rem;"></i>
+        </button>
+    </div>
+
+    <!-- Informations de pagination -->
+    <div class="pagination-info">
+        Affichage de 1 à 6 sur 58 magasins
+    </div>
+
+    <hr style="margin: 3rem 0; border: 1px solid #e5e7eb;">
+
+    <!-- Exemple de pagination - Version simple (pour moins de pages) -->
+    <div class="pagination">
+        <button class="pagination-btn nav-btn" disabled>
+            <i data-lucide="chevron-left" style="width: 1rem; height: 1rem;"></i>
+            Précédent
+        </button>
+        
+        <button class="pagination-btn active">1</button>
+        <button class="pagination-btn">2</button>
+        <button class="pagination-btn">3</button>
+        <button class="pagination-btn">4</button>
+        
+        <button class="pagination-btn nav-btn">
+            Suivant
+            <i data-lucide="chevron-right" style="width: 1rem; height: 1rem; margin-left: 0.25rem;"></i>
+        </button>
+    </div>
+
+    <div class="pagination-info">
+        Affichage de 1 à 6 sur 24 magasins
+    </div>
+
+    <script>
+        // Initialiser les icônes Lucide
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    </script>
+
+</body>
+</html>

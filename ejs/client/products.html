@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produits - StoreManager Central</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(214.3 31.8% 91.4%)",
+                        input: "hsl(214.3 31.8% 91.4%)",
+                        ring: "hsl(222.2 84% 4.9%)",
+                        background: "hsl(0 0% 100%)",
+                        foreground: "hsl(222.2 84% 4.9%)",
+                        primary: {
+                            DEFAULT: "hsl(222.2 47.4% 11.2%)",
+                            foreground: "hsl(210 40% 98%)",
+                        },
+                        secondary: {
+                            DEFAULT: "hsl(210 40% 96%)",
+                            foreground: "hsl(222.2 84% 4.9%)",
+                        },
+                        destructive: {
+                            DEFAULT: "hsl(0 84.2% 60.2%)",
+                            foreground: "hsl(210 40% 98%)",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(210 40% 96%)",
+                            foreground: "hsl(215.4 16.3% 46.9%)",
+                        },
+                        accent: {
+                            DEFAULT: "hsl(210 40% 96%)",
+                            foreground: "hsl(222.2 84% 4.9%)",
+                        },
+                        popover: {
+                            DEFAULT: "hsl(0 0% 100%)",
+                            foreground: "hsl(222.2 84% 4.9%)",
+                        },
+                        card: {
+                            DEFAULT: "hsl(0 0% 100%)",
+                            foreground: "hsl(222.2 84% 4.9%)",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(--radius - 2px)",
+                        sm: "calc(--radius - 4px)",
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --radius: 0.5rem;
+        }
+        
+        .btn {
+            @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+        }
+        
+        .btn-primary {
+            @apply bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2;
+        }
+        
+        .btn-secondary {
+            @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2;
+        }
+        
+        .btn-outline {
+            @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2;
+        }
+        
+        .card {
+            @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+        }
+        
+        .card-header {
+            @apply flex flex-col space-y-1.5 p-6;
+        }
+        
+        .card-content {
+            @apply p-6 pt-0;
+        }
+        
+        .input {
+            @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+        }
+        
+        .badge {
+            @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+        }
+        
+        .badge-default {
+            @apply border-transparent bg-primary text-primary-foreground hover:bg-primary/80;
+        }
+        
+        .badge-secondary {
+            @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            height: 60px;
+            font-size: 18px;
+            padding-left: 60px;
+            padding-right: 24px;
+            border-radius: 16px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #1f2937;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15), 0 0 0 4px rgba(31, 41, 55, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .search-input::placeholder {
+            color: #9ca3af;
+            font-weight: 500;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .search-container:focus-within .search-icon {
+            color: #1f2937;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        /* Product Cards */
+        .product-card {
+            @apply rounded-xl border bg-white text-card-foreground shadow-md cursor-pointer;
+            border: 2px solid hsl(214.3 31.8% 91.4%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            border-color: hsl(222.2 47.4% 11.2%);
+        }
+        
+        .product-image {
+            @apply w-full h-48 object-cover rounded-t-lg bg-gray-100;
+        }
+        
+        /* Dropdown Styles - Version fonctionnelle */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .btn-outline {
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #374151;
+            padding: 8px 16px;
+            height: 48px;
+        }
+        
+        .btn-outline:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+        
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            width: 320px;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+        
+        .chevron {
+            transition: transform 0.3s ease;
+            margin-left: 8px;
+        }
+        
+        .chevron.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+        
+        .checkbox-item:hover {
+            background: #f3f4f6;
+        }
+        
+        .checkbox-item input {
+            margin-right: 12px;
+        }
+        
+        /* Active Filter Tags */
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            background: #1f2937;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 14px;
+            font-weight: 500;
+            margin: 4px;
+        }
+        
+        .filter-tag button {
+            margin-left: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .filter-tag button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Stock Badges */
+        .stock-available {
+            @apply bg-green-100 text-green-800 border border-green-200;
+        }
+        
+        .stock-low {
+            @apply bg-orange-100 text-orange-800 border border-orange-200;
+        }
+        
+        .stock-out {
+            @apply bg-red-100 text-red-800 border border-red-200;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            backdrop-filter: blur(8px) !important;
+            z-index: 999999 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 2rem !important;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-overlay.hidden {
+            display: none !important;
+        }
+        
+        .modal-content {
+            position: relative !important;
+            background: white !important;
+            border-radius: 1rem !important;
+            max-width: 42rem !important;
+            width: 100% !important;
+            max-height: calc(100vh - 4rem) !important;
+            overflow-y: auto !important;
+            z-index: 1000000 !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+            animation: slideUp 0.3s ease;
+            margin: auto !important;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .store-header-gradient {
+            background: linear-gradient(135deg, hsl(222.2 47.4% 11.2%) 0%, hsl(222.2 47.4% 20%) 100%);
+        }
+    </style>
+
+    <style>
+        /* Styles de pagination à ajouter à votre CSS existant */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .pagination-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.5rem;
+            height: 2.5rem;
+            padding: 0.5rem;
+            border: 2px solid hsl(214.3 31.8% 91.4%);
+            background: white;
+            color: hsl(222.2 84% 4.9%);
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .pagination-btn:hover {
+            border-color: hsl(222.2 47.4% 11.2%);
+            background: hsl(210 40% 96%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .pagination-btn.active {
+            background: hsl(222.2 47.4% 11.2%);
+            color: white;
+            border-color: hsl(222.2 47.4% 11.2%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(31, 41, 55, 0.2);
+        }
+
+        .pagination-btn.active:hover {
+            background: hsl(222.2 47.4% 20%);
+            border-color: hsl(222.2 47.4% 20%);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .pagination-btn.nav-btn {
+            min-width: 3rem;
+            font-weight: 600;
+        }
+
+        .pagination-ellipsis {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.5rem;
+            height: 2.5rem;
+            color: hsl(215.4 16.3% 46.9%);
+            font-weight: 500;
+        }
+
+        .pagination-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            color: hsl(215.4 16.3% 46.9%);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive design */
+        @media (max-width: 640px) {
+            .pagination {
+                gap: 0.25rem;
+            }
+            
+            .pagination-btn {
+                min-width: 2rem;
+                height: 2rem;
+                font-size: 0.75rem;
+            }
+            
+            .pagination-btn.nav-btn {
+                min-width: 2.5rem;
+            }
+            
+            .pagination-ellipsis {
+                min-width: 2rem;
+                height: 2rem;
+            }
+            
+            /* Masquer certains numéros sur mobile */
+            .pagination-btn.hide-mobile {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-background font-sans antialiased">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 glass-effect border-b border-border/40">
+        <div class="container mx-auto px-4">
+            <div class="flex h-16 items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <a href="/" class="flex items-center space-x-2">
+                        <div class="flex items-center justify-center w-8 h-8 bg-primary rounded-md">
+                            <i data-lucide="store" class="w-4 h-4 text-primary-foreground"></i>
+                        </div>
+                        <span class="text-xl font-bold text-foreground">StoreManager</span>
+                    </a>
+                </div>
+                
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="/" class="text-muted-foreground hover:text-foreground transition-colors">Accueil</a>
+                    <a href="/stores" class="text-muted-foreground hover:text-foreground transition-colors">Magasins</a>
+                </nav>
+                
+                <div class="flex items-center space-x-3">
+                    <a href="/login" class="btn btn-outline">Connexion</a>
+                    <a href="/register" class="btn btn-primary">Inscription</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="store-header-gradient py-16">
+        <div class="container mx-auto px-4">
+            <!-- Breadcrumb -->
+            <div class="mb-6">
+                <nav class="flex items-center space-x-2 text-gray-300">
+                    <a href="/stores" class="hover:text-white transition-colors">Magasins</a>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    <span class="text-white font-medium">StoreManager Central</span>
+                </nav>
+            </div>
+            
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                    StoreManager Central
+                </h1>
+                <div class="flex items-center justify-center text-gray-200 mb-6">
+                    <i data-lucide="map-pin" class="w-5 h-5 mr-2"></i>
+                    <span>123 Avenue des Champs-Élysées, 75008 Paris</span>
+                </div>
+                <p class="text-xl text-gray-200 max-w-2xl mx-auto">
+                    Découvrez notre sélection de 245 produits répartis en 12 catégories
+                </p>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="search-container">
+                <div class="search-icon">
+                    <i data-lucide="search" class="h-6 w-6"></i>
+                </div>
+                <input 
+                    type="text" 
+                    id="searchInput"
+                    class="search-input" 
+                    placeholder="Rechercher un produit..."
+                    autocomplete="off">
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="py-8 bg-muted/30 border-b border-border/40">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap items-center gap-6">
+                <h3 class="text-lg font-semibold text-foreground">Filtrer par catégorie :</h3>
+                
+                <!-- Category Dropdown -->
+                <div class="relative">
+                    <button type="button" id="categoryDropdownBtn" class="btn btn-outline" style="min-width: 200px; justify-content: space-between;">
+                        <span id="buttonText">Sélectionner des catégories</span>
+                        <svg class="chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div id="categoryDropdown" class="dropdown-menu">
+                        <div style="padding: 16px; border-bottom: 1px solid #e5e7eb;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-weight: 500; color: #111827;">Catégories</span>
+                                <button type="button" id="clearFilters" style="font-size: 14px; color: #6b7280; background: none; border: none; cursor: pointer;">
+                                    Tout désélectionner
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 8px; max-height: 256px; overflow-y: auto;">
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="electronique" class="category-checkbox">
+                                <span style="flex: 1;">Électronique</span>
+                                <span style="font-size: 14px; color: #6b7280;">42</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="vetements" class="category-checkbox">
+                                <span style="flex: 1;">Vêtements</span>
+                                <span style="font-size: 14px; color: #6b7280;">38</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="maison" class="category-checkbox">
+                                <span style="flex: 1;">Maison & Jardin</span>
+                                <span style="font-size: 14px; color: #6b7280;">35</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="sport" class="category-checkbox">
+                                <span style="flex: 1;">Sport & Loisirs</span>
+                                <span style="font-size: 14px; color: #6b7280;">29</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="beaute" class="category-checkbox">
+                                <span style="flex: 1;">Beauté & Santé</span>
+                                <span style="font-size: 14px; color: #6b7280;">24</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="cuisine" class="category-checkbox">
+                                <span style="flex: 1;">Cuisine</span>
+                                <span style="font-size: 14px; color: #6b7280;">18</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="auto" class="category-checkbox">
+                                <span style="flex: 1;">Automobile</span>
+                                <span style="font-size: 14px; color: #6b7280;">15</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="livres" class="category-checkbox">
+                                <span style="flex: 1;">Livres</span>
+                                <span style="font-size: 14px; color: #6b7280;">12</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Active Filters Display -->
+                <div id="activeFilters" class="flex flex-wrap gap-2"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-8">
+                <div class="flex items-center space-x-4">
+                    <h2 class="text-2xl font-bold text-foreground">Nos Produits</h2>
+                    <span class="text-muted-foreground" id="productCount">245 produits</span>
+                </div>
+                <select class="input w-auto" id="sortSelect">
+                    <option value="name">Trier par nom</option>
+                    <option value="price-asc">Prix croissant</option>
+                    <option value="price-desc">Prix décroissant</option>
+                    <option value="stock">Stock disponible</option>
+                </select>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="productsGrid">
+            
+            <!-- No Results Message -->
+            <div id="noResults" class="text-center py-16 hidden">
+                <div class="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="search-x" class="w-12 h-12 text-muted-foreground"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-foreground mb-2">Aucun produit trouvé</h3>
+                <p class="text-muted-foreground">Essayez de modifier vos critères de recherche ou de filtrage</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal-overlay hidden" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="relative">
+                <button onclick="closeModal()" class="absolute top-4 right-4 z-10 bg-white/80 hover:bg-white rounded-full p-2 transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+                
+                <div id="modalContent">
+                    <!-- Modal content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-muted/50 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="flex items-center justify-center w-8 h-8 bg-primary rounded-md">
+                            <i data-lucide="store" class="w-4 h-4 text-primary-foreground"></i>
+                        </div>
+                        <span class="text-xl font-bold text-foreground">StoreManager</span>
+                    </div>
+                    <p class="text-muted-foreground">
+                        Découvrez notre réseau de magasins et leurs produits
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Navigation</h4>
+                    <ul class="space-y-2 text-muted-foreground">
+                        <li><a href="/" class="hover:text-foreground transition-colors">Accueil</a></li>
+                        <li><a href="/stores" class="hover:text-foreground transition-colors">Nos magasins</a></li>
+                        <li><a href="/login" class="hover:text-foreground transition-colors">Se connecter</a></li>
+                        <li><a href="/register" class="hover:text-foreground transition-colors">S'inscrire</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2 text-muted-foreground">
+                        <li><a href="#" class="hover:text-foreground transition-colors">Documentation</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">FAQ</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Support</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Légal</h4>
+                    <ul class="space-y-2 text-muted-foreground">
+                        <li><a href="#" class="hover:text-foreground transition-colors">Conditions d'utilisation</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Politique de confidentialité</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Mentions légales</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-border/40 mt-8 pt-8 text-center text-muted-foreground">
+                <p>&copy; 2024 StoreManager. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample products data
+        const productsData = [
+            {
+                id: 1,
+                name: "iPhone 15 Pro",
+                category: "electronique",
+                price: 1199,
+                stock: 15,
+                description: "Le dernier iPhone avec puce A17 Pro, appareil photo professionnel et design en titane. Écran Super Retina XDR de 6.1 pouces avec ProMotion.",
+                image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=300&fit=crop",
+                features: ["Puce A17 Pro", "Appareil photo 48MP", "Écran 6.1 pouces", "5G", "Face ID"]
+            },
+            {
+                id: 2,
+                name: "MacBook Air M2",
+                category: "electronique",
+                price: 1299,
+                stock: 8,
+                description: "MacBook Air repensé avec la puce M2, écran Liquid Retina de 13,6 pouces et jusqu'à 18 heures d'autonomie.",
+                image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop",
+                features: ["Puce M2", "13,6 pouces", "18h d'autonomie", "8GB RAM", "256GB SSD"]
+            },
+            {
+                id: 3,
+                name: "Jean Slim Fit",
+                category: "vetements",
+                price: 79,
+                stock: 25,
+                description: "Jean slim fit en denim stretch confortable. Coupe moderne et élégante pour un look décontracté.",
+                image: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=300&fit=crop",
+                features: ["Denim stretch", "Coupe slim", "Tailles 28-42", "100% coton", "Lavable machine"]
+            },
+            {
+                id: 4,
+                name: "Casque Sony WH-1000XM5",
+                category: "electronique",
+                price: 399,
+                stock: 12,
+                description: "Casque sans fil à réduction de bruit leader du marché. Son haute qualité et confort exceptionnel.",
+                image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=300&fit=crop",
+                features: ["Réduction de bruit", "30h d'autonomie", "Bluetooth 5.2", "Commandes tactiles", "Son Hi-Res"]
+            },
+            {
+                id: 5,
+                name: "Plante Monstera",
+                category: "maison",
+                price: 45,
+                stock: 18,
+                description: "Magnifique Monstera deliciosa, plante d'intérieur décorative et purificatrice d'air. Facile d'entretien.",
+                image: "https://images.unsplash.com/photo-1545241047-6083a3684587?w=400&h=300&fit=crop",
+                features: ["Purificateur d'air", "Facile d'entretien", "Hauteur 60cm", "Pot inclus", "Plante dépolluante"]
+            },
+            {
+                id: 6,
+                name: "Chaussures de Running",
+                category: "sport",
+                price: 129,
+                stock: 30,
+                description: "Chaussures de running haute performance avec amorti et support optimal pour vos séances d'entraînement.",
+                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop",
+                features: ["Amorti gel", "Semelle respirante", "Support latéral", "Tailles 36-47", "Garantie 2 ans"]
+            },
+            {
+                id: 7,
+                name: "Crème Hydratante Bio",
+                category: "beaute",
+                price: 35,
+                stock: 22,
+                description: "Crème hydratante visage bio à l'aloe vera et à l'huile d'argan. Convient à tous types de peau.",
+                image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+                features: ["100% bio", "Aloe vera", "Huile d'argan", "50ml", "Tous types de peau"]
+            },
+            {
+                id: 8,
+                name: "Poêle Antiadhésive 28cm",
+                category: "cuisine",
+                price: 89,
+                stock: 14,
+                description: "Poêle antiadhésive professionnelle en aluminium forgé. Revêtement céramique sans PFOA.",
+                image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+                features: ["Revêtement céramique", "28cm de diamètre", "Sans PFOA", "Compatible induction", "Garantie 5 ans"]
+            },
+            {
+                id: 9,
+                name: "Pneus Été 205/55R16",
+                category: "auto",
+                price: 95,
+                stock: 40,
+                description: "Pneus été haute performance avec excellente adhérence sur route sèche et mouillée. Faible résistance au roulement.",
+                image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
+                features: ["205/55R16", "Adhérence A", "Résistance roulement B", "Bruit 68dB", "Garantie 5 ans"]
+            },
+            {
+                id: 10,
+                name: "Le Guide du Développeur",
+                category: "livres",
+                price: 45,
+                stock: 8,
+                description: "Guide complet pour apprendre le développement web moderne. De HTML/CSS à React et Node.js.",
+                image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop",
+                features: ["480 pages", "Exemples pratiques", "HTML/CSS/JS", "React & Node.js", "Édition 2024"]
+            },
+            {
+                id: 11,
+                name: "T-shirt Coton Bio",
+                category: "vetements",
+                price: 29,
+                stock: 45,
+                description: "T-shirt en coton bio certifié GOTS. Coupe classique et matière douce et respirante.",
+                image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop",
+                features: ["Coton bio GOTS", "Coupe classique", "Couleurs variées", "Tailles XS-XXL", "Lavable 30°C"]
+            },
+            {
+                id: 12,
+                name: "Aspirateur Robot",
+                category: "maison",
+                price: 299,
+                stock: 0,
+                description: "Aspirateur robot intelligent avec navigation laser et contrôle par application mobile. Nettoyage automatique programmable.",
+                image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
+                features: ["Navigation laser", "App mobile", "2h d'autonomie", "Station de charge", "Programmable"]
+            }
+        ];
+
+        let filteredProducts = [...productsData];
+        let selectedCategories = [];
+        let productsPagination; // Variable globale pour la pagination
+        
+        const categoryNames = {
+            'electronique': 'Électronique',
+            'vetements': 'Vêtements',
+            'maison': 'Maison & Jardin',
+            'sport': 'Sport & Loisirs',
+            'beaute': 'Beauté & Santé',
+            'cuisine': 'Cuisine',
+            'auto': 'Automobile',
+            'livres': 'Livres'
+        };
+
+        // Système de pagination dynamique pour les produits
+        class ProductsPaginationSystem {
+            constructor(containerId, itemsPerPage = 8) {
+                this.container = document.getElementById(containerId);
+                this.itemsPerPage = itemsPerPage;
+                this.currentPage = 1;
+                this.totalItems = 0;
+                this.totalPages = 0;
+                this.data = [];
+                this.filteredData = [];
+                
+                // Créer le conteneur de pagination
+                this.createPaginationContainer();
+            }
+            
+            // Initialiser avec des données
+            init(data) {
+                this.data = [...data];
+                this.filteredData = [...data];
+                this.updatePagination();
+                this.renderProducts();
+            }
+            
+            // Mettre à jour après filtrage
+            updateWithFilteredData(filteredData) {
+                this.filteredData = [...filteredData];
+                this.currentPage = 1; // Retour à la première page après filtrage
+                this.updatePagination();
+                this.renderProducts();
+            }
+            
+            // Créer le conteneur HTML pour la pagination
+            createPaginationContainer() {
+                const paginationHTML = `
+                    <div class="pagination" id="paginationControls">
+                        <!-- Les boutons seront générés dynamiquement -->
+                    </div>
+                    <div class="pagination-info" id="paginationInfo">
+                        <!-- Les infos seront générées dynamiquement -->
+                    </div>
+                `;
+                
+                // Insérer après la grille des produits
+                const productsSection = this.container.closest('section');
+                productsSection.insertAdjacentHTML('afterend', paginationHTML);
+                
+                this.paginationControls = document.getElementById('paginationControls');
+                this.paginationInfo = document.getElementById('paginationInfo');
+            }
+            
+            // Calculer et mettre à jour la pagination
+            updatePagination() {
+                this.totalItems = this.filteredData.length;
+                this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+                
+                // S'assurer que la page courante est valide
+                if (this.currentPage > this.totalPages) {
+                    this.currentPage = Math.max(1, this.totalPages);
+                }
+                
+                this.renderPaginationControls();
+                this.renderPaginationInfo();
+                this.updateProductCount();
+            }
+            
+            // Mettre à jour le compteur de produits
+            updateProductCount() {
+                const productCount = document.getElementById('productCount');
+                if (productCount) {
+                    productCount.textContent = `${this.totalItems} produit${this.totalItems > 1 ? 's' : ''}`;
+                }
+            }
+            
+            // Générer les boutons de pagination
+            renderPaginationControls() {
+                if (this.totalPages <= 1) {
+                    this.paginationControls.style.display = 'none';
+                    return;
+                }
+                
+                this.paginationControls.style.display = 'flex';
+                
+                let buttonsHTML = '';
+                
+                // Bouton Précédent
+                const prevDisabled = this.currentPage === 1 ? 'disabled' : '';
+                buttonsHTML += `
+                    <button class="pagination-btn nav-btn" ${prevDisabled} onclick="productsPagination.goToPage(${this.currentPage - 1})">
+                        <i data-lucide="chevron-left" style="width: 1rem; height: 1rem;"></i>
+                        Précédent
+                    </button>
+                `;
+                
+                // Boutons de numéro de page (logique simplifiée pour moins de 8 pages)
+                for (let i = 1; i <= this.totalPages; i++) {
+                    const activeClass = i === this.currentPage ? 'active' : '';
+                    const hideMobileClass = this.shouldHideOnMobile(i) ? 'hide-mobile' : '';
+                    
+                    buttonsHTML += `
+                        <button class="pagination-btn ${activeClass} ${hideMobileClass}" 
+                                onclick="productsPagination.goToPage(${i})">
+                            ${i}
+                        </button>
+                    `;
+                }
+                
+                // Bouton Suivant
+                const nextDisabled = this.currentPage === this.totalPages ? 'disabled' : '';
+                buttonsHTML += `
+                    <button class="pagination-btn nav-btn" ${nextDisabled} onclick="productsPagination.goToPage(${this.currentPage + 1})">
+                        Suivant
+                        <i data-lucide="chevron-right" style="width: 1rem; height: 1rem; margin-left: 0.25rem;"></i>
+                    </button>
+                `;
+                
+                this.paginationControls.innerHTML = buttonsHTML;
+                
+                // Réinitialiser les icônes Lucide
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+            
+            // Déterminer si un bouton doit être masqué sur mobile
+            shouldHideOnMobile(pageNumber) {
+                // Sur mobile, on garde seulement la page courante et ses voisines immédiates
+                const range = 1;
+                return Math.abs(pageNumber - this.currentPage) > range && 
+                    pageNumber !== 1 && 
+                    pageNumber !== this.totalPages;
+            }
+            
+            // Afficher les informations de pagination
+            renderPaginationInfo() {
+                if (this.totalItems === 0) {
+                    this.paginationInfo.innerHTML = 'Aucun produit trouvé';
+                    return;
+                }
+                
+                const startItem = (this.currentPage - 1) * this.itemsPerPage + 1;
+                const endItem = Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+                
+                this.paginationInfo.innerHTML = `
+                    Affichage de ${startItem} à ${endItem} sur ${this.totalItems} produit${this.totalItems > 1 ? 's' : ''}
+                `;
+            }
+            
+            // Naviguer vers une page spécifique
+            goToPage(page) {
+                if (page < 1 || page > this.totalPages || page === this.currentPage) {
+                    return;
+                }
+                
+                this.currentPage = page;
+                this.updatePagination();
+                this.renderProducts();
+                
+                // Scroll vers le haut de la grille
+                const productsSection = this.container.closest('section');
+                productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            
+            // Afficher les produits de la page courante
+            renderProducts() {
+                const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+                const endIndex = startIndex + this.itemsPerPage;
+                const productsToShow = this.filteredData.slice(startIndex, endIndex);
+                
+                const noResults = document.getElementById('noResults');
+                
+                if (productsToShow.length === 0) {
+                    this.container.innerHTML = '';
+                    if (noResults) noResults.classList.remove('hidden');
+                    return;
+                }
+                
+                if (noResults) noResults.classList.add('hidden');
+                
+                // Générer le HTML pour les produits de la page courante
+                this.container.innerHTML = productsToShow.map(product => this.generateProductHTML(product)).join('');
+                
+                // Réinitialiser les icônes Lucide
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+            
+            // Générer le HTML pour un produit
+            generateProductHTML(product) {
+                return `
+                    <div class="product-card" onclick="openProductModal(${product.id})" data-category="${product.category}">
+                        <div class="relative">
+                            <img src="${product.image}" alt="${product.name}" class="product-image">
+                            <div class="absolute top-3 right-3">
+                                ${this.getStockBadge(product.stock)}
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-foreground mb-2">${product.name}</h3>
+                            <p class="text-muted-foreground mb-4 line-clamp-2">${product.description}</p>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="text-2xl font-bold text-primary">${product.price}€</div>
+                                <div class="text-sm text-muted-foreground">
+                                    Stock: ${product.stock > 0 ? product.stock : 'Épuisé'}
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary w-full mt-4 h-12" ${product.stock === 0 ? 'disabled' : ''}>
+                                <i data-lucide="eye" class="w-4 h-4 mr-2"></i>
+                                Voir le détail
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Générer le badge de stock
+            getStockBadge(stock) {
+                if (stock === 0) {
+                    return '<span class="badge stock-out">Épuisé</span>';
+                } else if (stock <= 10) {
+                    return '<span class="badge stock-low">Stock limité</span>';
+                } else {
+                    return '<span class="badge stock-available">Disponible</span>';
+                }
+            }
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, initializing...');
+            
+            // Initialize Lucide icons safely
+            try {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                    console.log('Lucide icons initialized');
+                } else {
+                    console.log('Lucide not available, using SVG icons instead');
+                }
+            } catch (error) {
+                console.log('Lucide initialization failed, continuing without it');
+            }
+            
+            // Initialiser la pagination des produits
+            productsPagination = new ProductsPaginationSystem('productsGrid', 8); // 8 produits par page
+            filteredProducts = [...productsData];
+            productsPagination.init(productsData);
+            
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', debounce(handleSearch, 300));
+            }
+            
+            // Dropdown functionality - VERSION CORRIGÉE
+            const dropdownBtn = document.getElementById('categoryDropdownBtn');
+            const dropdown = document.getElementById('categoryDropdown');
+            const chevron = dropdownBtn ? dropdownBtn.querySelector('.chevron') : null;
+            const buttonText = document.getElementById('buttonText');
+            const activeFiltersContainer = document.getElementById('activeFilters');
+            
+            console.log('Dropdown elements found:', {
+                button: !!dropdownBtn,
+                dropdown: !!dropdown,
+                chevron: !!chevron,
+                buttonText: !!buttonText
+            });
+            
+            if (dropdownBtn && dropdown && chevron && buttonText) {
+                // Toggle dropdown
+                dropdownBtn.addEventListener('click', function(e) {
+                    console.log('Dropdown button clicked!');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const isVisible = dropdown.classList.contains('show');
+                    console.log('Menu is currently visible:', isVisible);
+                    
+                    if (isVisible) {
+                        dropdown.classList.remove('show');
+                        chevron.classList.remove('rotated');
+                        console.log('Hiding menu');
+                    } else {
+                        dropdown.classList.add('show');
+                        chevron.classList.add('rotated');
+                        console.log('Showing menu');
+                    }
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!dropdown.contains(e.target) && !dropdownBtn.contains(e.target)) {
+                        dropdown.classList.remove('show');
+                        chevron.classList.remove('rotated');
+                    }
+                });
+                
+                // Handle checkbox changes
+                const checkboxes = document.querySelectorAll('.category-checkbox');
+                console.log('Found checkboxes:', checkboxes.length);
+                
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const category = this.value;
+                        console.log('Checkbox changed:', category, 'checked:', this.checked);
+                        
+                        if (this.checked) {
+                            if (!selectedCategories.includes(category)) {
+                                selectedCategories.push(category);
+                            }
+                        } else {
+                            selectedCategories = selectedCategories.filter(cat => cat !== category);
+                        }
+                        
+                        console.log('Selected categories:', selectedCategories);
+                        updateUI();
+                        applyFilters();
+                    });
+                });
+                
+                // Clear all filters
+                const clearButton = document.getElementById('clearFilters');
+                if (clearButton) {
+                    clearButton.addEventListener('click', function(e) {
+                        console.log('Clear filters clicked');
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        selectedCategories = [];
+                        checkboxes.forEach(checkbox => {
+                            checkbox.checked = false;
+                        });
+                        
+                        updateUI();
+                        applyFilters();
+                    });
+                }
+                
+                function updateUI() {
+                    // Update button text
+                    if (selectedCategories.length === 0) {
+                        buttonText.textContent = 'Sélectionner des catégories';
+                    } else if (selectedCategories.length === 1) {
+                        buttonText.textContent = categoryNames[selectedCategories[0]];
+                    } else {
+                        buttonText.textContent = `${selectedCategories.length} catégories sélectionnées`;
+                    }
+                    
+                    // Update active filters display
+                    if (activeFiltersContainer) {
+                        activeFiltersContainer.innerHTML = selectedCategories.map(category => `
+                            <span class="filter-tag">
+                                ${categoryNames[category]}
+                                <button onclick="removeFilter('${category}')">
+                                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </span>
+                        `).join('');
+                    }
+                }
+                
+            } else {
+                console.error('Dropdown elements missing:', {
+                    button: !!dropdownBtn,
+                    dropdown: !!dropdown,
+                    chevron: !!chevron,
+                    buttonText: !!buttonText
+                });
+            }
+            
+            // Sort functionality
+            const sortSelect = document.getElementById('sortSelect');
+            if (sortSelect) {
+                sortSelect.addEventListener('change', handleSort);
+            }
+        });
+        
+        // FONCTIONS CORRIGÉES POUR LA PAGINATION
+        function removeFilter(category) {
+            const checkbox = document.querySelector(`input[value="${category}"]`);
+            if (checkbox) {
+                checkbox.checked = false;
+                checkbox.dispatchEvent(new Event('change'));
+            }
+        }
+
+        function handleSearch(event) {
+            const searchTerm = event.target.value.toLowerCase();
+            applyFilters(searchTerm);
+        }
+
+        // Fonction modifiée pour appliquer les filtres avec pagination
+        function applyFilters(searchTerm = '') {
+            const currentSearchTerm = searchTerm || document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredProducts = productsData.filter(product => {
+                const matchesSearch = currentSearchTerm === '' || 
+                                    product.name.toLowerCase().includes(currentSearchTerm) ||
+                                    product.description.toLowerCase().includes(currentSearchTerm);
+                
+                const matchesCategory = selectedCategories.length === 0 || 
+                                      selectedCategories.includes(product.category);
+                
+                return matchesSearch && matchesCategory;
+            });
+            
+            // Mettre à jour la pagination au lieu de renderProducts directement
+            if (productsPagination) {
+                productsPagination.updateWithFilteredData(filteredProducts);
+            }
+        }
+
+        // Fonction modifiée pour le tri avec pagination
+        function handleSort(event) {
+            const sortBy = event.target.value;
+            
+            filteredProducts.sort((a, b) => {
+                switch(sortBy) {
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'price-asc':
+                        return a.price - b.price;
+                    case 'price-desc':
+                        return b.price - a.price;
+                    case 'stock':
+                        return b.stock - a.stock;
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Mettre à jour la pagination au lieu de renderProducts directement
+            if (productsPagination) {
+                productsPagination.updateWithFilteredData(filteredProducts);
+            }
+        }
+
+        function openProductModal(productId) {
+            const product = productsData.find(p => p.id === productId);
+            if (!product) return;
+            
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <div class="relative">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-80 object-cover rounded-t-2xl">
+                    <div class="absolute top-4 left-4">
+                        ${getStockBadge(product.stock)}
+                    </div>
+                </div>
+                
+                <div class="p-8">
+                    <div class="mb-6">
+                        <h2 class="text-3xl font-bold text-foreground mb-2">${product.name}</h2>
+                        <div class="flex items-center justify-between">
+                            <span class="text-3xl font-bold text-primary">${product.price}€</span>
+                            <span class="text-muted-foreground">Stock: ${product.stock > 0 ? product.stock + ' unités' : 'Épuisé'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-3">Description</h3>
+                        <p class="text-muted-foreground leading-relaxed">${product.description}</p>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold mb-3">Caractéristiques</h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            ${product.features.map(feature => `
+                                <div class="flex items-center">
+                                    <i data-lucide="check" class="w-4 h-4 text-green-500 mr-2"></i>
+                                    <span class="text-sm text-muted-foreground">${feature}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <button onclick="closeModal()" class="btn btn-outline flex-1 h-12">
+                            <i data-lucide="x" class="w-4 h-4 mr-2"></i>
+                            Fermer
+                        </button>
+                        <button onclick="orderProduct(${product.id})" class="btn btn-primary flex-1 h-12" ${product.stock === 0 ? 'disabled' : ''}>
+                            <i data-lucide="shopping-cart" class="w-4 h-4 mr-2"></i>
+                            ${product.stock === 0 ? 'Indisponible' : 'Commander'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('productModal').classList.remove('hidden');
+            try {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.log('Lucide createIcons failed in modal, skipping');
+            }
+        }
+
+        function getStockBadge(stock) {
+            if (stock === 0) {
+                return '<span class="badge stock-out">Épuisé</span>';
+            } else if (stock <= 10) {
+                return '<span class="badge stock-low">Stock limité</span>';
+            } else {
+                return '<span class="badge stock-available">Disponible</span>';
+            }
+        }
+
+        function closeModal(event) {
+            if (event && event.target === event.currentTarget) {
+                document.getElementById('productModal').classList.add('hidden');
+            } else if (!event) {
+                document.getElementById('productModal').classList.add('hidden');
+            }
+        }
+
+        function orderProduct(productId) {
+            const product = productsData.find(p => p.id === productId);
+            
+            // Animation de feedback
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i data-lucide="check" class="w-4 h-4 mr-2"></i>Commandé !';
+            button.classList.remove('btn-primary');
+            button.classList.add('bg-green-500', 'text-white');
+            button.disabled = true;
+            
+            setTimeout(() => {
+                closeModal();
+                
+                // Reset button after modal closes
+                setTimeout(() => {
+                    if (button) {
+                        button.innerHTML = originalText;
+                        button.classList.add('btn-primary');
+                        button.classList.remove('bg-green-500', 'text-white');
+                        button.disabled = product.stock === 0;
+                    }
+                }, 300);
+            }, 1500);
+            
+            console.log(`Commande passée pour: ${product.name}`);
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+
+</body>
+</html>

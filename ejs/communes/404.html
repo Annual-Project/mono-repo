@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page non trouvée - StoreManager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #1e293b;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .error-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            height: 100%;
+        }
+        
+        .error-code {
+            font-size: 15vw;
+            font-weight: 800;
+            color: #0ea5e9;
+            line-height: 1;
+            margin-bottom: 1rem;
+            text-shadow: 3px 3px 0 rgba(14, 165, 233, 0.1);
+        }
+        
+        .error-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+        
+        .error-message {
+            font-size: 1.25rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+        
+        .error-illustration {
+            width: 300px;
+            height: 200px;
+            margin: 2rem 0;
+            position: relative;
+            max-width: 80%;
+        }
+        
+        .error-illustration .box {
+            position: absolute;
+            background: #0ea5e9;
+            opacity: 0.8;
+            border-radius: 10px;
+        }
+        
+        .box-1 {
+            width: 150px;
+            height: 150px;
+            top: 0;
+            left: 0;
+            transform: rotate(15deg);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .box-2 {
+            width: 120px;
+            height: 120px;
+            bottom: 0;
+            right: 0;
+            transform: rotate(-10deg);
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .box-3 {
+            width: 80px;
+            height: 80px;
+            top: 40px;
+            right: 40px;
+            transform: rotate(25deg);
+            animation: float 7s ease-in-out infinite;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 100%;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: #1e293b;
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: #0f172a;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+        }
+        
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(15deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(15deg);
+            }
+            100% {
+                transform: translateY(0) rotate(15deg);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 25vw;
+            }
+            
+            .error-title {
+                font-size: 1.8rem;
+            }
+            
+            .error-message {
+                font-size: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 0.8rem 1.5rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+        }
+        
+        @media (max-height: 700px) {
+            .error-container {
+                padding: 1rem;
+            }
+            
+            .error-code {
+                font-size: 20vh;
+                margin-bottom: 0.5rem;
+            }
+            
+            .error-title {
+                font-size: 1.8rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .error-message {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .error-illustration {
+                height: 150px;
+                margin: 1rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenu principal -->
+    <main class="error-container">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">Page non trouvée</h2>
+        <p class="error-message">
+            Désolé, la page que vous essayez d'atteindre n'existe pas ou a été déplacée.
+            Vérifiez l'URL ou retournez à la page précédente.
+        </p>
+        
+        <div class="error-illustration">
+            <div class="box box-1"></div>
+            <div class="box box-2"></div>
+            <div class="box box-3"></div>
+        </div>
+        
+        <div class="btn-group">
+            <a href="index.html" class="btn btn-primary">
+                <i class="fas fa-home"></i>
+                Retour à l'accueil
+            </a>
+            <a href="javascript:history.back()" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Page précédente
+            </a>
+        </div>
+    </main>
+
+    <script>
+        // Animation des boîtes
+        document.addEventListener('DOMContentLoaded', function() {
+            const boxes = document.querySelectorAll('.box');
+            
+            boxes.forEach((box, index) => {
+                // Définir un délai d'animation différent pour chaque boîte
+                box.style.animationDelay = `${index * 0.5}s`;
+            });
+            
+            // Ajuster la taille de l'illustration en fonction de la hauteur disponible
+            function adjustIllustrationSize() {
+                const errorContainer = document.querySelector('.error-container');
+                const illustration = document.querySelector('.error-illustration');
+                
+                if (window.innerHeight < 700) {
+                    illustration.style.height = '150px';
+                } else if (window.innerHeight < 800) {
+                    illustration.style.height = '180px';
+                } else {
+                    illustration.style.height = '200px';
+                }
+            }
+            
+            // Appeler la fonction au chargement et au redimensionnement
+            adjustIllustrationSize();
+            window.addEventListener('resize', adjustIllustrationSize);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - StoreManager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: #f8fafc;
+            min-height: 100vh;
+            padding: 20px;
+            color: #1e293b;
+        }
+        
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(30, 41, 59, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            width: 2.8rem;
+            height: 2.8rem;
+            background: linear-gradient(135deg, #0ea5e9 0%, #1e40af 100%);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+        }
+        
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .user-info {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9 0%, #1e40af 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .profile-content {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .profile-sidebar {
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        .profile-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #0ea5e9 0%, #1e40af 100%);
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid white;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, #0ea5e9 0%, #1e40af 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 2.5rem;
+        }
+        
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .profile-role {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .info-group {
+            margin-bottom: 1.2rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .info-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .info-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 0.25rem;
+        }
+        
+        .info-value {
+            font-size: 1rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+        
+        .logout-btn {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .main-content {
+            flex: 2;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .section-title i {
+            color: #0ea5e9;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.2rem;
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn:hover {
+            background: #0284c7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: white;
+            color: #1e293b;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+        
+        .grid-cols-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .security-alert {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .alert-icon {
+            color: #f59e0b;
+            font-size: 1.2rem;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 1000;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .toast.hide {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            transform: scale(0.9) translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal {
+            transform: scale(1) translateY(0);
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .modal-content {
+            color: #64748b;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+        
+        .btn-cancel {
+            padding: 0.6rem 1.2rem;
+            background: #e2e8f0;
+            color: #64748b;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-cancel:hover {
+            background: #cbd5e1;
+        }
+        
+        .btn-danger {
+            padding: 0.6rem 1.2rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .profile-content {
+                flex-direction: column;
+            }
+            
+            .profile-sidebar {
+                max-width: 100%;
+            }
+            
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .user-info {
+                justify-content: center;
+            }
+            
+            .toast {
+                right: 10px;
+                left: 10px;
+                transform: translateY(-100px);
+            }
+            
+            .toast.show {
+                transform: translateY(0);
+            }
+            
+            .toast.hide {
+                transform: translateY(-100px);
+            }
+            
+            .modal {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <!-- En-tête simplifiée -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="store"></i>
+                </div>
+                <div class="logo-text">StoreManager</div>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-avatar">JD</div>
+                <div>
+                    <div class="info-value" style="color: #1e293b; font-weight: 600;">John Doe</div>
+                    <div class="info-label" style="color: #64748b;">Administrateur</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contenu principal -->
+        <div class="profile-content">
+            <!-- Barre latérale -->
+            <div class="profile-sidebar">
+                <!-- Carte de profil -->
+                <div class="profile-card">
+                    <div class="card-header">
+                        <div class="profile-avatar">JD</div>
+                        <div class="profile-name">John Doe</div>
+                        <div class="profile-role">Administrateur système</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-group">
+                            <div class="info-label">Email</div>
+                            <div class="info-value">john.doe@example.com</div>
+                        </div>
+                        
+                        <div class="info-group">
+                            <div class="info-label">Téléphone</div>
+                            <div class="info-value">+1 (555) 123-4567</div>
+                        </div>
+                        
+                        <div class="info-group">
+                            <div class="info-label">Société</div>
+                            <div class="info-value">Retail Solutions Inc.</div>
+                        </div>
+                        
+                        <div class="info-group">
+                            <div class="info-label">Membre depuis</div>
+                            <div class="info-value">15 Janvier 2023</div>
+                        </div>
+                        
+                        <!-- Bouton de déconnexion -->
+                        <button class="logout-btn">
+                            <i data-lucide="log-out"></i>
+                            Déconnexion
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contenu principal -->
+            <div class="main-content">
+                <!-- Section d'édition de profil -->
+                <div class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i data-lucide="user-pen"></i>
+                            Informations du profil
+                        </h2>
+                        <button class="btn">
+                            <i data-lucide="save"></i>
+                            Enregistrer
+                        </button>
+                    </div>
+                    
+                    <div class="security-alert">
+                        <div class="alert-icon">
+                            <i data-lucide="alert-circle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Votre compte est sécurisé</h4>
+                            <p>Dernière mise à jour du mot de passe: il y a 15 jours</p>
+                        </div>
+                    </div>
+                    
+                    <form>
+                        <div class="grid-cols-2">
+                            <div class="form-group">
+                                <label class="form-label" for="firstName">Prénom</label>
+                                <input type="text" class="form-input" id="firstName" value="John">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="lastName">Nom</label>
+                                <input type="text" class="form-input" id="lastName" value="Doe">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="email">Adresse email</label>
+                            <input type="email" class="form-input" id="email" value="john.doe@example.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="phone">Téléphone</label>
+                            <input type="text" class="form-input" id="phone" value="+1 (555) 123-4567">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="company">Société</label>
+                            <input type="text" class="form-input" id="company" value="Retail Solutions Inc.">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="position">Poste</label>
+                            <input type="text" class="form-input" id="position" value="Administrateur système">
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Section de sécurité -->
+                <div class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i data-lucide="shield"></i>
+                            Sécurité du compte
+                        </h2>
+                        <button class="btn">
+                            <i data-lucide="lock"></i>
+                            Mettre à jour
+                        </button>
+                    </div>
+                    
+                    <div class="grid-cols-2">
+                        <div class="form-group">
+                            <label class="form-label" for="currentPassword">Mot de passe actuel</label>
+                            <input type="password" class="form-input" id="currentPassword">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="newPassword">Nouveau mot de passe</label>
+                            <input type="password" class="form-input" id="newPassword">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="confirmPassword">Confirmer le mot de passe</label>
+                            <input type="password" class="form-input" id="confirmPassword">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" style="margin-top: 1rem;">Authentification à deux facteurs</label>
+                        <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.25rem;">
+                            <i data-lucide="check-circle" style="color: #10b981; width: 16px; height: 16px; vertical-align: text-bottom;"></i>
+                            Activée
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+    
+    <!-- Modal de confirmation de déconnexion -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal">
+            <div class="modal-header">
+                <i data-lucide="alert-triangle" style="color: #f59e0b;"></i>
+                <h3 class="modal-title">Confirmer la déconnexion</h3>
+            </div>
+            <div class="modal-content">
+                Êtes-vous sûr de vouloir vous déconnecter ? Vous devrez vous reconnecter pour accéder à votre compte.
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="cancelLogout">
+                    <i data-lucide="x"></i>
+                    Annuler
+                </button>
+                <button class="btn-danger" id="confirmLogout">
+                    <i data-lucide="log-out"></i>
+                    Se déconnecter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialiser les icônes Lucide
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.log('Lucide initialization failed');
+            }
+        });
+        
+        // Fonction pour afficher un toast
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            
+            const iconMap = {
+                success: 'check-circle',
+                error: 'x-circle',
+                warning: 'alert-triangle',
+                info: 'info'
+            };
+            
+            const colorMap = {
+                success: '#10b981',
+                error: '#ef4444',
+                warning: '#f59e0b',
+                info: '#0ea5e9'
+            };
+            
+            toast.style.background = colorMap[type];
+            toast.innerHTML = `
+                <i data-lucide="${iconMap[type]}"></i>
+                <span>${message}</span>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Initialiser l'icône
+            lucide.createIcons();
+            
+            // Afficher le toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Masquer et supprimer le toast après 4 secondes
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 4000);
+        }
+        
+        // Fonction pour afficher la modal de déconnexion
+        function showLogoutModal() {
+            const modal = document.getElementById('logoutModal');
+            modal.classList.add('show');
+            lucide.createIcons();
+        }
+        
+        // Fonction pour masquer la modal de déconnexion
+        function hideLogoutModal() {
+            const modal = document.getElementById('logoutModal');
+            modal.classList.remove('show');
+        }
+        
+        // Simulation de sauvegarde
+        document.querySelectorAll('.btn').forEach(button => {
+            if (button.textContent.includes('Enregistrer') || button.textContent.includes('Mettre à jour')) {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const originalHTML = button.innerHTML;
+                    const isUpdate = button.textContent.includes('Mettre à jour');
+                    
+                    // Afficher l'état de chargement
+                    button.innerHTML = '<i data-lucide="loader-2" style="animation: spin 1s linear infinite;"></i> En cours...';
+                    button.disabled = true;
+                    
+                    // Réinitialiser les icônes après modification du DOM
+                    setTimeout(() => {
+                        lucide.createIcons();
+                    }, 100);
+                    
+                    // Simuler la sauvegarde
+                    setTimeout(() => {
+                        button.innerHTML = originalHTML;
+                        button.disabled = false;
+                        
+                        // Réinitialiser les icônes
+                        lucide.createIcons();
+                        
+                        // Afficher le toast de succès
+                        const message = isUpdate ? 
+                            'Paramètres de sécurité mis à jour avec succès !' : 
+                            'Profil enregistré avec succès !';
+                        showToast(message, 'success');
+                    }, 1500);
+                });
+            }
+        });
+        
+        // Gestion de la déconnexion
+        document.querySelector('.logout-btn').addEventListener('click', function() {
+            showLogoutModal();
+        });
+        
+        // Gestion des boutons de la modal
+        document.getElementById('cancelLogout').addEventListener('click', function() {
+            hideLogoutModal();
+        });
+        
+        document.getElementById('confirmLogout').addEventListener('click', function() {
+            hideLogoutModal();
+            
+            // Simuler la déconnexion
+            document.body.innerHTML = `
+                <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; gap:2rem; background:#f8fafc;">
+                    <div>
+                        <i data-lucide="loader-2" style="font-size:3rem; color:#0ea5e9; animation: spin 1s linear infinite;"></i>
+                    </div>
+                    <h2 style="font-size:1.5rem; color:#1e293b;">Déconnexion en cours...</h2>
+                </div>
+            `;
+            
+            // Réinitialiser les icônes pour le loader
+            setTimeout(() => {
+                lucide.createIcons();
+            }, 100);
+            
+            setTimeout(() => {
+                window.location.href = 'connexion.html';
+            }, 1500);
+        });
+        
+        // Fermer la modal en cliquant sur l'overlay
+        document.getElementById('logoutModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideLogoutModal();
+            }
+        });
+        
+        // Fermer la modal avec Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideLogoutModal();
+            }
+        });
+        
+        // Animation de rotation pour le loader
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
