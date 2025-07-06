@@ -9,7 +9,8 @@
 ## Dans le conteneur
 
 1. npm ci
-2. npm run db:first
-3. npm run db:deploy
-4. npm run db:client-generate
-5. node --watch index.js
+2. npm install --workspaces
+3. npm run db:first
+4. npm run db:deploy
+5. npm run db:client-generate
+6. node --watch index.js

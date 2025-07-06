@@ -13,6 +13,7 @@ WORKDIR /app
 # --no-cache évite de stocker les index de paquets localement (utile dans des conteneurs).
 # openssl est disponible dans les dépôts Alpine de base.
 RUN apk add --no-cache openssl
+RUN apk add --no-cache bash
 
 # Utile seulement en production (quand le volume sera supprimé du docker-compose)
 # Install dependencies using workspaces
