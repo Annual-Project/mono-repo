@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - StoreManager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background-color: #f8fafc; 
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #f1f5f9;
+            padding: 20px;
+        }
+        
+        .login-container {
+            display: flex;
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .login-left {
+            flex: 1;
+            background: linear-gradient(135deg, #0ea5e9 0%, #1e293b 100%);
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-left::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+        
+        .login-right {
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            color: #0f172a;
+            overflow-y: auto;
+            justify-content: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .logo-icon {
+            width: 3rem;
+            height: 3rem;
+            background: white;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: #0ea5e9;
+        }
+        
+        .logo-text {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .welcome-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            max-width: 90%;
+            line-height: 1.6;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .features {
+            margin-top: 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-icon {
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 0.75rem;
+            background: rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            color: white;
+        }
+        
+        .feature-text {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .login-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            color: #1e293b;
+        }
+        
+        .login-subtitle {
+            font-size: 0.95rem;
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            color: #0f172a;
+            font-size: 0.95rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            background: white;
+            color: #0f172a;
+            height: 50px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            z-index: 10;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #64748b;
+            z-index: 10;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #1e293b;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin: 1.2rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+            gap: 0.5rem;
+        }
+        
+        .login-btn:hover {
+            background: rgba(30, 41, 59, 0.9);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.2rem 0;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+        
+        .divider-text {
+            padding: 0 1rem;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .social-btn {
+            width: 2.8rem;
+            height: 2.8rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e2e8f0;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #64748b;
+        }
+        
+        .social-btn:hover {
+            background: #f1f5f9;
+            transform: translateY(-2px);
+        }
+        
+        .signup-link {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+        
+        .signup-link a {
+            color: #0ea5e9;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 0.3rem;
+        }
+        
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+            display: none;
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.4rem;
+        }
+        
+        .remember {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .remember input {
+            margin-right: 0.5rem;
+        }
+        
+        .forgot-password {
+            color: #0ea5e9;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .circles li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            animation: animate 25s linear infinite;
+            bottom: -150px;
+            border-radius: 50%;
+        }
+        
+        .circles li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+        }
+        
+        .circles li:nth-child(2) {
+            left: 10%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+            animation-duration: 12s;
+        }
+        
+        .circles li:nth-child(3) {
+            left: 70%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 4s;
+        }
+        
+        .circles li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+        }
+        
+        .circles li:nth-child(5) {
+            left: 65%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 0s;
+        }
+        
+        .circles li:nth-child(6) {
+            left: 75%;
+            width: 110px;
+            height: 110px;
+            animation-delay: 3s;
+        }
+        
+        .circles li:nth-child(7) {
+            left: 35%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 7s;
+        }
+        
+        .circles li:nth-child(8) {
+            left: 50%;
+            width: 25px;
+            height: 25px;
+            animation-delay: 15s;
+            animation-duration: 45s;
+        }
+        
+        .circles li:nth-child(9) {
+            left: 20%;
+            width: 15px;
+            height: 15px;
+            animation-delay: 2s;
+            animation-duration: 35s;
+        }
+        
+        .circles li:nth-child(10) {
+            left: 85%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 0s;
+            animation-duration: 11s;
+        }
+        
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .form-animation {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .form-input, .login-btn {
+            transition: all 0.3s ease;
+        }
+        
+        /* Correction pour l'icône d'œil supplémentaire */
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none;
+        }
+        
+        input[type="password"]::-webkit-contacts-auto-fill-button,
+        input[type="password"]::-webkit-credentials-auto-fill-button {
+            display: none !important;
+        }
+        
+        /* Styles pour les écrans plus petits */
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .login-left, .login-right {
+                width: 100%;
+                padding: 1.5rem;
+            }
+            
+            .login-left {
+                order: 2;
+            }
+            
+            .login-right {
+                order: 1;
+            }
+            
+            .welcome-title {
+                font-size: 1.6rem;
+            }
+            
+            .login-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-left">
+            <div class="circles">
+                <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+            
+            <div class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="store"></i>
+                </div>
+                <div class="logo-text">StoreManager</div>
+            </div>
+            
+            <h1 class="welcome-title">Bienvenue à nouveau</h1>
+            <p class="welcome-subtitle">Connectez-vous à votre compte pour accéder à votre tableau de bord, vos inventaires et vos transferts entre magasins.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i data-lucide="trending-up"></i>
+                    </div>
+                    <p class="feature-text">Suivez vos performances en temps réel</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <p class="feature-text">Gestion centralisée de vos équipes</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i data-lucide="refresh-cw"></i>
+                    </div>
+                    <p class="feature-text">Données synchronisées sur tous vos appareils</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="login-right">
+            <div class="form-animation">
+                <h2 class="login-title">Connectez-vous</h2>
+                <p class="login-subtitle">Entrez vos informations pour accéder à votre compte</p>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Adresse email</label>
+                        <div class="relative">
+                            <i data-lucide="mail" class="input-icon"></i>
+                            <input type="email" class="form-input" id="loginEmail" placeholder="email@exemple.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="password">Mot de passe</label>
+                        <div class="relative">
+                            <i data-lucide="lock" class="input-icon"></i>
+                            <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" required>
+                            <span class="password-toggle" onclick="togglePasswordVisibility('loginPassword')">
+                                <i data-lucide="eye" id="eyeIconLogin"></i>
+                            </span>
+                        </div>
+                        <div class="error-message" id="loginError"></div>
+                    </div>
+                    
+                    <div class="remember-forgot">
+                        <div class="remember">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Se souvenir de moi</label>
+                        </div>
+                        <a href="#" class="forgot-password">Mot de passe oublié?</a>
+                    </div>
+                    
+                    <button type="submit" class="login-btn">
+                        <i data-lucide="log-in" id="loginIcon"></i>
+                        <span id="loginText">Se connecter</span>
+                    </button>
+                    
+                    <div class="divider">
+                        <span class="divider-text">Ou connectez-vous avec</span>
+                    </div>
+                    
+                    <div class="social-login">
+                        <div class="social-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                        </div>
+                        <div class="social-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.5 12.26c0-1.05-.09-2.06-.26-3.03H12.24v5.74h6.32c-.27 1.45-1.1 2.68-2.35 3.5v2.9h3.8c2.22-2.04 3.5-5.05 3.5-8.61z"/>
+                                <path d="M12.24 24c3.17 0 5.83-1.05 7.78-2.84l-3.8-2.9c-1.05.7-2.39 1.11-3.98 1.11-3.06 0-5.65-2.07-6.58-4.85H1.83v2.99C3.75 21.13 7.73 24 12.24 24z"/>
+                                <path d="M5.66 14.52c-.24-.7-.37-1.44-.37-2.22s.13-1.52.37-2.22V7.09H1.83C1.06 8.61.63 10.26.63 12.3s.43 3.69 1.2 5.21l3.83-2.99z"/>
+                                <path d="M12.24 4.89c1.73 0 3.28.59 4.5 1.75l3.37-3.37C18.07 1.33 15.4.3 12.24.3c-4.51 0-8.49 2.87-10.41 6.79l3.83 2.98c.93-2.78 3.52-4.85 6.58-4.85z"/>
+                            </svg>
+                        </div>
+                        <div class="social-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <p class="signup-link">
+                        Vous n'avez pas de compte ? 
+                        <a href="inscription.html">S'inscrire</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialiser les icônes Lucide
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.log('Lucide initialization failed');
+            }
+        });
+
+        function togglePasswordVisibility(field) {
+            const passwordField = document.getElementById(field);
+            const eyeIcon = document.getElementById(`eyeIcon${field.charAt(0).toUpperCase() + field.slice(1)}`);
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                eyeIcon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                passwordField.type = 'password';
+                eyeIcon.setAttribute('data-lucide', 'eye');
+            }
+            
+            // Réinitialiser les icônes après modification
+            lucide.createIcons();
+        }
+        
+        function showError(message) {
+            const errorElement = document.getElementById('loginError');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            // Hide error after 3 seconds
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 3000);
+        }
+        
+        function simulateLogin() {
+            const loginBtn = document.querySelector('.login-btn');
+            const loginText = document.getElementById('loginText');
+            const loginIcon = document.getElementById('loginIcon');
+            
+            // Show loading state
+            loginBtn.disabled = true;
+            loginText.textContent = 'Connexion en cours...';
+            loginIcon.setAttribute('data-lucide', 'loader-2');
+            loginIcon.classList.add('spinner');
+            
+            // Réinitialiser les icônes
+            lucide.createIcons();
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Successful login - redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }, 2000);
+        }
+        
+        // Login form submission
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Simple validation
+            if (!email || !password) {
+                showError('Veuillez remplir tous les champs');
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('Veuillez entrer une adresse email valide');
+                return;
+            }
+            
+            // Simulate login process
+            simulateLogin();
+        });
+        
+        // Add animation to form elements
+        document.querySelectorAll('.form-group, .remember-forgot, .login-btn').forEach((el, index) => {
+            el.style.animationDelay = `${index * 0.1}s`;
+            el.classList.add('form-animation');
+        });
+    </script>
+</body>
+</html>

@@ -8,7 +8,7 @@ import validationsMiddleware from "../middlewares/validationsMiddleware.js";
 import controllersHandler from "../handlers/controllersHandler.js";
 
 // Import des contrôleurs
-import AuthController from "../controllers/AuthController.js";
+import AuthController from "../controllers/authController.js";
 import UserController from "../controllers/UserController.js";
 import RoleController from "../controllers/RoleController.js";
 import PermissionController from "../controllers/PermissionController.js";
@@ -64,78 +64,78 @@ const router = Router();
 
 // Routes pour l'authentification
 router.post(
-  "/auth/signup",
+  "/api/v1/auth/signup",
   validationsMiddleware(signupSchema, "body"),
   controllersHandler(AuthController.signup)
 );
 
 router.post(
-  "/auth/signupValidate",
+  "/api/v1/auth/signupValidate",
   validationsMiddleware(signupValidateSchema, "body"),
   controllersHandler(AuthController.signupValidate)
 );
 
 router.post(
-  "/auth/changePassword",
+  "/api/v1/auth/changePassword",
   validationsMiddleware(changePasswordSchema, "body"),
   controllersHandler(AuthController.changePassword)
 );
 
 router.post(
-  "/auth/signin",
+  "/api/v1/auth/signin",
   validationsMiddleware(signinSchema, "body"),
   controllersHandler(AuthController.signin)
 );
 
 router.post(
-  "/auth/signinValidate",
+  "/api/v1/auth/signinValidate",
   validationsMiddleware(signinValidateSchema, "body"),
   controllersHandler(AuthController.signinValidate)
 );
 
 router.get(
-  "/auth/verify",
+  "/api/v1/auth/verify",
   controllersHandler(AuthController.verifyTokens)
 );
 
 router.get(
-  "/auth/logout",
+  "/api/v1/auth/logout",
   controllersHandler(AuthController.logout)
 );
 
 router.get(
-  "/auth/generate",
+  "/api/v1/auth/generate",
   controllersHandler(AuthController.generate)
 );
 
 // Routes pour les utilisateurs
 router.get(
-  "/users",
+  "/api/v1/users",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(getUsersSchema, "query"),
   controllersHandler(UserController.getUsers)
 );
 router.get(
-  "/users/:id",
+  "/api/v1/users/:id",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(getUserByIdSchema, "params"),
   controllersHandler(UserController.getUserById)
 );
 router.post(
-  "/users",
+  "/api/v1/users",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(createUserSchema, "body"),
   controllersHandler(UserController.createUser)
 );
 router.put(
-  "/users/:id",
+  "/api/v1/users/:id",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(updateUserByIdParamsSchema, "params"),
   validationsMiddleware(updateUserByIdBodySchema, "body"),
   controllersHandler(UserController.updateUserById)
 );
 router.delete(
-  "/users/:id",
+  "/api/v1/users/:id",
   authorizationMiddleware([], ["superadmin"]),
   validationsMiddleware(deleteUserByIdSchema, "params"),
   controllersHandler(UserController.deleteUserById)
@@ -143,32 +143,32 @@ router.delete(
 
 // Routes pour les rôles
 router.get(
-  "/roles",
+  "/api/v1/roles",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(getRolesSchema, "query"),
   controllersHandler(RoleController.getRoles)
 );
 router.get(
-  "/roles/:id",
+  "/api/v1/roles/:id",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(getRoleByIdSchema, "params"),
   controllersHandler(RoleController.getRoleById)
 );
 router.post(
-  "/roles",
+  "/api/v1/roles",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(createRoleSchema, "body"),
   controllersHandler(RoleController.createRole)
 );
 router.put(
-  "/roles/:id",
+  "/api/v1/roles/:id",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(updateRoleByIdParamsSchema, "params"),
   validationsMiddleware(updateRoleByIdBodySchema, "body"),
   controllersHandler(RoleController.updateRoleById)
 );
 router.delete(
-  "/roles/:id",
+  "/api/v1/roles/:id",
   authorizationMiddleware([], ["superadmin"]),
   validationsMiddleware(deleteRoleByIdSchema, "params"),
   controllersHandler(RoleController.deleteRoleById)
@@ -176,32 +176,32 @@ router.delete(
 
 // Routes pour les permissions
 router.get(
-  "/permissions",
+  "/api/v1/permissions",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(getPermissionsSchema, "query"),
   controllersHandler(PermissionController.getPermissions)
 );
 router.get(
-  "/permissions/:id",
+  "/api/v1/permissions/:id",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(getPermissionByIdSchema, "params"),
   controllersHandler(PermissionController.getPermissionById)
 );
 router.post(
-  "/permissions",
+  "/api/v1/permissions",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(createPermissionSchema, "body"),
   controllersHandler(PermissionController.createPermission)
 );
 router.put(
-  "/permissions/:id",
+  "/api/v1/permissions/:id",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(updatePermissionByIdParamsSchema, "params"),
   validationsMiddleware(updatePermissionByIdBodySchema, "body"),
   controllersHandler(PermissionController.updatePermissionById)
 );
 router.delete(
-  "/permissions/:id",
+  "/api/v1/permissions/:id",
   authorizationMiddleware([], ["superadmin"]),
   validationsMiddleware(deletePermissionByIdSchema, "params"),
   controllersHandler(PermissionController.deletePermissionById)
@@ -209,19 +209,19 @@ router.delete(
 
 // Routes pour les roles des utilisateurs
 router.get(
-  "/users/:userId/roles",
+  "/api/v1/users/:userId/roles",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(getUserRolesByIdSchema, "params"),
   controllersHandler(UserRoleController.getUserRoles)
 );
 router.post(
-  "/users/roles",
+  "/api/v1/users/roles",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(createUserRoleSchema, "body"),
   controllersHandler(UserRoleController.assignRoleToUser)
 );
 router.delete(
-  "/users/:userId/roles/:roleId",
+  "/api/v1/users/:userId/roles/:roleId",
   authorizationMiddleware([], ["superadmin"]),
   validationsMiddleware(deleteUserRoleSchema, "params"),
   controllersHandler(UserRoleController.removeRoleFromUser)
@@ -229,19 +229,19 @@ router.delete(
 
 // Routes pour les permissions des utilisateurs
 router.get(
-  "/users/:userId/permissions",
+  "/api/v1/users/:userId/permissions",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(getUserPermissionsByIdSchema, "params"),
   controllersHandler(UserPermissionController.getUserPermissions)
 );
 router.post(
-  "/users/permissions",
+  "/api/v1/users/permissions",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(createUserPermissionSchema, "body"),
   controllersHandler(UserPermissionController.assignPermissionToUser)
 );
 router.delete(
-  "/users/:userId/permissions/:permissionId",
+  "/api/v1/users/:userId/permissions/:permissionId",
   authorizationMiddleware([], ["superadmin"]),
   validationsMiddleware(deleteUserPermissionSchema, "params"),
   controllersHandler(UserPermissionController.removePermissionFromUser)

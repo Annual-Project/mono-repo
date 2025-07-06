@@ -72,28 +72,28 @@ const router = Router();
 
 // GET all products
 router.get(
-  "/api/central/products",
+  "/api/v1/central/products",
   validationsMiddleware(getProductsSchema, "query"),
   controllersHandler(ProductController.getAllProducts)
 );
 
 // GET a product by ID
 router.get(
-  "/api/central/products/:id",
+  "/api/v1/central/products/:id",
   validationsMiddleware(getProductSchema, "params"),
   controllersHandler(ProductController.getProductById)
 );
 
 // POST a new product
 router.post(
-  "/api/central/products",
+  "/api/v1/central/products",
   validationsMiddleware(createProductSchema, "body"),
   controllersHandler(ProductController.createProduct)
 );
 
 // PUT update a product by ID
 router.put(
-  "/api/central/products/:id",
+  "/api/v1/central/products/:id",
   validationsMiddleware(updateProductIdSchema, "params"),
   validationsMiddleware(updateProductSchema, "body"),
   controllersHandler(ProductController.updateProductById)
@@ -101,35 +101,35 @@ router.put(
 
 // DELETE a product by ID
 router.delete(
-  "/api/central/products/:id",
+  "/api/v1/central/products/:id",
   validationsMiddleware(deleteProductSchema, "params"),
   controllersHandler(ProductController.deleteProductById)
 );
 
 // GET all categories
 router.get(
-  "/api/central/categories",
+  "/api/v1/central/categories",
   validationsMiddleware(getCategoriesSchema, "query"),
   controllersHandler(CategoryController.getAllCategories)
 );
 
 // GET a category by ID
 router.get(
-  "/api/central/categories/:id",
+  "/api/v1/central/categories/:id",
   validationsMiddleware(getCategorySchema, "params"),
   controllersHandler(CategoryController.getCategoryById)
 );
 
 // POST a new category
 router.post(
-  "/api/central/categories",
+  "/api/v1/central/categories",
   validationsMiddleware(createCategorySchema, "body"),
   controllersHandler(CategoryController.createCategory)
 );
 
 // PUT update a category by ID
 router.put(
-  "/api/central/categories/:id",
+  "/api/v1/central/categories/:id",
   validationsMiddleware(updateCategoryIdSchema, "params"),
   validationsMiddleware(updateCategorySchema, "body"),
   controllersHandler(CategoryController.updateCategoryById)
@@ -137,122 +137,122 @@ router.put(
 
 // DELETE a category by ID
 router.delete(
-  "/api/central/categories/:id",
+  "/api/v1/central/categories/:id",
   validationsMiddleware(deleteCategorySchema, "params"),
   controllersHandler(CategoryController.deleteCategoryById)
 );
 
 router.get(
-  "/api/central/stores",
+  "/api/v1/central/stores",
   validationsMiddleware(getStoresSchema, "query"),
   controllersHandler(StoreController.getAllStores)
 );
 router.get(
-  "/api/central/stores/:id",
+  "/api/v1/central/stores/:id",
   validationsMiddleware(getStoreSchema, "params"),
   controllersHandler(StoreController.getStoreById)
 );
 router.get(
-  "/api/central/stocks",
+  "/api/v1/central/stocks",
   validationsMiddleware(getStocksSchema, "query"),
   controllersHandler(StockController.getAllStocks)
 );
 router.get(
-  "/api/central/stocks/history",
+  "/api/v1/central/stocks/history",
   validationsMiddleware(getStocksHistorySchema, "query"),
   controllersHandler(StockHistoryController.getAllHistory)
 );
 router.get(
-  "/api/central/stocks/:id",
+  "/api/v1/central/stocks/:id",
   validationsMiddleware(getStockSchema, "params"),
   controllersHandler(StockController.getStockById)
 );
 router.get(
-  "/api/central/stocks/history/:id",
+  "/api/v1/central/stocks/history/:id",
   validationsMiddleware(getHistorySchema, "params"),
   controllersHandler(StockHistoryController.getHistoryById)
 );
 router.get(
-  "/api/central/stocks/:productId/history",
+  "/api/v1/central/stocks/:productId/history",
   validationsMiddleware(getProductHistorySchema, "params"),
   controllersHandler(StockHistoryController.getHistoryByProductId)
 );
 
 router.post(
-  "/api/central/stores",
+  "/api/v1/central/stores",
   validationsMiddleware(createStoreSchema, "body"),
   controllersHandler(StoreController.createStore)
 );
 router.post(
-  "/api/central/stocks",
+  "/api/v1/central/stocks",
   validationsMiddleware(createStockSchema, "body"),
   controllersHandler(StockController.createStock)
 );
 router.post(
-  "/api/central/stocks/history",
+  "/api/v1/central/stocks/history",
   validationsMiddleware(createHistorySchema, "body"),
   controllersHandler(StockHistoryController.createHistory)
 );
 
 router.put(
-  "/api/central/stores/:id",
+  "/api/v1/central/stores/:id",
   validationsMiddleware(updateStoreIdSchema, "params"),
   validationsMiddleware(updateStoreSchema, "body"),
   controllersHandler(StoreController.updateStoreById)
 );
 router.put(
-  "/api/central/stocks/:id",
+  "/api/v1/central/stocks/:id",
   validationsMiddleware(updateStockIdSchema, "params"),
   validationsMiddleware(updateStockSchema, "body"),
   controllersHandler(StockController.updateStockById)
 );
 router.put(
-  "/api/central/stocks/history/:id",
+  "/api/v1/central/stocks/history/:id",
   validationsMiddleware(updateHistoryIdSchema, "params"),
   validationsMiddleware(updateHistorySchema, "body"),
   controllersHandler(StockHistoryController.updateHistoryById)
 );
 
 router.delete(
-  "/api/central/stores/:id",
+  "/api/v1/central/stores/:id",
   validationsMiddleware(deleteStoreSchema, "params"),
   controllersHandler(StoreController.deleteStoreById)
 );
 router.delete(
-  "/api/central/stocks/:id",
+  "/api/v1/central/stocks/:id",
   validationsMiddleware(deleteStockSchema, "params"),
   controllersHandler(StockController.deleteStockById)
 );
 router.delete(
-  "/api/central/stocks/history/:id",
+  "/api/v1/central/stocks/history/:id",
   validationsMiddleware(deleteHistorySchema, "params"),
   controllersHandler(StockHistoryController.deleteHistoryById)
 );
 
 // GET all transfers
 router.get(
-  "/api/central/transfers",
+  "/api/v1/central/transfers",
   validationsMiddleware(getTransfersSchema, "query"),
   controllersHandler(TransferController.getAllTransfers)
 );
 
 // GET a transfer by ID
 router.get(
-  "/api/central/transfers/:id",
+  "/api/v1/central/transfers/:id",
   validationsMiddleware(getTransferSchema, "params"),
   controllersHandler(TransferController.getTransferById)
 );
 
 // POST a new transfer
 router.post(
-  "/api/central/transfers",
+  "/api/v1/central/transfers",
   validationsMiddleware(createTransferSchema, "body"),
   controllersHandler(TransferController.createTransfer)
 );
 
 // PUT update a transfer by ID
 router.put(
-  "/api/central/transfers/:id",
+  "/api/v1/central/transfers/:id",
   validationsMiddleware(updateTransferIdSchema, "params"),
   validationsMiddleware(updateTransferSchema, "body"),
   controllersHandler(TransferController.updateTransferById)
@@ -260,7 +260,7 @@ router.put(
 
 // DELETE a transfer by ID
 router.delete(
-  "/api/central/transfers/:id",
+  "/api/v1/central/transfers/:id",
   validationsMiddleware(deleteTransferSchema, "params"),
   controllersHandler(TransferController.deleteTransferById)
 );
