@@ -24,7 +24,7 @@ class ProductService {
   }
 
   static async createProduct(data) {
-    const { name, price, description, categoryId } = data;
+    const { id, name, price, description, categoryId } = data;
 
     if (categoryId) {
       const categoryExists = await prisma.category.findUnique({
@@ -38,6 +38,7 @@ class ProductService {
 
     return await prisma.product.create({
       data: {
+        id,
         name,
         price,
         description,

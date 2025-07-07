@@ -11,6 +11,7 @@ export const getTransferSchema = z.object({
 });
 
 export const createTransferSchema = z.object({
+  id: z.coerce.number().positive("L'id doit être un nombre positif"),
   productId: z.number().positive("productId est requis"),
   sourceStoreId: z.number().positive("sourceStoreId est requis"),
   destinationStoreId: z.number().positive("destinationStoreId est requis"),

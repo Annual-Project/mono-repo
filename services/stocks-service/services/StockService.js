@@ -1,5 +1,7 @@
 import prisma from '../config/db.js';
 
+import { sendToQueue } from '../../../shared/config/rabbitmq.js';
+
 import NotFoundError from '../exceptions/NotFoundError.js';
 import BadRequestError from '../exceptions/BadRequestError.js';
 
@@ -39,6 +41,25 @@ class StockService {
       throw new BadRequestError('Failed to create stock');
     }
 
+    sendToQueue('stock.create', newStock);
+
+    // Si un stock est faible, envoyer une alerte
+    if (newStock.quantityAvailable < newStock.criticalThreshold) {
+      const data = await prisma.store.findUnique({
+        where: { id: newStock.storeId },
+      });
+
+      if (!data) {
+        console.error('Store not found for stock alert');
+        return newStock;
+      }
+
+      sendToQueue('stock.alert', {
+        message: 'Stock is below critical threshold',
+        data,
+      });
+    }
+
     return newStock;
   }
 
@@ -59,6 +80,25 @@ class StockService {
       throw new NotFoundError('Stock not found');
     }
 
+    sendToQueue('stock.update', updatedStock);
+
+    // Si un stock est faible, envoyer une alerte
+    if (updatedStock.quantityAvailable < updatedStock.criticalThreshold) {
+      const data = await prisma.store.findUnique({
+        where: { id: updatedStock.storeId },
+      });
+
+      if (!data) {
+        console.error('Store not found for stock alert');
+        return updatedStock;
+      }
+
+      sendToQueue('stock.alert', {
+        message: 'Stock is below critical threshold',
+        data,
+      });
+    }
+
     return updatedStock;
   }
 
@@ -74,6 +114,12 @@ class StockService {
     const deletedStock = await prisma.stock.delete({
       where: { id },
     });
+
+    if (!deletedStock) {
+      throw new BadRequestError('Failed to delete stock');
+    }
+
+    sendToQueue('stock.delete', deletedStock);
 
     return deletedStock;
   }

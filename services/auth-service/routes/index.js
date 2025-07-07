@@ -37,6 +37,7 @@ import {
   createUserPermissionSchema,
   deleteUserPermissionSchema,
   getUsersSchema,
+  getUsersByRoleSchema,
 } from "../validations/users.js";
 
 import {
@@ -120,6 +121,13 @@ router.get(
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(getUserByIdSchema, "params"),
   controllersHandler(UserController.getUserById)
+);
+router.get(
+  "/api/v1/users/role/:roleName",
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getUsersByRoleSchema, "params"),
+  validationsMiddleware(getUsersSchema, "query"),
+  controllersHandler(UserController.getUsersByRole)
 );
 router.post(
   "/api/v1/users",

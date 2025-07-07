@@ -12,13 +12,15 @@ import ForbiddenError from "../exceptions/ForbiddenError.js";
 export default (requiredPermissions = [], requiredRoles = []) => {
 
   return async (req, _, next) => {
-    req.auth = {
-      userId: 1,
-    };
-
     console.log("Authorization Middleware Triggered");
     console.log("req auth:", req.auth);
     const { userId = null } = req.auth || {};
+
+    // Si l'utilisateur est un utilisateur interne, on ignore l'autorisation
+    if (userId === "internal") {
+      console.log("Internal API Key detected, skipping authorization");
+      return next();
+    }
 
     if (!userId) {
       return next(new ForbiddenError("User not authenticated"));

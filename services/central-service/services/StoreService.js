@@ -24,10 +24,11 @@ class StoreService {
   }
 
   static async createStore(data) {
-    const { name, description } = data;
+    const { id, name, description } = data;
 
     const newStore = await prisma.store.create({
       data: {
+        id,
         name,
         description,
       },

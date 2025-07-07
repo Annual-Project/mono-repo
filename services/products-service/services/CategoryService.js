@@ -1,5 +1,9 @@
 import prisma from '../config/db.js';
+
+import { sendToQueue } from '../../../shared/config/rabbitmq.js';
+
 import NotFoundError from '../exceptions/NotFoundError.js';
+import BadRequestError from '../exceptions/BadRequestError.js';
 
 class CategoryService {
   static async getAllCategories(limit, offset) {
@@ -24,24 +28,40 @@ class CategoryService {
   static async createCategory(data) {
     const { name, description } = data;
 
-    return await prisma.category.create({
+    const newCategory = await prisma.category.create({
       data: {
         name,
         description,
       },
     });
+
+    if (!newCategory) {
+      throw new BadRequestError('Failed to create category');
+    }
+
+    sendToQueue('category.create', newCategory);
+
+    return newCategory;
   }
 
   static async updateCategoryById(data) {
     const { id, name, description } = data;
 
-    return await prisma.category.update({
+    const updatedCategory = await prisma.category.update({
       where: { id },
       data: {
         name,
         description,
       },
     });
+
+    if (!updatedCategory) {
+      throw new NotFoundError('Category not found');
+    }
+
+    sendToQueue('category.update', updatedCategory);
+
+    return updatedCategory;
   }
 
   static async deleteCategoryById(id) {
@@ -53,9 +73,17 @@ class CategoryService {
       throw new NotFoundError('Category not found');
     }
 
-    return await prisma.category.delete({
+    const deletedCategory = await prisma.category.delete({
       where: { id },
     });
+
+    if (!deletedCategory) {
+      throw new BadRequestError('Failed to delete category');
+    }
+
+    sendToQueue('category.delete', deletedCategory);
+
+    return deletedCategory;
   }
 }
 

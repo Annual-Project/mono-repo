@@ -33,10 +33,11 @@ class StockHistoryService {
   }
 
   static async createHistory(data) {
-    const { productId, storeId, action, quantity, comment } = data;
+    const { id, productId, storeId, action, quantity, comment } = data;
 
     return await prisma.stockHistory.create({
       data: {
+        id,
         productId,
         storeId,
         action,

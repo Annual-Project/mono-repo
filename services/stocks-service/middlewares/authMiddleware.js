@@ -7,6 +7,13 @@ import AuthUtils from "../../../shared/utils/AuthUtils.js";
  * @param {NextFunction} next - Fonction pour passer au prochain MW
  */
 export default async (req, _, next) => {
+  const apiKey = req.headers["x-internal-api-key"];
+
+  if (apiKey && apiKey === process.env.INTERNAL_API_KEY) {
+    req.auth = { userId: "internal" };
+    return next();
+  }
+
   const { accessTokenM, refreshTokenM } = req.cookies;
   req.auth = null;
 

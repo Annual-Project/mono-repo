@@ -11,6 +11,7 @@ export const getCategorySchema = z.object({
 });
 
 export const createCategorySchema = z.object({
+  id: z.coerce.number().positive('L\'id doit être un nombre positif'),
   name: safeString(1),
   description: safeString(1).optional(),
 });

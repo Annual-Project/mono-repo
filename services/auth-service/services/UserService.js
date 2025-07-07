@@ -29,6 +29,26 @@ class UserService {
     return user;
   }
 
+  static async getUsersByRole(roleName, limit, offset) {
+    const users = await prisma.user.findMany({
+      where: {
+        isActive: true,
+        UserHasRole: {
+          some: {
+            role: {
+              name: roleName,
+              isActive: true,
+            },
+          },
+        },
+      },
+      take: limit,
+      skip: offset,
+    });
+
+    return users;
+  }
+
   static async createUser({ firstname, lastname, email, hashPassword, salt, isActive }) {
     const existingUser = await prisma.user.findUnique({
       where: { email },

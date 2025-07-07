@@ -1,6 +1,9 @@
 import prisma from '../config/db.js';
 
+import { sendToQueue } from '../../../shared/config/rabbitmq.js';
+
 import NotFoundError from '../exceptions/NotFoundError.js';
+import BadRequestError from '../exceptions/BadRequestError.js';
 
 class StockHistoryService {
   static async getAllHistory(limit, offset) {
@@ -35,7 +38,7 @@ class StockHistoryService {
   static async createHistory(data) {
     const { productId, storeId, action, quantity, comment } = data;
 
-    return await prisma.stockHistory.create({
+    const newStockHistory = await prisma.stockHistory.create({
       data: {
         productId,
         storeId,
@@ -44,12 +47,20 @@ class StockHistoryService {
         comment,
       },
     });
+
+    if (!newStockHistory) {
+      throw new BadRequestError('Failed to create stock history');
+    }
+
+    sendToQueue('stockHistory.create', newStockHistory);
+
+    return newStockHistory;
   }
 
   static async updateHistoryById(data) {
     const { id, productId, storeId, action, quantity, comment } = data;
 
-    return await prisma.stockHistory.update({
+    const updatedStockHistory = await prisma.stockHistory.update({
       where: { id },
       data: {
         productId,
@@ -59,6 +70,14 @@ class StockHistoryService {
         comment,
       },
     });
+
+    if (!updatedStockHistory) {
+      throw new NotFoundError('History record not found');
+    }
+
+    sendToQueue('stockHistory.update', updatedStockHistory);
+
+    return updatedStockHistory;
   }
 
   static async deleteHistoryById(id) {
@@ -70,9 +89,17 @@ class StockHistoryService {
       throw new NotFoundError('History record not found');
     }
 
-    return await prisma.stockHistory.delete({
+    const deletedStockHistory = await prisma.stockHistory.delete({
       where: { id },
     });
+
+    if (!deletedStockHistory) {
+      throw new BadRequestError('Failed to delete stock history');
+    }
+
+    sendToQueue('stockHistory.delete', deletedStockHistory);
+
+    return deletedStockHistory;
   }
 }
 
