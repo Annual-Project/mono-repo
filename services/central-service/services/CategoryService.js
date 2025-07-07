@@ -22,10 +22,11 @@ class CategoryService {
   }
 
   static async createCategory(data) {
-    const { name, description } = data;
+    const { id, name, description } = data;
 
     return await prisma.category.create({
       data: {
+        id,
         name,
         description,
       },

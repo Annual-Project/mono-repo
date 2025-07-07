@@ -24,10 +24,11 @@ class StockService {
   }
 
   static async createStock(data) {
-    const { productId, storeId, quantityAvailable, criticalThreshold } = data;
+    const { id, productId, storeId, quantityAvailable, criticalThreshold } = data;
 
     const newStock = await prisma.stock.create({
       data: {
+        id,
         productId,
         storeId,
         quantityAvailable,

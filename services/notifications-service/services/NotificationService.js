@@ -34,7 +34,10 @@ class NotificationService {
         ...notification,
         recipient: notification.recipients?.find(r => r.userId === userId),
       };
-      this.#io.to(`user_${userId}`).emit('notification', notificationForUser);
+      // this.#io.to(`user_${userId}`).emit('notification', notificationForUser);
+
+      // Envoyer la notification à tous les utilisateurs
+      this.#io.emit('notification', notificationForUser);
     });
 
     return notification;

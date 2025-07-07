@@ -10,6 +10,7 @@ export const getStockSchema = z.object({
 });
 
 export const createStockSchema = z.object({
+  id: z.coerce.number().positive("L'id doit être un nombre positif"),
   productId: z.number({
     required_error: 'Product ID is required',
     invalid_type_error: 'Product ID must be a number',
@@ -22,7 +23,10 @@ export const createStockSchema = z.object({
     required_error: 'Quantity available is required',
     invalid_type_error: 'Quantity available must be a number',
   }).positive('Quantity available must be a positive number'),
-  criticalThreshold: z.boolean().optional().default(false).describe('Indicates if the stock is below the critical threshold'),
+  criticalThreshold: z.number({
+    required_error: 'Critical threshold is required',
+    invalid_type_error: 'Critical threshold must be a number',
+  }).optional().default(10),
 });
 
 export const updateStockIdSchema = z.object({
@@ -32,8 +36,14 @@ export const updateStockIdSchema = z.object({
 export const updateStockSchema = z.object({
   productId: z.number().positive('Product ID must be a positive number').optional(),
   storeId: z.number().positive('Store ID must be a positive number').optional(),
-  quantityAvailable: z.number().optional(),
-  criticalThreshold: z.boolean().optional().default(false).describe('Indicates if the stock is below the critical threshold'),
+  quantityAvailable: z.number({
+    required_error: 'Quantity available is required',
+    invalid_type_error: 'Quantity available must be a number',
+  }).positive('Quantity available must be a positive number').optional(),
+  criticalThreshold: z.number({
+    required_error: 'Critical threshold is required',
+    invalid_type_error: 'Critical threshold must be a number',
+  }).optional().default(10),
 });
 
 export const deleteStockSchema = z.object({

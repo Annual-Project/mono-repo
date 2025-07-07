@@ -24,10 +24,11 @@ class TransferService {
   }
 
   static async createTransfer(data) {
-    const { productId, sourceStoreId, destinationStoreId, quantity, status, comment } = data;
+    const { id, productId, sourceStoreId, destinationStoreId, quantity, status, comment } = data;
 
     const newTransfer = await prisma.transfer.create({
       data: {
+        id, 
         productId,
         sourceStoreId,
         destinationStoreId,

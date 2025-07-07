@@ -1,5 +1,7 @@
 import prisma from '../config/db.js';
 
+import { sendToQueue } from '../../../shared/config/rabbitmq.js';
+
 import NotFoundError from '../exceptions/NotFoundError.js';
 import BadRequestError from '../exceptions/BadRequestError.js';
 
@@ -41,6 +43,8 @@ class TransferService {
       throw new BadRequestError('Failed to create transfer');
     }
 
+    sendToQueue('transfer.create', newTransfer);
+
     return newTransfer;
   }
 
@@ -63,6 +67,8 @@ class TransferService {
       throw new NotFoundError('Transfer not found');
     }
 
+    sendToQueue('transfer.update', updatedTransfer);
+
     return updatedTransfer;
   }
 
@@ -78,6 +84,12 @@ class TransferService {
     const deletedTransfer = await prisma.transfer.delete({
       where: { id },
     });
+
+    if (!deletedTransfer) {
+      throw new BadRequestError('Failed to delete transfer');
+    }
+
+    sendToQueue('transfer.delete', deletedTransfer);
 
     return deletedTransfer;
   }

@@ -1,5 +1,7 @@
 import prisma from '../config/db.js';
 
+import { sendToQueue } from '../../../shared/config/rabbitmq.js';
+
 import NotFoundError from '../exceptions/NotFoundError.js';
 import BadRequestError from '../exceptions/BadRequestError.js';
 
@@ -36,7 +38,7 @@ class ProductService {
       }
     }
 
-    return await prisma.product.create({
+    const newProduct = await prisma.product.create({
       data: {
         name,
         price,
@@ -44,6 +46,14 @@ class ProductService {
         categoryId,
       },
     });
+
+    if (!newProduct) {
+      throw new BadRequestError('Failed to create product');
+    }
+
+    sendToQueue('product.create', newProduct);
+
+    return newProduct;
   }
 
   static async updateProductById(data) {
@@ -59,7 +69,7 @@ class ProductService {
       }
     }
 
-    return await prisma.product.update({
+    const updatedProduct = await prisma.product.update({
       where: { id },
       data: {
         name,
@@ -68,6 +78,14 @@ class ProductService {
         categoryId,
       },
     });
+
+    if (!updatedProduct) {
+      throw new NotFoundError('Product not found');
+    }
+
+    sendToQueue('product.update', updatedProduct);
+
+    return updatedProduct;
   }
 
   static async deleteProductById(id) {
@@ -79,9 +97,17 @@ class ProductService {
       throw new NotFoundError('Product not found');
     }
 
-    return await prisma.product.delete({
+    const deletedProduct = await prisma.product.delete({
       where: { id },
     });
+
+    if (!deletedProduct) {
+      throw new BadRequestError('Failed to delete product');
+    }
+
+    sendToQueue('product.delete', deletedProduct);
+
+    return deletedProduct;
   }
 }
 

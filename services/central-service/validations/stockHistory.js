@@ -22,6 +22,7 @@ export const getProductHistorySchema = z.object({
 
 // Validation pour : POST /stock-history/:productId
 export const createHistorySchema = z.object({
+  id: z.coerce.number().positive("L'id doit être un nombre positif"),
   productId: z.number().positive("Le productId doit être un nombre positif"),
   storeId: z.number().positive("Le storeId doit être un nombre positif"),
   action: actionEnum,

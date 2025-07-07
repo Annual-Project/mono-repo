@@ -51,7 +51,7 @@ model Stock {
   productId         Int      @map("product_id")
   storeId           Int      @map("store_id")
   quantityAvailable Int      @map("quantity_available")
-  criticalThreshold Boolean? @map("critical_threshold")
+  criticalThreshold Int      @map("critical_threshold") @default(10)
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime? @updatedAt @map("updated_at")
 

@@ -22,6 +22,7 @@ const router = Router();
 // Routes pour les appels internes (depuis d'autres microservices)
 router.post(
   '/api/v1/notifications',
+  authorizationMiddleware([], ["admin"]),
   validationsMiddleware(createNotificationSchema, "body"),
   controllersHandler(NotificationController.createNotification),
 );

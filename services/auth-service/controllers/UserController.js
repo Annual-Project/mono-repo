@@ -13,6 +13,13 @@ class UserController {
     return res.status(200).json(user);
   }
 
+  static async getUsersByRole(req, res) {
+    const { roleName } = req.params;
+    const { limit, offset } = req.query;
+    const users = await UserService.getUsersByRole(roleName, limit, offset);
+    return res.status(200).json(users);
+  }
+
   static async createUser(req, res) {
     const { firstname, lastname, email, hashPassword, salt, isActive } = req.body;
     const newUser = await UserService.createUser({ firstname, lastname, email, hashPassword, salt, isActive });

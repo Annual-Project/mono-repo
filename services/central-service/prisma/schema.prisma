@@ -10,7 +10,7 @@ generator client {
 }
 
 model Product {
-  id          Int       @id @default(autoincrement())
+  id          Int       @id
   name        String
   description String?
   price       Float
@@ -26,7 +26,7 @@ model Product {
 }
 
 model Category {
-  id          Int      @id @default(autoincrement())
+  id          Int      @id
   name        String
   description String?
   createdAt   DateTime @default(now()) @map("created_at")
@@ -38,7 +38,7 @@ model Category {
 }
 
 model Store {
-  id          Int       @id @default(autoincrement()) @map("id")
+  id          Int       @id
   name        String    @map("name")
   description String?   @map("description")
   // address     String?   @map("address")
@@ -60,11 +60,11 @@ model Store {
 
 // Modèle Stock
 model Stock {
-  id                Int       @id @default(autoincrement()) @map("id")
+  id                Int       @id
   productId         Int       @map("product_id")
   storeId           Int       @map("store_id")
   quantityAvailable Int       @map("quantity_available")
-  criticalThreshold Boolean?  @map("critical_threshold")
+  criticalThreshold Int       @map("critical_threshold") @default(10)
   createdAt         DateTime  @default(now()) @map("created_at")
   updatedAt         DateTime? @updatedAt @map("updated_at")
 
@@ -76,7 +76,7 @@ model Stock {
 
 // Modèle StockHistory
 model StockHistory {
-  id        Int       @id @default(autoincrement()) @map("id")
+  id        Int       @id
   productId Int       @map("product_id")
   storeId   Int       @map("store_id")
   action    String    @map("action")
@@ -92,7 +92,7 @@ model StockHistory {
 }
 
 model Transfer {
-  id                 Int       @id @default(autoincrement())
+  id                 Int       @id
   productId          Int       @map("product_id")
   sourceStoreId      Int       @map("source_store_id")
   destinationStoreId Int       @map("destination_store_id")

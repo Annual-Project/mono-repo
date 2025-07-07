@@ -10,6 +10,10 @@ export const getUserByIdSchema = z.object({
   id: z.coerce.number().int().positive('ID must be a positive integer'),
 });
 
+export const getUsersByRoleSchema = z.object({
+  roleName: safeString(1),
+});
+
 export const createUserSchema = z.object({
   firstname: safeString(1),
   lastname: safeString(1),

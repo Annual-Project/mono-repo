@@ -11,17 +11,18 @@ export const getStoreSchema = z.object({
 });
 
 export const createStoreSchema = z.object({
-    name: safeString(1),
-    description: safeString().optional(),
+  id: z.coerce.number().positive("L'id doit être un nombre positif"),
+  name: safeString(1),
+  description: safeString().optional(),
 });
 
 export const updateStoreIdSchema = z.object({
-    id: z.coerce.number().positive("L'id doit être un nombre positif"),
+  id: z.coerce.number().positive("L'id doit être un nombre positif"),
 });
 
 export const updateStoreSchema = z.object({
-    name: safeString(1).optional(),
-    description: safeString().optional(),
+  name: safeString(1).optional(),
+  description: safeString().optional(),
 });
 
 export const deleteStoreSchema = z.object({

@@ -11,6 +11,7 @@ export const getProductSchema = z.object({
 });
 
 export const createProductSchema = z.object({
+  id: z.coerce.number().positive('L\'id doit être un nombre positif'),
   name: safeString(1),
   description: safeString(1).optional(),
   price: z.number().min(0, 'Price must be a positive number'),

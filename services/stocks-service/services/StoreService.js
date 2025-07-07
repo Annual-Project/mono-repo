@@ -1,5 +1,7 @@
 import prisma from '../config/db.js';
 
+import { sendToQueue } from '../../../shared/config/rabbitmq.js';
+
 import NotFoundError from '../exceptions/NotFoundError.js';
 import BadRequestError from '../exceptions/BadRequestError.js';
 
@@ -37,6 +39,8 @@ class StoreService {
       throw new BadRequestError('Failed to create store');
     }
 
+    sendToQueue('store.create', newStore);
+
     return newStore;
   }
 
@@ -55,6 +59,8 @@ class StoreService {
       throw new NotFoundError('Store not found');
     }
 
+    sendToQueue('store.update', updatedStore);
+
     return updatedStore;
   }
 
@@ -67,9 +73,17 @@ class StoreService {
       throw new NotFoundError('Store not found');
     }
 
-    return await prisma.store.delete({
+    const deletedStore = await prisma.store.delete({
       where: { id },
     });
+
+    if (!deletedStore) {
+      throw new BadRequestError('Failed to delete store');
+    }
+
+    sendToQueue('store.delete', deletedStore);
+
+    return deletedStore;
   }
 }
 
