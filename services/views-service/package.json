@@ -1,0 +1,39 @@
+{
+  "name": "views-service",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "add-perms": "chmod -R u+rwx .",
+    "build": "rm -rf ./dist && tsc && cp -r public dist/ && npm run add-perms",
+    "start": "NODE_ENV=production tsc; node ./dist/server.js",
+    "dev": "NODE_ENV=development npm run build; node --watch ./dist/server.js",
+    "db:format": "prisma format",
+    "db:first": "prisma migrate dev --create-only --name init",
+    "db:create-migration": "prisma migrate dev --create-only --name",
+    "db:deploy": "prisma migrate deploy",
+    "db:client-generate": "prisma generate",
+    "db:clean": "prisma migrate reset",
+    "db:seeding": "node ./prisma/scripts/seeding.js",
+    "db:reset": "npm run add-perms && npm run db:clean && npm run db:clean && npm run db:deploy && npm run db:client-generate",
+    "db:reset:force": "npm run add-perms && npm run db:clean && rm -rf ./prisma/migrations && npm run db:first && npm run db:clean && npm run db:deploy --force && npm run db:client-generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "prisma": "^6.9.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "http-status-codes": "^2.3.0",
+    "shared": "*",
+    "zod": "^3.25.42"
+  }
+}

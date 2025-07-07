@@ -142,4 +142,9 @@ router.delete(
   controllersHandler(StockHistoryController.deleteHistoryById)
 );
 
+// Dans le cas où aucune route ne correspond, on renvoie une erreur 404
+router.use((_, __, next) => {
+  next(new NotFoundError("Resource not found"));
+});
+
 export default router;

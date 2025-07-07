@@ -45,3 +45,10 @@ node_modules
 /services/notifications-service/generated
 /services/notifications-service/.env
 /services/notifications-service/prisma/migrations
+
+# views service
+/services/views-service/node_modules
+/services/views-service/dist
+/services/views-service/generated
+/services/views-service/.env
+/services/views-service/prisma/migrations

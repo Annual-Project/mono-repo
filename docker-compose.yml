@@ -173,6 +173,21 @@ services:
     networks:
       - micro-net
 
+  views-service:
+    container_name: views_service
+    build:
+      context: .
+      dockerfile: services/views-service/Dockerfile
+    working_dir: /app/services/views-service
+    volumes:
+      - .:/app
+    ports:
+      - "3009:3000"
+    env_file:
+      - ./services/views-service/.env
+    networks:
+      - micro-net
+
   # rabbitmq
   rabbitmq:
     image: rabbitmq:3-management
@@ -196,6 +211,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/certs:/etc/nginx/certs
     depends_on:
       - products-service
       - auth-service
