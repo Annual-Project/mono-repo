@@ -209,9 +209,10 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/certs:/etc/nginx/certs
+      # - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Configuration principale (https)
+      - ./nginx/nginx-temp.conf:/etc/nginx/nginx.conf  # Configuration temporaire (http)
+      - /etc/letsencrypt:/etc/letsencrypt:ro  # Ajout : accès aux certificats Let's Encrypt
+      - ./nginx/conf.d:/etc/nginx/conf.d # Supprimer le dossier conf.d qui contient default.conf (./nginx/conf.d n'existe pas donc le dossier devient vide)
     depends_on:
       - products-service
       - auth-service
