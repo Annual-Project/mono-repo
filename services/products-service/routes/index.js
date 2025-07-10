@@ -45,6 +45,22 @@ router.get(
   controllersHandler(ProductController.getProductById)
 );
 
+// GET a products by ID in a specific store
+// router.get(
+//   "/api/v1/products/store/:id",
+//   authorizationMiddleware([], ["user"]),
+//   validationsMiddleware(getProductSchema, "params"),
+//   controllersHandler(ProductController.getProductsByStoreId)
+// );
+
+// GET count of products and categories by store ID
+// router.get(
+//   "/api/v1/products/store/:id/count",
+//   authorizationMiddleware([], ["user"]),
+//   validationsMiddleware(getProductSchema, "params"),
+//   controllersHandler(ProductController.countProductsAndCategoriesByStoreId)
+// );
+
 // POST a new product
 router.post(
   "/api/v1/products",

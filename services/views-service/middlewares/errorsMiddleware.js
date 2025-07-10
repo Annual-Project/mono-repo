@@ -7,11 +7,12 @@ export default (err, _, res, next) => {
   if (res.headersSent) return next(err);
 
   if (err instanceof AppError) {
+    console.error('AppError:', err);
     return res.status(404).render('communes/404');
   }
 
   // Erreur inconnue (non prévue)
-  console.error(err);
+  console.error('Erreur inconnue:', err);
   return res.render('communes/404');
 
 };

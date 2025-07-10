@@ -20,11 +20,25 @@ class UserService {
         id,
         isActive: true,
       },
+      include: {
+        roles: {
+          select: {
+            role: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!user) {
       throw new NotFoundError('User not found.');
     }
+
+    // Retirer un niveau d'imbrication pour simplifier l'objet roles
+    user.roles = user.roles.map(({ role }) => role.name);
 
     return user;
   }

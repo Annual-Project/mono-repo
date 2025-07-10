@@ -16,6 +16,9 @@ class ProductService {
   static async getProductById(id) {
     const product = await prisma.product.findUnique({
       where: { id },
+      include: {
+        category: true, // Include category details if needed
+      },
     });
 
     if (!product) {
@@ -24,6 +27,36 @@ class ProductService {
 
     return product;
   }
+
+  // static async getProductsByStoreId(storeId) {
+  //   return await prisma.product.findMany({
+  //     where: { storeId },
+  //     include: {
+  //       category: true,
+  //     },
+  //   });
+  // }
+
+  // static async countProductsAndCategoriesByStoreId(storeId) {
+  //   const products = await prisma.product.findMany({
+  //     select: {
+  //       id: true,
+  //       categoryId: true,
+  //     },
+  //     where: { storeId },
+  //   });
+
+  //   const productsCount = products.length;
+
+  //   const categoriesCount = new Set(
+  //     products.map((product) => product.categoryId)
+  //   ).size;
+
+  //   return {
+  //     productsCount,
+  //     categoriesCount,
+  //   };
+  // }
 
   static async createProduct(data) {
     const { name, price, description, categoryId } = data;

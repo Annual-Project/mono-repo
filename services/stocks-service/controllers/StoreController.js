@@ -2,13 +2,14 @@ import StoreService from '../services/StoreService.js';
 
 class StoreController {
   static async getAllStores(req, res) {
-    const { limit, offset } = req.query;
+    // const { limit, offset } = req.query;
+    const { limit, offset } = req.validated.query;
     const stores = await StoreService.getAllStores(limit, offset);
     res.status(200).json(stores);
   }
 
   static async getStoreById(req, res) {
-    const { id } = req.params;
+    const { id } = req.validated.params;
     const store = await StoreService.getStoreById(id);
     res.status(200).json(store);
   }

@@ -58,6 +58,13 @@ router.get(
   controllersHandler(StockController.getAllStocks)
 );
 router.get(
+  "/api/v1/stocks/store/:id",
+  authorizationMiddleware([], ["admin"]),
+  validationsMiddleware(getStockSchema, "params"),
+  validationsMiddleware(getStocksSchema, "query"),
+  controllersHandler(StockController.getStockByStoreId)
+);
+router.get(
   "/api/v1/stocks/history",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(getStocksHistorySchema, "query"),

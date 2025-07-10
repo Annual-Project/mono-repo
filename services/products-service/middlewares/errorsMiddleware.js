@@ -21,8 +21,6 @@ export default (err, _, res, next) => {
     }))
 
     res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid data', details: errorMessages });
-  } else {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
   }
 
   // Erreur inconnue (non prévue)

@@ -8,7 +8,7 @@ class UserController {
   }
 
   static async getUserById(req, res) {
-    const { id } = req.params;
+    const { id } = req.validated.params;
     const user = await UserService.getUserById(id);
     return res.status(200).json(user);
   }

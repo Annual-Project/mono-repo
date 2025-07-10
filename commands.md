@@ -13,4 +13,5 @@
 3. npm run db:first
 4. npm run db:deploy
 5. npm run db:client-generate
-6. node --watch index.js
+6. node prisma/scripts/seeding.js
+7. node --watch index.js

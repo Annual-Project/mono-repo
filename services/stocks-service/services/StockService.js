@@ -25,6 +25,15 @@ class StockService {
     return stock;
   }
 
+  static async getStockByStoreId(storeId, limit, offset) {
+    const stocks = await prisma.stock.findMany({
+      where: { storeId },
+      take: limit,
+      skip: offset,
+    });
+    return stocks;
+  }
+
   static async createStock(data) {
     const { productId, storeId, quantityAvailable, criticalThreshold } = data;
 

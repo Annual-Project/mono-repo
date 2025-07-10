@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Produits - StoreManager Central</title>
+    <title><%= storeName %> - Produits - StoreManager</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
@@ -173,7 +173,7 @@
             @apply w-full h-48 object-cover rounded-t-lg bg-gray-100;
         }
         
-        /* Dropdown Styles - Version fonctionnelle */
+        /* Dropdown Styles */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -335,10 +335,8 @@
         .store-header-gradient {
             background: linear-gradient(135deg, hsl(222.2 47.4% 11.2%) 0%, hsl(222.2 47.4% 20%) 100%);
         }
-    </style>
 
-    <style>
-        /* Styles de pagination à ajouter à votre CSS existant */
+        /* Styles de pagination */
         .pagination {
             display: flex;
             justify-content: center;
@@ -442,6 +440,11 @@
                 display: none;
             }
         }
+
+        /* Style pour les cartes masquées */
+        .product-card.hidden-by-pagination {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-background font-sans antialiased">
@@ -464,8 +467,8 @@
                 </nav>
                 
                 <div class="flex items-center space-x-3">
-                    <a href="/login" class="btn btn-outline">Connexion</a>
-                    <a href="/register" class="btn btn-primary">Inscription</a>
+                    <a href="/signin" class="btn btn-outline">Connexion</a>
+                    <a href="/signup" class="btn btn-primary">Inscription</a>
                 </div>
             </div>
         </div>
@@ -479,20 +482,36 @@
                 <nav class="flex items-center space-x-2 text-gray-300">
                     <a href="/stores" class="hover:text-white transition-colors">Magasins</a>
                     <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    <span class="text-white font-medium">StoreManager Central</span>
+                    <span class="text-white font-medium"><%= storeName %></span>
                 </nav>
             </div>
             
             <div class="text-center mb-12">
                 <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
-                    StoreManager Central
+                    <%= storeName %>
                 </h1>
+                <% 
+                // Génération d'adresse aléatoire
+                const addresses = [
+                    '123 Avenue des Champs-Élysées, 75008 Paris',
+                    '45 Place Bellecour, 69002 Lyon',
+                    '78 Quai du Port, 13002 Marseille',
+                    '12 Place du Capitole, 31000 Toulouse',
+                    '34 Promenade des Anglais, 06000 Nice',
+                    '56 Rue Crébillon, 44000 Nantes',
+                    '45 Place Kléber, 67000 Strasbourg',
+                    '23 Cours de l\'Intendance, 33000 Bordeaux',
+                    '67 Rue Nationale, 59000 Lille',
+                    '12 Place de la Comédie, 34000 Montpellier'
+                ];
+                const randomAddress = addresses[Math.floor(Math.random() * addresses.length)];
+                %>
                 <div class="flex items-center justify-center text-gray-200 mb-6">
                     <i data-lucide="map-pin" class="w-5 h-5 mr-2"></i>
-                    <span>123 Avenue des Champs-Élysées, 75008 Paris</span>
+                    <span><%= randomAddress %></span>
                 </div>
                 <p class="text-xl text-gray-200 max-w-2xl mx-auto">
-                    Découvrez notre sélection de 245 produits répartis en 12 catégories
+                    Découvrez notre sélection de <%= productsCount %> produits répartis en <%= categoriesCount %> catégories
                 </p>
             </div>
             
@@ -536,46 +555,14 @@
                             </div>
                         </div>
                         <div style="padding: 8px; max-height: 256px; overflow-y: auto;">
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="electronique" class="category-checkbox">
-                                <span style="flex: 1;">Électronique</span>
-                                <span style="font-size: 14px; color: #6b7280;">42</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="vetements" class="category-checkbox">
-                                <span style="flex: 1;">Vêtements</span>
-                                <span style="font-size: 14px; color: #6b7280;">38</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="maison" class="category-checkbox">
-                                <span style="flex: 1;">Maison & Jardin</span>
-                                <span style="font-size: 14px; color: #6b7280;">35</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="sport" class="category-checkbox">
-                                <span style="flex: 1;">Sport & Loisirs</span>
-                                <span style="font-size: 14px; color: #6b7280;">29</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="beaute" class="category-checkbox">
-                                <span style="flex: 1;">Beauté & Santé</span>
-                                <span style="font-size: 14px; color: #6b7280;">24</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="cuisine" class="category-checkbox">
-                                <span style="flex: 1;">Cuisine</span>
-                                <span style="font-size: 14px; color: #6b7280;">18</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="auto" class="category-checkbox">
-                                <span style="flex: 1;">Automobile</span>
-                                <span style="font-size: 14px; color: #6b7280;">15</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="livres" class="category-checkbox">
-                                <span style="flex: 1;">Livres</span>
-                                <span style="font-size: 14px; color: #6b7280;">12</span>
-                            </label>
+                            <% uniqueCategories.forEach((category, index) => { %>
+                                <% const categoryCount = products.filter(p => p.product.category.name === category).length; %>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="<%= category.toLowerCase().replace(/\s+/g, '_') %>" class="category-checkbox">
+                                    <span style="flex: 1;"><%= category %></span>
+                                    <span style="font-size: 14px; color: #6b7280;"><%= categoryCount %></span>
+                                </label>
+                            <% }); %>
                         </div>
                     </div>
                 </div>
@@ -592,7 +579,7 @@
             <div class="flex justify-between items-center mb-8">
                 <div class="flex items-center space-x-4">
                     <h2 class="text-2xl font-bold text-foreground">Nos Produits</h2>
-                    <span class="text-muted-foreground" id="productCount">245 produits</span>
+                    <span class="text-muted-foreground" id="productCount"><%= productsCount %> produits</span>
                 </div>
                 <select class="input w-auto" id="sortSelect">
                     <option value="name">Trier par nom</option>
@@ -603,6 +590,132 @@
             </div>
             
             <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="productsGrid">
+                <%
+                // Images aléatoires selon la catégorie
+                const categoryImages = {
+                    'electronics': [
+                        'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=300&fit=crop',
+                        'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop',
+                        'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=300&fit=crop',
+                        'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop'
+                    ],
+                    'books': [
+                        'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop',
+                        'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=300&fit=crop',
+                        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop'
+                    ],
+                    'clothing': [
+                        'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=300&fit=crop',
+                        'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop',
+                        'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400&h=300&fit=crop'
+                    ],
+                    'default': [
+                        'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
+                        'https://images.unsplash.com/photo-1545241047-6083a3684587?w=400&h=300&fit=crop',
+                        'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop'
+                    ]
+                };
+
+                // Caractéristiques aléatoires selon la catégorie
+                const categoryFeatures = {
+                    'electronics': [
+                        ['Garantie 2 ans', 'Bluetooth 5.0', 'Livraison gratuite', 'Service client 24/7'],
+                        ['Écran HD', 'Batterie longue durée', 'Étanche IP67', 'Compatible iOS/Android'],
+                        ['Processeur rapide', '5G compatible', 'Appareil photo haute résolution', 'Stockage extensible']
+                    ],
+                    'books': [
+                        ['Format papier', 'Couverture souple', 'Livraison rapide', 'Édition française'],
+                        ['Broché', 'Illustrations incluses', 'Auteur reconnu', 'Prix littéraire'],
+                        ['Reliure de qualité', 'Papier recyclé', 'Nouvelle édition', 'Résumé disponible']
+                    ],
+                    'clothing': [
+                        ['100% coton', 'Lavable machine', 'Tailles disponibles', 'Coupe moderne'],
+                        ['Matière respirante', 'Anti-odeur', 'Séchage rapide', 'Coupe ajustée'],
+                        ['Tissu stretch', 'Résistant', 'Coloris variés', 'Coupe classique']
+                    ],
+                    'default': [
+                        ['Qualité premium', 'Livraison gratuite', 'Garantie incluse', 'Service client'],
+                        ['Matériaux durables', 'Facile d\'entretien', 'Design moderne', 'Prix compétitif'],
+                        ['Excellent rapport qualité-prix', 'Livraison rapide', 'Satisfaction garantie', 'Support technique']
+                    ]
+                };
+
+                function getRandomImage(category, index) {
+                    const categoryKey = category.toLowerCase().includes('electronic') ? 'electronics' :
+                                      category.toLowerCase().includes('book') ? 'books' :
+                                      category.toLowerCase().includes('clothing') || category.toLowerCase().includes('vetement') ? 'clothing' : 'default';
+                    const images = categoryImages[categoryKey];
+                    return images[index % images.length];
+                }
+
+                function getRandomFeatures(category, index) {
+                    const categoryKey = category.toLowerCase().includes('electronic') ? 'electronics' :
+                                      category.toLowerCase().includes('book') ? 'books' :
+                                      category.toLowerCase().includes('clothing') || category.toLowerCase().includes('vetement') ? 'clothing' : 'default';
+                    const features = categoryFeatures[categoryKey];
+                    return features[index % features.length];
+                }
+                %>
+                
+                <% products.forEach((productStock, index) => { %>
+                    <% 
+                    const product = productStock.product;
+                    const category = product.category;
+                    const randomImage = getRandomImage(category.name, index);
+                    const randomFeatures = getRandomFeatures(category.name, index);
+                    const categorySlug = category.name.toLowerCase().replace(/\s+/g, '_');
+                    %>
+                    
+                    <div class="product-card" 
+                         onclick="openProductModal('<%= product.id %>')" 
+                         data-category="<%= categorySlug %>"
+                         data-product-name="<%= product.name.toLowerCase() %>"
+                         data-product-description="<%= product.description.toLowerCase() %>"
+                         data-product-price="<%= product.price %>"
+                         data-product-stock="<%= productStock.quantityAvailable %>">
+                        <div class="relative">
+                            <img src="<%= randomImage %>" alt="<%= product.name %>" class="product-image">
+                            <div class="absolute top-3 right-3">
+                                <% if (productStock.quantityAvailable === 0) { %>
+                                    <span class="badge stock-out">Épuisé</span>
+                                <% } else if (productStock.quantityAvailable <= productStock.criticalThreshold) { %>
+                                    <span class="badge stock-low">Stock limité</span>
+                                <% } else { %>
+                                    <span class="badge stock-available">Disponible</span>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-foreground mb-2"><%= product.name %></h3>
+                            <p class="text-muted-foreground mb-4 line-clamp-2"><%= product.description %></p>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="text-2xl font-bold text-primary"><%= product.price %>€</div>
+                                <div class="text-sm text-muted-foreground">
+                                    Stock: <%= productStock.quantityAvailable > 0 ? productStock.quantityAvailable : 'Épuisé' %>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary w-full mt-4 h-12" <%= productStock.quantityAvailable === 0 ? 'disabled' : '' %>>
+                                <i data-lucide="eye" class="w-4 h-4 mr-2"></i>
+                                Voir le détail
+                            </button>
+                        </div>
+                        
+                        <!-- Données cachées pour le modal -->
+                        <script type="application/json" class="product-data"><%- JSON.stringify({
+                            id: product.id,
+                            name: product.name,
+                            description: product.description,
+                            price: product.price,
+                            stock: productStock.quantityAvailable,
+                            category: category.name,
+                            image: randomImage,
+                            features: randomFeatures
+                        }) %></script>
+                    </div>
+                <% }); %>
+            </div>
             
             <!-- No Results Message -->
             <div id="noResults" class="text-center py-16 hidden">
@@ -651,8 +764,8 @@
                     <ul class="space-y-2 text-muted-foreground">
                         <li><a href="/" class="hover:text-foreground transition-colors">Accueil</a></li>
                         <li><a href="/stores" class="hover:text-foreground transition-colors">Nos magasins</a></li>
-                        <li><a href="/login" class="hover:text-foreground transition-colors">Se connecter</a></li>
-                        <li><a href="/register" class="hover:text-foreground transition-colors">S'inscrire</a></li>
+                        <li><a href="/signin" class="hover:text-foreground transition-colors">Se connecter</a></li>
+                        <li><a href="/signup" class="hover:text-foreground transition-colors">S'inscrire</a></li>
                     </ul>
                 </div>
                 
@@ -683,178 +796,27 @@
     </footer>
 
     <script>
-        // Sample products data
-        const productsData = [
-            {
-                id: 1,
-                name: "iPhone 15 Pro",
-                category: "electronique",
-                price: 1199,
-                stock: 15,
-                description: "Le dernier iPhone avec puce A17 Pro, appareil photo professionnel et design en titane. Écran Super Retina XDR de 6.1 pouces avec ProMotion.",
-                image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=300&fit=crop",
-                features: ["Puce A17 Pro", "Appareil photo 48MP", "Écran 6.1 pouces", "5G", "Face ID"]
-            },
-            {
-                id: 2,
-                name: "MacBook Air M2",
-                category: "electronique",
-                price: 1299,
-                stock: 8,
-                description: "MacBook Air repensé avec la puce M2, écran Liquid Retina de 13,6 pouces et jusqu'à 18 heures d'autonomie.",
-                image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop",
-                features: ["Puce M2", "13,6 pouces", "18h d'autonomie", "8GB RAM", "256GB SSD"]
-            },
-            {
-                id: 3,
-                name: "Jean Slim Fit",
-                category: "vetements",
-                price: 79,
-                stock: 25,
-                description: "Jean slim fit en denim stretch confortable. Coupe moderne et élégante pour un look décontracté.",
-                image: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=300&fit=crop",
-                features: ["Denim stretch", "Coupe slim", "Tailles 28-42", "100% coton", "Lavable machine"]
-            },
-            {
-                id: 4,
-                name: "Casque Sony WH-1000XM5",
-                category: "electronique",
-                price: 399,
-                stock: 12,
-                description: "Casque sans fil à réduction de bruit leader du marché. Son haute qualité et confort exceptionnel.",
-                image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=300&fit=crop",
-                features: ["Réduction de bruit", "30h d'autonomie", "Bluetooth 5.2", "Commandes tactiles", "Son Hi-Res"]
-            },
-            {
-                id: 5,
-                name: "Plante Monstera",
-                category: "maison",
-                price: 45,
-                stock: 18,
-                description: "Magnifique Monstera deliciosa, plante d'intérieur décorative et purificatrice d'air. Facile d'entretien.",
-                image: "https://images.unsplash.com/photo-1545241047-6083a3684587?w=400&h=300&fit=crop",
-                features: ["Purificateur d'air", "Facile d'entretien", "Hauteur 60cm", "Pot inclus", "Plante dépolluante"]
-            },
-            {
-                id: 6,
-                name: "Chaussures de Running",
-                category: "sport",
-                price: 129,
-                stock: 30,
-                description: "Chaussures de running haute performance avec amorti et support optimal pour vos séances d'entraînement.",
-                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop",
-                features: ["Amorti gel", "Semelle respirante", "Support latéral", "Tailles 36-47", "Garantie 2 ans"]
-            },
-            {
-                id: 7,
-                name: "Crème Hydratante Bio",
-                category: "beaute",
-                price: 35,
-                stock: 22,
-                description: "Crème hydratante visage bio à l'aloe vera et à l'huile d'argan. Convient à tous types de peau.",
-                image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
-                features: ["100% bio", "Aloe vera", "Huile d'argan", "50ml", "Tous types de peau"]
-            },
-            {
-                id: 8,
-                name: "Poêle Antiadhésive 28cm",
-                category: "cuisine",
-                price: 89,
-                stock: 14,
-                description: "Poêle antiadhésive professionnelle en aluminium forgé. Revêtement céramique sans PFOA.",
-                image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
-                features: ["Revêtement céramique", "28cm de diamètre", "Sans PFOA", "Compatible induction", "Garantie 5 ans"]
-            },
-            {
-                id: 9,
-                name: "Pneus Été 205/55R16",
-                category: "auto",
-                price: 95,
-                stock: 40,
-                description: "Pneus été haute performance avec excellente adhérence sur route sèche et mouillée. Faible résistance au roulement.",
-                image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
-                features: ["205/55R16", "Adhérence A", "Résistance roulement B", "Bruit 68dB", "Garantie 5 ans"]
-            },
-            {
-                id: 10,
-                name: "Le Guide du Développeur",
-                category: "livres",
-                price: 45,
-                stock: 8,
-                description: "Guide complet pour apprendre le développement web moderne. De HTML/CSS à React et Node.js.",
-                image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop",
-                features: ["480 pages", "Exemples pratiques", "HTML/CSS/JS", "React & Node.js", "Édition 2024"]
-            },
-            {
-                id: 11,
-                name: "T-shirt Coton Bio",
-                category: "vetements",
-                price: 29,
-                stock: 45,
-                description: "T-shirt en coton bio certifié GOTS. Coupe classique et matière douce et respirante.",
-                image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop",
-                features: ["Coton bio GOTS", "Coupe classique", "Couleurs variées", "Tailles XS-XXL", "Lavable 30°C"]
-            },
-            {
-                id: 12,
-                name: "Aspirateur Robot",
-                category: "maison",
-                price: 299,
-                stock: 0,
-                description: "Aspirateur robot intelligent avec navigation laser et contrôle par application mobile. Nettoyage automatique programmable.",
-                image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
-                features: ["Navigation laser", "App mobile", "2h d'autonomie", "Station de charge", "Programmable"]
-            }
-        ];
-
-        let filteredProducts = [...productsData];
-        let selectedCategories = [];
-        let productsPagination; // Variable globale pour la pagination
-        
-        const categoryNames = {
-            'electronique': 'Électronique',
-            'vetements': 'Vêtements',
-            'maison': 'Maison & Jardin',
-            'sport': 'Sport & Loisirs',
-            'beaute': 'Beauté & Santé',
-            'cuisine': 'Cuisine',
-            'auto': 'Automobile',
-            'livres': 'Livres'
-        };
-
-        // Système de pagination dynamique pour les produits
+        // Système de pagination pour les cartes de produits existantes
         class ProductsPaginationSystem {
-            constructor(containerId, itemsPerPage = 8) {
-                this.container = document.getElementById(containerId);
+            constructor(itemsPerPage = 8) {
                 this.itemsPerPage = itemsPerPage;
                 this.currentPage = 1;
-                this.totalItems = 0;
+                this.allProductCards = [];
+                this.filteredProductCards = [];
                 this.totalPages = 0;
-                this.data = [];
-                this.filteredData = [];
+                
+                // Récupérer toutes les cartes de produits
+                this.allProductCards = Array.from(document.querySelectorAll('.product-card'));
+                this.filteredProductCards = [...this.allProductCards];
                 
                 // Créer le conteneur de pagination
                 this.createPaginationContainer();
-            }
-            
-            // Initialiser avec des données
-            init(data) {
-                this.data = [...data];
-                this.filteredData = [...data];
                 this.updatePagination();
-                this.renderProducts();
+                this.renderCurrentPage();
             }
             
-            // Mettre à jour après filtrage
-            updateWithFilteredData(filteredData) {
-                this.filteredData = [...filteredData];
-                this.currentPage = 1; // Retour à la première page après filtrage
-                this.updatePagination();
-                this.renderProducts();
-            }
-            
-            // Créer le conteneur HTML pour la pagination
             createPaginationContainer() {
+                const productsSection = document.querySelector('#productsGrid').closest('section');
                 const paginationHTML = `
                     <div class="pagination" id="paginationControls">
                         <!-- Les boutons seront générés dynamiquement -->
@@ -864,20 +826,14 @@
                     </div>
                 `;
                 
-                // Insérer après la grille des produits
-                const productsSection = this.container.closest('section');
                 productsSection.insertAdjacentHTML('afterend', paginationHTML);
-                
                 this.paginationControls = document.getElementById('paginationControls');
                 this.paginationInfo = document.getElementById('paginationInfo');
             }
             
-            // Calculer et mettre à jour la pagination
             updatePagination() {
-                this.totalItems = this.filteredData.length;
-                this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+                this.totalPages = Math.ceil(this.filteredProductCards.length / this.itemsPerPage);
                 
-                // S'assurer que la page courante est valide
                 if (this.currentPage > this.totalPages) {
                     this.currentPage = Math.max(1, this.totalPages);
                 }
@@ -887,15 +843,13 @@
                 this.updateProductCount();
             }
             
-            // Mettre à jour le compteur de produits
             updateProductCount() {
                 const productCount = document.getElementById('productCount');
                 if (productCount) {
-                    productCount.textContent = `${this.totalItems} produit${this.totalItems > 1 ? 's' : ''}`;
+                    productCount.textContent = `${this.filteredProductCards.length} produit${this.filteredProductCards.length > 1 ? 's' : ''}`;
                 }
             }
             
-            // Générer les boutons de pagination
             renderPaginationControls() {
                 if (this.totalPages <= 1) {
                     this.paginationControls.style.display = 'none';
@@ -915,7 +869,7 @@
                     </button>
                 `;
                 
-                // Boutons de numéro de page (logique simplifiée pour moins de 8 pages)
+                // Boutons de numéro de page
                 for (let i = 1; i <= this.totalPages; i++) {
                     const activeClass = i === this.currentPage ? 'active' : '';
                     const hideMobileClass = this.shouldHideOnMobile(i) ? 'hide-mobile' : '';
@@ -945,31 +899,27 @@
                 }
             }
             
-            // Déterminer si un bouton doit être masqué sur mobile
             shouldHideOnMobile(pageNumber) {
-                // Sur mobile, on garde seulement la page courante et ses voisines immédiates
                 const range = 1;
                 return Math.abs(pageNumber - this.currentPage) > range && 
-                    pageNumber !== 1 && 
-                    pageNumber !== this.totalPages;
+                       pageNumber !== 1 && 
+                       pageNumber !== this.totalPages;
             }
             
-            // Afficher les informations de pagination
             renderPaginationInfo() {
-                if (this.totalItems === 0) {
+                if (this.filteredProductCards.length === 0) {
                     this.paginationInfo.innerHTML = 'Aucun produit trouvé';
                     return;
                 }
                 
                 const startItem = (this.currentPage - 1) * this.itemsPerPage + 1;
-                const endItem = Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+                const endItem = Math.min(this.currentPage * this.itemsPerPage, this.filteredProductCards.length);
                 
                 this.paginationInfo.innerHTML = `
-                    Affichage de ${startItem} à ${endItem} sur ${this.totalItems} produit${this.totalItems > 1 ? 's' : ''}
+                    Affichage de ${startItem} à ${endItem} sur ${this.filteredProductCards.length} produit${this.filteredProductCards.length > 1 ? 's' : ''}
                 `;
             }
             
-            // Naviguer vers une page spécifique
             goToPage(page) {
                 if (page < 1 || page > this.totalPages || page === this.currentPage) {
                     return;
@@ -977,81 +927,56 @@
                 
                 this.currentPage = page;
                 this.updatePagination();
-                this.renderProducts();
+                this.renderCurrentPage();
                 
                 // Scroll vers le haut de la grille
-                const productsSection = this.container.closest('section');
+                const productsSection = document.querySelector('#productsGrid').closest('section');
                 productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
             
-            // Afficher les produits de la page courante
-            renderProducts() {
+            renderCurrentPage() {
+                // Masquer toutes les cartes
+                this.allProductCards.forEach(card => {
+                    card.classList.add('hidden-by-pagination');
+                });
+                
+                // Afficher seulement les cartes de la page courante
                 const startIndex = (this.currentPage - 1) * this.itemsPerPage;
                 const endIndex = startIndex + this.itemsPerPage;
-                const productsToShow = this.filteredData.slice(startIndex, endIndex);
+                const cardsToShow = this.filteredProductCards.slice(startIndex, endIndex);
                 
+                cardsToShow.forEach(card => {
+                    card.classList.remove('hidden-by-pagination');
+                });
+                
+                // Gérer l'affichage du message "aucun résultat"
                 const noResults = document.getElementById('noResults');
-                
-                if (productsToShow.length === 0) {
-                    this.container.innerHTML = '';
+                if (cardsToShow.length === 0) {
                     if (noResults) noResults.classList.remove('hidden');
-                    return;
-                }
-                
-                if (noResults) noResults.classList.add('hidden');
-                
-                // Générer le HTML pour les produits de la page courante
-                this.container.innerHTML = productsToShow.map(product => this.generateProductHTML(product)).join('');
-                
-                // Réinitialiser les icônes Lucide
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
-            }
-            
-            // Générer le HTML pour un produit
-            generateProductHTML(product) {
-                return `
-                    <div class="product-card" onclick="openProductModal(${product.id})" data-category="${product.category}">
-                        <div class="relative">
-                            <img src="${product.image}" alt="${product.name}" class="product-image">
-                            <div class="absolute top-3 right-3">
-                                ${this.getStockBadge(product.stock)}
-                            </div>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-foreground mb-2">${product.name}</h3>
-                            <p class="text-muted-foreground mb-4 line-clamp-2">${product.description}</p>
-                            
-                            <div class="flex items-center justify-between">
-                                <div class="text-2xl font-bold text-primary">${product.price}€</div>
-                                <div class="text-sm text-muted-foreground">
-                                    Stock: ${product.stock > 0 ? product.stock : 'Épuisé'}
-                                </div>
-                            </div>
-                            
-                            <button class="btn btn-primary w-full mt-4 h-12" ${product.stock === 0 ? 'disabled' : ''}>
-                                <i data-lucide="eye" class="w-4 h-4 mr-2"></i>
-                                Voir le détail
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Générer le badge de stock
-            getStockBadge(stock) {
-                if (stock === 0) {
-                    return '<span class="badge stock-out">Épuisé</span>';
-                } else if (stock <= 10) {
-                    return '<span class="badge stock-low">Stock limité</span>';
                 } else {
-                    return '<span class="badge stock-available">Disponible</span>';
+                    if (noResults) noResults.classList.add('hidden');
                 }
+            }
+            
+            updateWithFilteredCards(filteredCards) {
+                this.filteredProductCards = filteredCards;
+                this.currentPage = 1;
+                this.updatePagination();
+                this.renderCurrentPage();
             }
         }
 
-        // Initialize the page
+        // Variables globales
+        let productsPagination;
+        let selectedCategories = [];
+        
+        // Mapping des noms de catégories pour l'affichage
+        const categoryNames = {};
+        <% uniqueCategories.forEach(category => { %>
+            categoryNames['<%= category.toLowerCase().replace(/\s+/g, '_') %>'] = '<%= category %>';
+        <% }); %>
+
+        // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Page loaded, initializing...');
             
@@ -1061,55 +986,54 @@
                     lucide.createIcons();
                     console.log('Lucide icons initialized');
                 } else {
-                    console.log('Lucide not available, using SVG icons instead');
+                    console.log('Lucide not available');
                 }
             } catch (error) {
                 console.log('Lucide initialization failed, continuing without it');
             }
             
-            // Initialiser la pagination des produits
-            productsPagination = new ProductsPaginationSystem('productsGrid', 8); // 8 produits par page
-            filteredProducts = [...productsData];
-            productsPagination.init(productsData);
+            // Initialiser le système de pagination
+            productsPagination = new ProductsPaginationSystem(8); // 8 produits par page
             
-            // Search functionality
+            // Système de recherche
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', debounce(handleSearch, 300));
             }
             
-            // Dropdown functionality - VERSION CORRIGÉE
+            // Système de dropdown pour les catégories
+            initializeDropdown();
+            
+            // Système de tri
+            const sortSelect = document.getElementById('sortSelect');
+            if (sortSelect) {
+                sortSelect.addEventListener('change', handleSort);
+            }
+            
+            console.log('Système de pagination des produits initialisé');
+        });
+        
+        function initializeDropdown() {
             const dropdownBtn = document.getElementById('categoryDropdownBtn');
             const dropdown = document.getElementById('categoryDropdown');
             const chevron = dropdownBtn ? dropdownBtn.querySelector('.chevron') : null;
             const buttonText = document.getElementById('buttonText');
             const activeFiltersContainer = document.getElementById('activeFilters');
             
-            console.log('Dropdown elements found:', {
-                button: !!dropdownBtn,
-                dropdown: !!dropdown,
-                chevron: !!chevron,
-                buttonText: !!buttonText
-            });
-            
             if (dropdownBtn && dropdown && chevron && buttonText) {
                 // Toggle dropdown
                 dropdownBtn.addEventListener('click', function(e) {
-                    console.log('Dropdown button clicked!');
                     e.preventDefault();
                     e.stopPropagation();
                     
                     const isVisible = dropdown.classList.contains('show');
-                    console.log('Menu is currently visible:', isVisible);
                     
                     if (isVisible) {
                         dropdown.classList.remove('show');
                         chevron.classList.remove('rotated');
-                        console.log('Hiding menu');
                     } else {
                         dropdown.classList.add('show');
                         chevron.classList.add('rotated');
-                        console.log('Showing menu');
                     }
                 });
                 
@@ -1123,12 +1047,10 @@
                 
                 // Handle checkbox changes
                 const checkboxes = document.querySelectorAll('.category-checkbox');
-                console.log('Found checkboxes:', checkboxes.length);
                 
                 checkboxes.forEach(checkbox => {
                     checkbox.addEventListener('change', function() {
                         const category = this.value;
-                        console.log('Checkbox changed:', category, 'checked:', this.checked);
                         
                         if (this.checked) {
                             if (!selectedCategories.includes(category)) {
@@ -1138,7 +1060,6 @@
                             selectedCategories = selectedCategories.filter(cat => cat !== category);
                         }
                         
-                        console.log('Selected categories:', selectedCategories);
                         updateUI();
                         applyFilters();
                     });
@@ -1148,7 +1069,6 @@
                 const clearButton = document.getElementById('clearFilters');
                 if (clearButton) {
                     clearButton.addEventListener('click', function(e) {
-                        console.log('Clear filters clicked');
                         e.preventDefault();
                         e.stopPropagation();
                         
@@ -1186,24 +1106,9 @@
                         `).join('');
                     }
                 }
-                
-            } else {
-                console.error('Dropdown elements missing:', {
-                    button: !!dropdownBtn,
-                    dropdown: !!dropdown,
-                    chevron: !!chevron,
-                    buttonText: !!buttonText
-                });
             }
-            
-            // Sort functionality
-            const sortSelect = document.getElementById('sortSelect');
-            if (sortSelect) {
-                sortSelect.addEventListener('change', handleSort);
-            }
-        });
+        }
         
-        // FONCTIONS CORRIGÉES POUR LA PAGINATION
         function removeFilter(category) {
             const checkbox = document.querySelector(`input[value="${category}"]`);
             if (checkbox) {
@@ -1217,55 +1122,74 @@
             applyFilters(searchTerm);
         }
 
-        // Fonction modifiée pour appliquer les filtres avec pagination
         function applyFilters(searchTerm = '') {
             const currentSearchTerm = searchTerm || document.getElementById('searchInput').value.toLowerCase();
             
-            filteredProducts = productsData.filter(product => {
+            const filteredCards = productsPagination.allProductCards.filter(card => {
+                const productName = card.dataset.productName || '';
+                const productDescription = card.dataset.productDescription || '';
+                const productCategory = card.dataset.category || '';
+                
                 const matchesSearch = currentSearchTerm === '' || 
-                                    product.name.toLowerCase().includes(currentSearchTerm) ||
-                                    product.description.toLowerCase().includes(currentSearchTerm);
+                                    productName.includes(currentSearchTerm) ||
+                                    productDescription.includes(currentSearchTerm);
                 
                 const matchesCategory = selectedCategories.length === 0 || 
-                                      selectedCategories.includes(product.category);
+                                      selectedCategories.includes(productCategory);
                 
                 return matchesSearch && matchesCategory;
             });
             
-            // Mettre à jour la pagination au lieu de renderProducts directement
+            // Mettre à jour la pagination
             if (productsPagination) {
-                productsPagination.updateWithFilteredData(filteredProducts);
+                productsPagination.updateWithFilteredCards(filteredCards);
             }
         }
 
-        // Fonction modifiée pour le tri avec pagination
         function handleSort(event) {
             const sortBy = event.target.value;
             
-            filteredProducts.sort((a, b) => {
+            // Trier les cartes filtrées
+            productsPagination.filteredProductCards.sort((a, b) => {
                 switch(sortBy) {
                     case 'name':
-                        return a.name.localeCompare(b.name);
+                        const nameA = a.dataset.productName || '';
+                        const nameB = b.dataset.productName || '';
+                        return nameA.localeCompare(nameB);
                     case 'price-asc':
-                        return a.price - b.price;
+                        const priceA = parseFloat(a.dataset.productPrice) || 0;
+                        const priceB = parseFloat(b.dataset.productPrice) || 0;
+                        return priceA - priceB;
                     case 'price-desc':
-                        return b.price - a.price;
+                        const priceC = parseFloat(a.dataset.productPrice) || 0;
+                        const priceD = parseFloat(b.dataset.productPrice) || 0;
+                        return priceD - priceC;
                     case 'stock':
-                        return b.stock - a.stock;
+                        const stockA = parseInt(a.dataset.productStock) || 0;
+                        const stockB = parseInt(b.dataset.productStock) || 0;
+                        return stockB - stockA;
                     default:
                         return 0;
                 }
             });
             
-            // Mettre à jour la pagination au lieu de renderProducts directement
+            // Mettre à jour la pagination complètement après le tri
             if (productsPagination) {
-                productsPagination.updateWithFilteredData(filteredProducts);
+                productsPagination.updatePagination();
+                productsPagination.renderCurrentPage();
             }
         }
 
         function openProductModal(productId) {
-            const product = productsData.find(p => p.id === productId);
-            if (!product) return;
+            // Trouver le produit par son ID
+            const productCard = document.querySelector(`[onclick="openProductModal('${productId}')"]`);
+            if (!productCard) return;
+            
+            // Récupérer les données du produit depuis le script JSON
+            const productDataScript = productCard.querySelector('.product-data');
+            if (!productDataScript) return;
+            
+            const product = JSON.parse(productDataScript.textContent);
             
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
@@ -1307,7 +1231,7 @@
                             <i data-lucide="x" class="w-4 h-4 mr-2"></i>
                             Fermer
                         </button>
-                        <button onclick="orderProduct(${product.id})" class="btn btn-primary flex-1 h-12" ${product.stock === 0 ? 'disabled' : ''}>
+                        <button onclick="orderProduct('${product.id}', '${product.name}')" class="btn btn-primary flex-1 h-12" ${product.stock === 0 ? 'disabled' : ''}>
                             <i data-lucide="shopping-cart" class="w-4 h-4 mr-2"></i>
                             ${product.stock === 0 ? 'Indisponible' : 'Commander'}
                         </button>
@@ -1343,9 +1267,7 @@
             }
         }
 
-        function orderProduct(productId) {
-            const product = productsData.find(p => p.id === productId);
-            
+        function orderProduct(productId, productName) {
             // Animation de feedback
             const button = event.target.closest('button');
             const originalText = button.innerHTML;
@@ -1364,12 +1286,12 @@
                         button.innerHTML = originalText;
                         button.classList.add('btn-primary');
                         button.classList.remove('bg-green-500', 'text-white');
-                        button.disabled = product.stock === 0;
+                        button.disabled = false;
                     }
                 }, 300);
             }, 1500);
             
-            console.log(`Commande passée pour: ${product.name}`);
+            console.log(`Commande passée pour: ${productName} (ID: ${productId})`);
         }
 
         function debounce(func, wait) {

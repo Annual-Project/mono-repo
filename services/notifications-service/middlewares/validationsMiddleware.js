@@ -12,15 +12,19 @@ export default (schema, source) => {
       }
 
       // Valide les données en fonction de la source
-      const data = req[source];
+      const data = { ...req[source] };
 
-      console.log(data);
+      console.log(`Validation des données pour ${source}:`, data);
 
       // Lance une erreur si les données sont manquantes (ZodError)
       const validatedData = schema.parse(data);
 
       // Ajoute les données validées à la requête
-      req[source] = validatedData;
+      // Au lieu de : req[source] = validatedData;
+      if (!req.validated) req.validated = {};
+      req.validated[source] = validatedData;
+
+      console.log(`Données validées pour ${source}:`, validatedData);
 
       next();
     } catch (err) {

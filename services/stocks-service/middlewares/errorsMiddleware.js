@@ -8,6 +8,7 @@ export default (err, _, res, next) => {
   if (res.headersSent) return next(err);
 
   if (err instanceof AppError) {
+    console.error('AppError:', err);
     return res.status(err.statusCode).json({
       error: err.error,
       message: err.message
@@ -15,6 +16,8 @@ export default (err, _, res, next) => {
   }
 
   if (err instanceof ZodError) {
+
+    console.error('ZodError:', err);
 
     const errorMessages = err.errors.map((issue) => ({
       message: `${issue.path.join('.')} is ${issue.message}`,
@@ -26,7 +29,7 @@ export default (err, _, res, next) => {
   }
 
   // Erreur inconnue (non prévue)
-  console.error(err);
+  console.error('Erreur inconnue:', err);
   return res.status(500).json({
     error: 'INTERNAL_SERVER_ERROR',
     message: err.message || 'Something went wrong'

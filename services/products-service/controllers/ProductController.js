@@ -8,10 +8,23 @@ class ProductController {
   }
 
   static async getProductById(req, res) {
-    const { id } = req.params;
+    const { id } = req.validated.params;
     const product = await ProductService.getProductById(id);
     res.status(200).json(product);
   }
+
+  // static async getProductsByStoreId(req, res) {
+  //   const { id } = req.params;
+  //   const products = await ProductService.getProductsByStoreId(id);
+  //   res.status(200).json(products);
+  // }
+
+  // static async countProductsAndCategoriesByStoreId(req, res) {
+  //   const { id } = req.validated.params;
+  //   console.log('Counting products and categories for store ID:', id);
+  //   const counts = await ProductService.countProductsAndCategoriesByStoreId(id);
+  //   res.status(200).json(counts);
+  // }
 
   static async createProduct(req, res) {
     const newProduct = await ProductService.createProduct(req.body);

@@ -12,7 +12,7 @@ export default (schema, source) => {
       }
 
       // Valide les données en fonction de la source
-      const data = req[source];
+      const data = { ...req[source] };
 
       console.log(data);
 
@@ -20,7 +20,9 @@ export default (schema, source) => {
       const validatedData = schema.parse(data);
 
       // Ajoute les données validées à la requête
-      req[source] = validatedData;
+      // Au lieu de : req[source] = validatedData;
+      if (!req.validated) req.validated = {};
+      req.validated[source] = validatedData;
 
       next();
     } catch (err) {

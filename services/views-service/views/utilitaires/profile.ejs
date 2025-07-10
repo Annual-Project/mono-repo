@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil - StoreManager</title>
+    <title>Profil - AmaZup</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -469,20 +469,78 @@
 </head>
 <body>
     <div class="profile-container">
+        <%
+        // Génération de données aléatoires pour les informations manquantes
+        const phoneNumbers = [
+            '+33 1 23 45 67 89',
+            '+33 1 42 56 78 90',
+            '+33 1 56 78 90 12',
+            '+33 1 67 89 01 23',
+            '+33 1 78 90 12 34',
+            '+33 1 89 01 23 45',
+            '+33 1 90 12 34 56',
+            '+33 1 01 23 45 67'
+        ];
+        
+        const companies = [
+            'TechCorp Solutions',
+            'Retail Innovations SAS',
+            'Digital Commerce SA',
+            'E-Store Systems',
+            'StoreFlow Technologies',
+            'SmartRetail Group',
+            'Commerce Plus SARL',
+            'RetailTech France'
+        ];
+        
+        const positions = [
+            'Administrateur système',
+            'Responsable IT',
+            'Chef de projet digital',
+            'Directeur technique',
+            'Consultant e-commerce',
+            'Responsable infrastructure',
+            'Architecte logiciel',
+            'Lead développeur'
+        ];
+        
+        // Sélection aléatoire basée sur l'ID utilisateur pour cohérence
+        const phoneIndex = user.id % phoneNumbers.length;
+        const companyIndex = user.id % companies.length;
+        const positionIndex = user.id % positions.length;
+        
+        const randomPhone = phoneNumbers[phoneIndex];
+        const randomCompany = companies[companyIndex];
+        const randomPosition = positions[positionIndex];
+        
+        // Génération des initiales
+        const initials = user.firstname.charAt(0).toUpperCase() + user.lastname.charAt(0).toUpperCase();
+        
+        // Formatage de la date de membre depuis
+        const memberSinceDate = new Date(user.createdAt).toLocaleDateString('fr-FR', {
+            day: 'numeric',
+            month: 'long', 
+            year: 'numeric'
+        });
+        
+        // Calcul des jours depuis la dernière connexion
+        const lastLoginDays = Math.floor((new Date() - new Date(user.lastLogin)) / (1000 * 60 * 60 * 24));
+        %>
+        
         <!-- En-tête simplifiée -->
         <div class="header">
             <div class="logo">
                 <div class="logo-icon">
                     <i data-lucide="store"></i>
                 </div>
-                <div class="logo-text">StoreManager</div>
+                <div class="logo-text">AmaZup</div>
             </div>
             
             <div class="user-info">
-                <div class="user-avatar">JD</div>
+                <div class="user-avatar"><%= initials %></div>
                 <div>
-                    <div class="info-value" style="color: #1e293b; font-weight: 600;">John Doe</div>
-                    <div class="info-label" style="color: #64748b;">Administrateur</div>
+                    <div class="info-value" style="color: #1e293b; font-weight: 600;"><%= user.firstname %> <%= user.lastname %></div>
+                    <div class="info-label" style="color: #64748b;"><%= user.roles?.includes("admin") ? "Administrateur" : "Utilisateur" %></div>
                 </div>
             </div>
         </div>
@@ -494,29 +552,29 @@
                 <!-- Carte de profil -->
                 <div class="profile-card">
                     <div class="card-header">
-                        <div class="profile-avatar">JD</div>
-                        <div class="profile-name">John Doe</div>
-                        <div class="profile-role">Administrateur système</div>
+                        <div class="profile-avatar"><%= initials %></div>
+                        <div class="profile-name"><%= user.firstname %> <%= user.lastname %></div>
+                        <div class="profile-role"><%= randomPosition %></div>
                     </div>
                     <div class="card-body">
                         <div class="info-group">
                             <div class="info-label">Email</div>
-                            <div class="info-value">john.doe@example.com</div>
+                            <div class="info-value"><%= user.email %></div>
                         </div>
                         
                         <div class="info-group">
                             <div class="info-label">Téléphone</div>
-                            <div class="info-value">+1 (555) 123-4567</div>
+                            <div class="info-value"><%= randomPhone %></div>
                         </div>
                         
                         <div class="info-group">
                             <div class="info-label">Société</div>
-                            <div class="info-value">Retail Solutions Inc.</div>
+                            <div class="info-value"><%= randomCompany %></div>
                         </div>
                         
                         <div class="info-group">
                             <div class="info-label">Membre depuis</div>
-                            <div class="info-value">15 Janvier 2023</div>
+                            <div class="info-value"><%= memberSinceDate %></div>
                         </div>
                         
                         <!-- Bouton de déconnexion -->
@@ -549,7 +607,7 @@
                         </div>
                         <div class="alert-content">
                             <h4>Votre compte est sécurisé</h4>
-                            <p>Dernière mise à jour du mot de passe: il y a 15 jours</p>
+                            <p>Dernière connexion: <%= lastLoginDays === 0 ? 'aujourd\'hui' : 'il y a ' + lastLoginDays + ' jour' + (lastLoginDays > 1 ? 's' : '') %></p>
                         </div>
                     </div>
                     
@@ -557,33 +615,33 @@
                         <div class="grid-cols-2">
                             <div class="form-group">
                                 <label class="form-label" for="firstName">Prénom</label>
-                                <input type="text" class="form-input" id="firstName" value="John">
+                                <input type="text" class="form-input" id="firstName" value="<%= user.firstname %>">
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label" for="lastName">Nom</label>
-                                <input type="text" class="form-input" id="lastName" value="Doe">
+                                <input type="text" class="form-input" id="lastName" value="<%= user.lastname %>">
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label class="form-label" for="email">Adresse email</label>
-                            <input type="email" class="form-input" id="email" value="john.doe@example.com">
+                            <input type="email" class="form-input" id="email" value="<%= user.email %>">
                         </div>
                         
                         <div class="form-group">
                             <label class="form-label" for="phone">Téléphone</label>
-                            <input type="text" class="form-input" id="phone" value="+1 (555) 123-4567">
+                            <input type="text" class="form-input" id="phone" value="<%= randomPhone %>">
                         </div>
                         
                         <div class="form-group">
                             <label class="form-label" for="company">Société</label>
-                            <input type="text" class="form-input" id="company" value="Retail Solutions Inc.">
+                            <input type="text" class="form-input" id="company" value="<%= randomCompany %>">
                         </div>
                         
                         <div class="form-group">
                             <label class="form-label" for="position">Poste</label>
-                            <input type="text" class="form-input" id="position" value="Administrateur système">
+                            <input type="text" class="form-input" id="position" value="<%= randomPosition %>">
                         </div>
                     </form>
                 </div>
@@ -621,8 +679,13 @@
                     <div class="form-group">
                         <label class="form-label" style="margin-top: 1rem;">Authentification à deux facteurs</label>
                         <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.25rem;">
-                            <i data-lucide="check-circle" style="color: #10b981; width: 16px; height: 16px; vertical-align: text-bottom;"></i>
-                            Activée
+                            <% if (user.isActive) { %>
+                                <i data-lucide="check-circle" style="color: #10b981; width: 16px; height: 16px; vertical-align: text-bottom;"></i>
+                                Activée
+                            <% } else { %>
+                                <i data-lucide="x-circle" style="color: #ef4444; width: 16px; height: 16px; vertical-align: text-bottom;"></i>
+                                Désactivée
+                            <% } %>
                         </p>
                     </div>
                 </div>
@@ -793,7 +856,7 @@
             }, 100);
             
             setTimeout(() => {
-                window.location.href = 'connexion.html';
+                window.location.href = '/signin'; // Rediriger vers la page de connexion
             }, 1500);
         });
         

@@ -13,6 +13,13 @@ class StockController {
     res.status(200).json(stock);
   }
 
+  static async getStockByStoreId(req, res) {
+    const { id } = req.validated.params;
+    const { limit, offset } = req.validated.query;
+    const stocks = await StockService.getStockByStoreId(id, limit, offset);
+    res.status(200).json(stocks);
+  }
+
   static async createStock(req, res) {
     const newStock = await StockService.createStock(req.body);
     res.status(201).json(newStock);

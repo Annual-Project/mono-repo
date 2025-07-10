@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nos Magasins - StoreManager</title>
+    <title>AmaZup - Nos Magasins</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
@@ -221,10 +221,8 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-    </style>
 
-    <style>
-        /* Styles de pagination à ajouter à votre CSS existant */
+        /* Styles de pagination */
         .pagination {
             display: flex;
             justify-content: center;
@@ -328,10 +326,15 @@
                 display: none;
             }
         }
+
+        /* Style pour les cartes masquées */
+        .store-card.hidden-by-pagination {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-background font-sans antialiased">
-    <!-- Header (identique à la landing page) -->
+    <!-- Header -->
     <header class="sticky top-0 z-50 glass-effect border-b border-border/40">
         <div class="container mx-auto px-4">
             <div class="flex h-16 items-center justify-between">
@@ -340,7 +343,7 @@
                         <div class="flex items-center justify-center w-8 h-8 bg-primary rounded-md">
                             <i data-lucide="store" class="w-4 h-4 text-primary-foreground"></i>
                         </div>
-                        <span class="text-xl font-bold text-foreground">StoreManager</span>
+                        <span class="text-xl font-bold text-foreground">AmaZup</span>
                     </a>
                 </div>
                 
@@ -350,8 +353,8 @@
                 </nav>
                 
                 <div class="flex items-center space-x-3">
-                    <a href="/login" class="btn btn-outline">Connexion</a>
-                    <a href="/register" class="btn btn-primary">Inscription</a>
+                    <a href="/signin" class="btn btn-outline">Connexion</a>
+                    <a href="/signup" class="btn btn-primary">Inscription</a>
                 </div>
             </div>
         </div>
@@ -365,7 +368,7 @@
                     Nos Magasins
                 </h1>
                 <p class="text-xl text-gray-200 max-w-2xl mx-auto">
-                    Découvrez notre réseau de magasins et choisissez celui qui vous convient le mieux
+                    Découvrez notre réseau de <%= stores.length %> magasins et choisissez celui qui vous convient le mieux
                 </p>
             </div>
             
@@ -378,7 +381,7 @@
                     type="text" 
                     id="searchInput"
                     class="search-input" 
-                    placeholder="Rechercher par nom ou ville..."
+                    placeholder="Rechercher par nom ou description..."
                     autocomplete="off">
             </div>
         </div>
@@ -388,12 +391,84 @@
     <section class="py-16">
         <div class="container mx-auto px-4">
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="storesGrid">
-
+                <% 
+                // Données aléatoires pour les informations manquantes
+                const cities = ['Paris', 'Lyon', 'Marseille', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Bordeaux', 'Lille', 'Montpellier', 'Rennes', 'Nancy'];
+                const streets = ['Avenue des Champs-Élysées', 'Place Bellecour', 'Quai du Port', 'Place du Capitole', 'Promenade des Anglais', 'Rue Crébillon', 'Place Kléber', 'Cours de l\'Intendance', 'Rue Nationale', 'Place de la Comédie', 'Rue Saint-Georges', 'Place Stanislas'];
+                const phoneNumbers = ['01 23 45 67 89', '04 12 34 56 78', '04 91 23 45 67', '05 61 23 45 67', '04 93 23 45 67', '02 40 23 45 67', '03 88 12 34 56', '05 56 78 90 12', '03 20 45 67 89', '04 67 89 12 34', '02 99 12 34 56', '03 83 45 67 89'];
+                const hours = ['9h00 - 20h00', '9h00 - 19h30', '10h00 - 18h00', '9h30 - 19h30', '8h30 - 19h00', '10h00 - 19h00'];
+                
+                function getRandomItem(array, index) {
+                    return array[index % array.length];
+                }
+                %>
+                
+                <% stores.forEach((store, index) => { %>
+                    <% 
+                    const randomCity = getRandomItem(cities, index);
+                    const randomStreet = getRandomItem(streets, index);
+                    const randomPhone = getRandomItem(phoneNumbers, index);
+                    const randomHours = getRandomItem(hours, index);
+                    const randomNumber = Math.floor(Math.random() * 100) + 1;
+                    %>
+                    
+                    <div class="store-card" onclick="selectStore(<%= store.id %>)" data-store-name="<%= store.name.toLowerCase() %>" data-store-description="<%= store.description.toLowerCase() %>" data-store-city="<%= randomCity.toLowerCase() %>">
+                        <div class="card-header">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-2xl font-bold text-foreground"><%= store.name %></h3>
+                            </div>
+                            <div class="flex items-center text-muted-foreground">
+                                <i data-lucide="map-pin" class="w-5 h-5 mr-2 text-blue-500"></i>
+                                <span class="font-medium"><%= randomCity %></span>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="space-y-4">
+                                <div class="flex items-start text-muted-foreground">
+                                    <i data-lucide="map-pin" class="w-4 h-4 mr-3 mt-1 flex-shrink-0 text-gray-400"></i>
+                                    <span><%= randomNumber %> <%= randomStreet %>, <%= randomCity %></span>
+                                </div>
+                                <div class="flex items-center text-muted-foreground">
+                                    <i data-lucide="phone" class="w-4 h-4 mr-3 flex-shrink-0 text-green-500"></i>
+                                    <span><%= randomPhone %></span>
+                                </div>
+                                <div class="flex items-center text-muted-foreground">
+                                    <i data-lucide="clock" class="w-4 h-4 mr-3 flex-shrink-0 text-orange-500"></i>
+                                    <span><%= randomHours %></span>
+                                </div>
+                                <div class="flex items-start text-muted-foreground">
+                                    <i data-lucide="info" class="w-4 h-4 mr-3 mt-1 flex-shrink-0 text-blue-400"></i>
+                                    <span><%= store.description %></span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 pt-6 border-t border-border/40">
+                                <div class="grid grid-cols-2 gap-4 text-center">
+                                    <div>
+                                        <div class="text-3xl font-bold stats-number"><%= store.productsCount %></div>
+                                        <div class="text-sm text-muted-foreground">Produit<%= store.productsCount > 1 ? 's' : '' %></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-3xl font-bold stats-number"><%= store.categoriesCount %></div>
+                                        <div class="text-sm text-muted-foreground">Catégorie<%= store.categoriesCount > 1 ? 's' : '' %></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <button class="btn btn-primary w-full h-12 text-base font-medium hover:scale-105 transition-transform">
+                                    <i data-lucide="shopping-bag" class="w-5 h-5 mr-2"></i>
+                                    Voir les produits
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
             </div>
         </div>
     </section>
 
-    <!-- Footer (identique à la landing page) -->
+    <!-- Footer -->
     <footer class="bg-muted/50 py-12">
         <div class="container mx-auto px-4">
             <div class="grid md:grid-cols-4 gap-8">
@@ -402,7 +477,7 @@
                         <div class="flex items-center justify-center w-8 h-8 bg-primary rounded-md">
                             <i data-lucide="store" class="w-4 h-4 text-primary-foreground"></i>
                         </div>
-                        <span class="text-xl font-bold text-foreground">StoreManager</span>
+                        <span class="text-xl font-bold text-foreground">AmaZup</span>
                     </div>
                     <p class="text-muted-foreground">
                         Découvrez notre réseau de magasins et leurs produits
@@ -414,8 +489,8 @@
                     <ul class="space-y-2 text-muted-foreground">
                         <li><a href="/" class="hover:text-foreground transition-colors">Accueil</a></li>
                         <li><a href="/stores" class="hover:text-foreground transition-colors">Nos magasins</a></li>
-                        <li><a href="/login" class="hover:text-foreground transition-colors">Se connecter</a></li>
-                        <li><a href="/register" class="hover:text-foreground transition-colors">S'inscrire</a></li>
+                        <li><a href="/signin" class="hover:text-foreground transition-colors">Se connecter</a></li>
+                        <li><a href="/signup" class="hover:text-foreground transition-colors">S'inscrire</a></li>
                     </ul>
                 </div>
                 
@@ -440,12 +515,170 @@
             </div>
             
             <div class="border-t border-border/40 mt-8 pt-8 text-center text-muted-foreground">
-                <p>&copy; 2024 StoreManager. Tous droits réservés.</p>
+                <p>&copy; 2024 AmaZup. Tous droits réservés.</p>
             </div>
         </div>
     </footer>
 
-    <!-- <script>
+    <script>
+        // Système de pagination pour les cartes existantes
+        class StoresPaginationSystem {
+            constructor(itemsPerPage = 6) {
+                this.itemsPerPage = itemsPerPage;
+                this.currentPage = 1;
+                this.allStoreCards = [];
+                this.filteredStoreCards = [];
+                this.totalPages = 0;
+                
+                // Récupérer toutes les cartes de magasins
+                this.allStoreCards = Array.from(document.querySelectorAll('.store-card'));
+                this.filteredStoreCards = [...this.allStoreCards];
+                
+                // Créer le conteneur de pagination
+                this.createPaginationContainer();
+                this.updatePagination();
+                this.renderCurrentPage();
+            }
+            
+            createPaginationContainer() {
+                const storesSection = document.querySelector('#storesGrid').closest('section');
+                const paginationHTML = `
+                    <div class="pagination" id="paginationControls">
+                        <!-- Les boutons seront générés dynamiquement -->
+                    </div>
+                    <div class="pagination-info" id="paginationInfo">
+                        <!-- Les infos seront générées dynamiquement -->
+                    </div>
+                `;
+                
+                storesSection.insertAdjacentHTML('afterend', paginationHTML);
+                this.paginationControls = document.getElementById('paginationControls');
+                this.paginationInfo = document.getElementById('paginationInfo');
+            }
+            
+            updatePagination() {
+                this.totalPages = Math.ceil(this.filteredStoreCards.length / this.itemsPerPage);
+                
+                if (this.currentPage > this.totalPages) {
+                    this.currentPage = Math.max(1, this.totalPages);
+                }
+                
+                this.renderPaginationControls();
+                this.renderPaginationInfo();
+            }
+            
+            renderPaginationControls() {
+                if (this.totalPages <= 1) {
+                    this.paginationControls.style.display = 'none';
+                    return;
+                }
+                
+                this.paginationControls.style.display = 'flex';
+                
+                let buttonsHTML = '';
+                
+                // Bouton Précédent
+                const prevDisabled = this.currentPage === 1 ? 'disabled' : '';
+                buttonsHTML += `
+                    <button class="pagination-btn nav-btn" ${prevDisabled} onclick="storesPagination.goToPage(${this.currentPage - 1})">
+                        <i data-lucide="chevron-left" style="width: 1rem; height: 1rem;"></i>
+                        Précédent
+                    </button>
+                `;
+                
+                // Boutons de numéro de page
+                for (let i = 1; i <= this.totalPages; i++) {
+                    const activeClass = i === this.currentPage ? 'active' : '';
+                    const hideMobileClass = this.shouldHideOnMobile(i) ? 'hide-mobile' : '';
+                    
+                    buttonsHTML += `
+                        <button class="pagination-btn ${activeClass} ${hideMobileClass}" 
+                                onclick="storesPagination.goToPage(${i})">
+                            ${i}
+                        </button>
+                    `;
+                }
+                
+                // Bouton Suivant
+                const nextDisabled = this.currentPage === this.totalPages ? 'disabled' : '';
+                buttonsHTML += `
+                    <button class="pagination-btn nav-btn" ${nextDisabled} onclick="storesPagination.goToPage(${this.currentPage + 1})">
+                        Suivant
+                        <i data-lucide="chevron-right" style="width: 1rem; height: 1rem; margin-left: 0.25rem;"></i>
+                    </button>
+                `;
+                
+                this.paginationControls.innerHTML = buttonsHTML;
+                
+                // Réinitialiser les icônes Lucide
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+            
+            shouldHideOnMobile(pageNumber) {
+                const range = 1;
+                return Math.abs(pageNumber - this.currentPage) > range && 
+                       pageNumber !== 1 && 
+                       pageNumber !== this.totalPages;
+            }
+            
+            renderPaginationInfo() {
+                if (this.filteredStoreCards.length === 0) {
+                    this.paginationInfo.innerHTML = 'Aucun magasin trouvé';
+                    return;
+                }
+                
+                const startItem = (this.currentPage - 1) * this.itemsPerPage + 1;
+                const endItem = Math.min(this.currentPage * this.itemsPerPage, this.filteredStoreCards.length);
+                
+                this.paginationInfo.innerHTML = `
+                    Affichage de ${startItem} à ${endItem} sur ${this.filteredStoreCards.length} magasin${this.filteredStoreCards.length > 1 ? 's' : ''}
+                `;
+            }
+            
+            goToPage(page) {
+                if (page < 1 || page > this.totalPages || page === this.currentPage) {
+                    return;
+                }
+                
+                this.currentPage = page;
+                this.updatePagination();
+                this.renderCurrentPage();
+                
+                // Scroll vers le haut de la grille
+                const storesSection = document.querySelector('#storesGrid').closest('section');
+                storesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            
+            renderCurrentPage() {
+                // Masquer toutes les cartes
+                this.allStoreCards.forEach(card => {
+                    card.classList.add('hidden-by-pagination');
+                });
+                
+                // Afficher seulement les cartes de la page courante
+                const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+                const endIndex = startIndex + this.itemsPerPage;
+                const cardsToShow = this.filteredStoreCards.slice(startIndex, endIndex);
+                
+                cardsToShow.forEach(card => {
+                    card.classList.remove('hidden-by-pagination');
+                });
+            }
+            
+            updateWithFilteredCards(filteredCards) {
+                this.filteredStoreCards = filteredCards;
+                this.currentPage = 1;
+                this.updatePagination();
+                this.renderCurrentPage();
+            }
+        }
+
+        // Instance globale de pagination
+        let storesPagination;
+
+        // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Page loaded, initializing...');
             
@@ -455,36 +688,46 @@
                     lucide.createIcons();
                     console.log('Lucide icons initialized');
                 } else {
-                    console.log('Lucide not available, using SVG icons instead');
+                    console.log('Lucide not available');
                 }
             } catch (error) {
                 console.log('Lucide initialization failed, continuing without it');
             }
-        });
-        
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const storeCards = document.querySelectorAll('.store-card');
             
-            storeCards.forEach(card => {
-                const storeName = card.querySelector('h3').textContent.toLowerCase();
-                const storeCity = card.querySelector('.font-medium').textContent.toLowerCase();
-                
-                if (storeName.includes(searchTerm) || storeCity.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+            // Initialiser le système de pagination
+            storesPagination = new StoresPaginationSystem(6); // 6 magasins par page
+            
+            // Système de recherche
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    
+                    // Filtrer les cartes de magasins
+                    const filteredCards = storesPagination.allStoreCards.filter(card => {
+                        const storeName = card.dataset.storeName || '';
+                        const storeDescription = card.dataset.storeDescription || '';
+                        const storeCity = card.dataset.storeCity || '';
+                        
+                        return storeName.includes(searchTerm) || 
+                          storeDescription.includes(searchTerm) || 
+                          storeCity.includes(searchTerm);
+                    });
+                    
+                    // Mettre à jour la pagination avec les cartes filtrées
+                    storesPagination.updateWithFilteredCards(filteredCards);
+                });
+            }
+            
+            console.log('Système de pagination des magasins initialisé');
         });
         
-        // Store selection
+        // Fonction pour sélectionner un magasin
         function selectStore(storeId) {
             window.location.href = `/stores/${storeId}/products`;
         }
         
-        // Smooth scrolling for anchor links
+        // Smooth scrolling pour les liens d'ancrage
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -497,367 +740,6 @@
                 }
             });
         });
-    </script> -->
-
-    <script>
-
-// Système de pagination dynamique pour StoreManager
-class PaginationSystem {
-    constructor(containerId, itemsPerPage = 6) {
-        this.container = document.getElementById(containerId);
-        this.itemsPerPage = itemsPerPage;
-        this.currentPage = 1;
-        this.totalItems = 0;
-        this.totalPages = 0;
-        this.data = [];
-        this.filteredData = [];
-        
-        // Créer le conteneur de pagination
-        this.createPaginationContainer();
-    }
-    
-    // Initialiser avec des données
-    init(data) {
-        this.data = [...data];
-        this.filteredData = [...data];
-        this.updatePagination();
-        this.renderItems();
-    }
-    
-    // Mettre à jour après filtrage
-    updateWithFilteredData(filteredData) {
-        this.filteredData = [...filteredData];
-        this.currentPage = 1; // Retour à la première page après filtrage
-        this.updatePagination();
-        this.renderItems();
-    }
-    
-    // Créer le conteneur HTML pour la pagination
-    createPaginationContainer() {
-        const paginationHTML = `
-            <div class="pagination" id="paginationControls">
-                <!-- Les boutons seront générés dynamiquement -->
-            </div>
-            <div class="pagination-info" id="paginationInfo">
-                <!-- Les infos seront générées dynamiquement -->
-            </div>
-        `;
-        
-        // Insérer après la grille des magasins
-        const storesSection = this.container.closest('section');
-        storesSection.insertAdjacentHTML('afterend', paginationHTML);
-        
-        this.paginationControls = document.getElementById('paginationControls');
-        this.paginationInfo = document.getElementById('paginationInfo');
-    }
-    
-    // Calculer et mettre à jour la pagination
-    updatePagination() {
-        this.totalItems = this.filteredData.length;
-        this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
-        
-        // S'assurer que la page courante est valide
-        if (this.currentPage > this.totalPages) {
-            this.currentPage = Math.max(1, this.totalPages);
-        }
-        
-        this.renderPaginationControls();
-        this.renderPaginationInfo();
-    }
-    
-    // Générer les boutons de pagination
-    renderPaginationControls() {
-        if (this.totalPages <= 1) {
-            this.paginationControls.style.display = 'none';
-            return;
-        }
-        
-        this.paginationControls.style.display = 'flex';
-        
-        let buttonsHTML = '';
-        
-        // Bouton Précédent
-        const prevDisabled = this.currentPage === 1 ? 'disabled' : '';
-        buttonsHTML += `
-            <button class="pagination-btn nav-btn" ${prevDisabled} onclick="pagination.goToPage(${this.currentPage - 1})">
-                <i data-lucide="chevron-left" style="width: 1rem; height: 1rem;"></i>
-                Précédent
-            </button>
-        `;
-        
-        // Boutons de numéro de page
-        for (let i = 1; i <= this.totalPages; i++) {
-            const activeClass = i === this.currentPage ? 'active' : '';
-            const hideMobileClass = this.shouldHideOnMobile(i) ? 'hide-mobile' : '';
-            
-            buttonsHTML += `
-                <button class="pagination-btn ${activeClass} ${hideMobileClass}" 
-                        onclick="pagination.goToPage(${i})">
-                    ${i}
-                </button>
-            `;
-        }
-        
-        // Bouton Suivant
-        const nextDisabled = this.currentPage === this.totalPages ? 'disabled' : '';
-        buttonsHTML += `
-            <button class="pagination-btn nav-btn" ${nextDisabled} onclick="pagination.goToPage(${this.currentPage + 1})">
-                Suivant
-                <i data-lucide="chevron-right" style="width: 1rem; height: 1rem; margin-left: 0.25rem;"></i>
-            </button>
-        `;
-        
-        this.paginationControls.innerHTML = buttonsHTML;
-        
-        // Réinitialiser les icônes Lucide
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        }
-    }
-    
-    // Déterminer si un bouton doit être masqué sur mobile
-    shouldHideOnMobile(pageNumber) {
-        // Sur mobile, on garde seulement la page courante et ses voisines immédiates
-        const range = 1;
-        return Math.abs(pageNumber - this.currentPage) > range && 
-               pageNumber !== 1 && 
-               pageNumber !== this.totalPages;
-    }
-    
-    // Afficher les informations de pagination
-    renderPaginationInfo() {
-        if (this.totalItems === 0) {
-            this.paginationInfo.innerHTML = 'Aucun magasin trouvé';
-            return;
-        }
-        
-        const startItem = (this.currentPage - 1) * this.itemsPerPage + 1;
-        const endItem = Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
-        
-        this.paginationInfo.innerHTML = `
-            Affichage de ${startItem} à ${endItem} sur ${this.totalItems} magasin${this.totalItems > 1 ? 's' : ''}
-        `;
-    }
-    
-    // Naviguer vers une page spécifique
-    goToPage(page) {
-        if (page < 1 || page > this.totalPages || page === this.currentPage) {
-            return;
-        }
-        
-        this.currentPage = page;
-        this.updatePagination();
-        this.renderItems();
-        
-        // Scroll vers le haut de la grille
-        const storesSection = this.container.closest('section');
-        storesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    
-    // Afficher les éléments de la page courante
-    renderItems() {
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        const endIndex = startIndex + this.itemsPerPage;
-        const itemsToShow = this.filteredData.slice(startIndex, endIndex);
-        
-        // Générer le HTML pour les magasins de la page courante
-        this.container.innerHTML = itemsToShow.map(store => this.generateStoreHTML(store)).join('');
-        
-        // Réinitialiser les icônes Lucide
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        }
-    }
-    
-    // Générer le HTML pour un magasin (à adapter selon votre structure)
-    generateStoreHTML(store) {
-        return `
-            <div class="store-card" onclick="selectStore(${store.id})">
-                <div class="card-header">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-2xl font-bold text-foreground">${store.name}</h3>
-                    </div>
-                    <div class="flex items-center text-muted-foreground">
-                        <i data-lucide="map-pin" class="w-5 h-5 mr-2 text-blue-500"></i>
-                        <span class="font-medium">${store.city}</span>
-                    </div>
-                </div>
-                <div class="card-content">
-                    <div class="space-y-4">
-                        <div class="flex items-start text-muted-foreground">
-                            <i data-lucide="map-pin" class="w-4 h-4 mr-3 mt-1 flex-shrink-0 text-gray-400"></i>
-                            <span>${store.address}</span>
-                        </div>
-                        <div class="flex items-center text-muted-foreground">
-                            <i data-lucide="phone" class="w-4 h-4 mr-3 flex-shrink-0 text-green-500"></i>
-                            <span>${store.phone}</span>
-                        </div>
-                        <div class="flex items-center text-muted-foreground">
-                            <i data-lucide="clock" class="w-4 h-4 mr-3 flex-shrink-0 text-orange-500"></i>
-                            <span>${store.hours}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 pt-6 border-t border-border/40">
-                        <div class="grid grid-cols-2 gap-4 text-center">
-                            <div>
-                                <div class="text-3xl font-bold stats-number">${store.products}</div>
-                                <div class="text-sm text-muted-foreground">Produits</div>
-                            </div>
-                            <div>
-                                <div class="text-3xl font-bold stats-number">${store.categories}</div>
-                                <div class="text-sm text-muted-foreground">Catégories</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6">
-                        <button class="btn btn-primary w-full h-12 text-base font-medium hover:scale-105 transition-transform">
-                            <i data-lucide="shopping-bag" class="w-5 h-5 mr-2"></i>
-                            Voir les produits
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-}
-
-// Données exemple des magasins (remplacez par vos vraies données)
-const storesData = [
-    {
-        id: 1,
-        name: "StoreManager Central",
-        city: "Paris",
-        address: "123 Avenue des Champs-Élysées, 75008 Paris",
-        phone: "01 23 45 67 89",
-        hours: "9h00 - 20h00",
-        products: 245,
-        categories: 12
-    },
-    {
-        id: 2,
-        name: "StoreManager Lyon",
-        city: "Lyon",
-        address: "12 Place Bellecour, 69002 Lyon",
-        phone: "04 12 34 56 78",
-        hours: "9h00 - 19h30",
-        products: 167,
-        categories: 9
-    },
-    {
-        id: 3,
-        name: "StoreManager Marseille",
-        city: "Marseille",
-        address: "78 Quai du Port, 13002 Marseille",
-        phone: "04 91 23 45 67",
-        hours: "9h00 - 20h00",
-        products: 178,
-        categories: 10
-    },
-    {
-        id: 4,
-        name: "StoreManager Toulouse",
-        city: "Toulouse",
-        address: "12 Place du Capitole, 31000 Toulouse",
-        phone: "05 61 23 45 67",
-        hours: "9h00 - 19h00",
-        products: 187,
-        categories: 9
-    },
-    {
-        id: 5,
-        name: "StoreManager Nice",
-        city: "Nice",
-        address: "34 Promenade des Anglais, 06000 Nice",
-        phone: "04 93 23 45 67",
-        hours: "9h30 - 19h30",
-        products: 156,
-        categories: 7
-    },
-    {
-        id: 6,
-        name: "StoreManager Nantes",
-        city: "Nantes",
-        address: "56 Rue Crébillon, 44000 Nantes",
-        phone: "02 40 23 45 67",
-        hours: "10h00 - 18h00",
-        products: 123,
-        categories: 6
-    },
-    {
-        id: 7,
-        name: "StoreManager Strasbourg",
-        city: "Strasbourg",
-        address: "45 Place Kléber, 67000 Strasbourg",
-        phone: "03 88 12 34 56",
-        hours: "9h00 - 19h00",
-        products: 134,
-        categories: 8
-    },
-    {
-        id: 8,
-        name: "StoreManager Bordeaux",
-        city: "Bordeaux",
-        address: "23 Cours de l'Intendance, 33000 Bordeaux",
-        phone: "05 56 78 90 12",
-        hours: "9h30 - 19h30",
-        products: 198,
-        categories: 11
-    },
-    {
-        id: 9,
-        name: "StoreManager Lille",
-        city: "Lille",
-        address: "67 Rue Nationale, 59000 Lille",
-        phone: "03 20 45 67 89",
-        hours: "9h00 - 18h30",
-        products: 142,
-        categories: 7
-    },
-    {
-        id: 10,
-        name: "StoreManager Montpellier",
-        city: "Montpellier",
-        address: "12 Place de la Comédie, 34000 Montpellier",
-        phone: "04 67 89 12 34",
-        hours: "10h00 - 19h00",
-        products: 165,
-        categories: 9
-    }
-];
-
-// Instance globale de pagination
-let pagination;
-
-// Initialisation du système
-document.addEventListener('DOMContentLoaded', function() {
-    // Créer l'instance de pagination
-    pagination = new PaginationSystem('storesGrid', 6); // 6 magasins par page
-    
-    // Initialiser avec les données
-    pagination.init(storesData);
-    
-    // Modifier la fonction de recherche existante pour utiliser la pagination
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            
-            // Filtrer les données
-            const filteredStores = storesData.filter(store => 
-                store.name.toLowerCase().includes(searchTerm) || 
-                store.city.toLowerCase().includes(searchTerm)
-            );
-            
-            // Mettre à jour la pagination avec les données filtrées
-            pagination.updateWithFilteredData(filteredStores);
-        });
-    }
-    
-    console.log('Système de pagination initialisé');
-});
-
     </script>
 </body>
 </html>
