@@ -824,11 +824,21 @@
         
         // Données stocks provenant du serveur
         const stocksData = <%- JSON.stringify(aggregatedStocks) %>;
+        const allProducts = <%- JSON.stringify(allProducts) %>;
         
         // Extraire les données uniques
         const productsData = {};
         const storesData = {};
         const categoriesData = {};
+        const allProductsData = {};
+
+        allProducts.forEach(product => {
+            allProductsData[product.id] = product;
+            // Ajouter aussi les catégories depuis allProducts
+            if (product.category && !categoriesData[product.category.id]) {
+                categoriesData[product.category.id] = product.category;
+            }
+        });
         
         stocksData.forEach(stock => {
             // Extraire les produits
@@ -1030,18 +1040,20 @@
             // Populate product selects
             const stockProduct = document.getElementById('stockProduct');
             const transferProduct = document.getElementById('transferProduct');
-            
-            Object.values(productsData).forEach(product => {
-                // Stock product select
+
+            // Pour ajouter du stock: utiliser TOUS les produits disponibles
+            Object.values(allProductsData).forEach(product => {
                 const stockOption = document.createElement('option');
                 stockOption.value = product.id;
-                stockOption.textContent = product.name;
+                stockOption.textContent = `${product.name} - ${product.category ? product.category.name : 'Sans catégorie'}`;
                 stockProduct.appendChild(stockOption);
-                
-                // Transfer product select
+            });
+
+            // Pour les transferts: utiliser seulement les produits qui ont du stock
+            Object.values(productsData).forEach(product => {
                 const transferOption = document.createElement('option');
                 transferOption.value = product.id;
-                transferOption.textContent = product.name;
+                transferOption.textContent = `${product.name} - ${product.category ? product.category.name : 'Sans catégorie'}`;
                 transferProduct.appendChild(transferOption);
             });
         }
@@ -1736,13 +1748,25 @@
                         storeId: storeId,
                         quantityAvailable: quantityAvailable,
                         criticalThreshold: criticalThreshold,
-                        product: productsData[productId],
+                        product: allProductsData[productId], // MODIFICATION ICI
                         store: storesData[storeId],
                         createdAt: new Date().toISOString(),
                         updatedAt: new Date().toISOString()
                     };
                     
                     stocksData.push(stockToAdd);
+
+                    // Ajouter le produit aux produits en stock pour les transferts futurs
+                    if (!productsData[productId]) {
+                        productsData[productId] = allProductsData[productId];
+                        // Repeupler les options de transfert
+                        const transferProduct = document.getElementById('transferProduct');
+                        const transferOption = document.createElement('option');
+                        transferOption.value = productId;
+                        transferOption.textContent = `${allProductsData[productId].name} - ${allProductsData[productId].category ? allProductsData[productId].category.name : 'Sans catégorie'}`;
+                        transferProduct.appendChild(transferOption);
+                    }
+
                     showToast('Stock ajouté avec succès', 'success');
                 }
                 
@@ -1852,7 +1876,7 @@
                 destinationStock.quantityAvailable = newDestinationQuantity;
                 destinationStock.updatedAt = new Date().toISOString();
                 
-                showToast(`Transfert effectué avec succès : ${quantity} unités de ${productsData[productId]?.name || 'produit'} transférées`, 'success');
+                showToast(`Transfert effectué avec succès : ${quantity} unités de ${allProductsData[productId]?.name || 'produit'} transférées`, 'success');
                 updateStats();
                 filterData();
                 closeTransferModal();
@@ -1908,7 +1932,8 @@
         function updateStats() {
             // Update total products count
             const uniqueProducts = new Set(stocksData.map(s => s.productId));
-            document.getElementById('totalProducts').textContent = uniqueProducts.size;
+            // Update total products count - utiliser allProducts au lieu des stocks
+            document.getElementById('totalProducts').textContent = Object.keys(allProductsData).length;
             
             // Update total stores count
             const uniqueStores = new Set(stocksData.map(s => s.storeId));

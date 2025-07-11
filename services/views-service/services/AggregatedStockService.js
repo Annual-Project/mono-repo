@@ -49,6 +49,16 @@ class AggregatedStockService {
       })
     );
 
+    const allProductsResponse = await fetch(`http://products_service:3000/api/v1/products`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "x-internal-api-key": process.env.INTERNAL_API_KEY,
+      },
+    })
+
+    const allProducts = await allProductsResponse.json();
+
     const productsResponses = await Promise.all(productsPromises);
     const productsData = await Promise.all(
       productsResponses.map(res => {
@@ -103,6 +113,7 @@ class AggregatedStockService {
 
     return {
       aggregatedStocks,
+      allProducts,
       productsCount,
       storesCount
     };
