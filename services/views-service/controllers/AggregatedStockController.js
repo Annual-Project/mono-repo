@@ -27,7 +27,7 @@ class AggregatedStockController {
     }
 
     const stocks = await AggregatedStockService.getAggregatedStocksForAdmin(limit, offset);
-    // console.log(JSON.stringify(stocks, null, 2));
+    console.log(JSON.stringify(stocks, null, 2));
     res.status(200).render('admin/stocks', {
       user: user ? {
         ...user,

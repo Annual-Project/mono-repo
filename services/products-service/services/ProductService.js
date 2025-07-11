@@ -10,6 +10,9 @@ class ProductService {
     return await prisma.product.findMany({
       take: limit,
       skip: offset,
+      include: {
+        category: true,
+      },
     });
   }
 

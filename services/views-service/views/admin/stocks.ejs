@@ -834,7 +834,7 @@
 
         allProducts.forEach(product => {
             allProductsData[product.id] = product;
-            // Ajouter aussi les catégories depuis allProducts
+            // Ajouter les catégories depuis allProducts EN PREMIER
             if (product.category && !categoriesData[product.category.id]) {
                 categoriesData[product.category.id] = product.category;
             }
@@ -1045,7 +1045,9 @@
             Object.values(allProductsData).forEach(product => {
                 const stockOption = document.createElement('option');
                 stockOption.value = product.id;
-                stockOption.textContent = `${product.name} - ${product.category ? product.category.name : 'Sans catégorie'}`;
+                // Vérification plus robuste de la catégorie
+                const categoryName = (product.category && product.category.name) ? product.category.name : 'Sans catégorie';
+                stockOption.textContent = `${product.name} - ${categoryName}`;
                 stockProduct.appendChild(stockOption);
             });
 
@@ -1053,7 +1055,9 @@
             Object.values(productsData).forEach(product => {
                 const transferOption = document.createElement('option');
                 transferOption.value = product.id;
-                transferOption.textContent = `${product.name} - ${product.category ? product.category.name : 'Sans catégorie'}`;
+                // Vérification plus robuste de la catégorie
+                const categoryName = (product.category && product.category.name) ? product.category.name : 'Sans catégorie';
+                transferOption.textContent = `${product.name} - ${categoryName}`;
                 transferProduct.appendChild(transferOption);
             });
         }
