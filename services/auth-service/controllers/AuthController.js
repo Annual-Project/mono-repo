@@ -3,19 +3,19 @@ import AuthService from "../services/AuthService.js";
 class AuthController {
 
   static async signup(req, res) {
-    const { email } = req.body;
+    const { email } = req.validated.body;
 
-    const challenge = AuthService.signup(email);
+    const challenge = await AuthService.signup(email);
 
     return res.status(200).json(challenge);
   }
 
   static async signupValidate(req, res) {
-    const body = req.body;
+    const body = req.validated.body;
     const ip = req.ip;
     const userAgent = req.headers['user-agent'];
 
-    const { accessToken, refreshToken } = AuthService.signupValidate(body, ip, userAgent);
+    const { accessToken, refreshToken } = await AuthService.signupValidate(body, ip, userAgent);
 
     res.cookie('accessTokenM', `Bearer ${accessToken}`, {
       httpOnly: false,
@@ -46,19 +46,19 @@ class AuthController {
   }
 
   static async signin(req, res) {
-    const { email } = req.body;
+    const { email } = req.validated.body;
 
-    const challenge = AuthService.signin(email);
+    const challenge = await AuthService.signin(email);
 
     return res.status(200).json(challenge);
   }
 
   static async signinValidate(req, res) {
-    const body = req.body;
+    const body = req.validated.body;
     const ip = req.ip;
     const userAgent = req.headers['user-agent'];
 
-    const { accessToken, refreshToken } = AuthService.signinValidate(body, ip, userAgent);
+    const { accessToken, refreshToken } = await AuthService.signinValidate(body, ip, userAgent);
 
     res.cookie('accessTokenM', `Bearer ${accessToken}`, {
       httpOnly: false,
@@ -94,7 +94,7 @@ class AuthController {
   static async generate(req, res) {
     const auth = req.auth;
 
-    const { accessToken, refreshToken } = AuthService.generate(auth);
+    const { accessToken, refreshToken } = await AuthService.generate(auth);
 
     res.cookie('accessTokenM', `Bearer ${accessToken}`, {
       httpOnly: false,
@@ -118,7 +118,7 @@ class AuthController {
     const ip = req.ip;
     const userAgent = req.headers['user-agent'];
 
-    const { accessToken, refreshToken } = AuthService.changePassword(body, ip, userAgent);
+    const { accessToken, refreshToken } = await AuthService.changePassword(body, ip, userAgent);
 
     res.cookie('accessTokenM', `Bearer ${accessToken}`, {
       httpOnly: false,

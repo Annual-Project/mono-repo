@@ -96,7 +96,96 @@ class AggregatedStoreService {
   }
 
   // Méthode pour la page stores (admin)
-  static async getAggregatedStoresAdmin(limit, offset) {
+  static async getAggregatedStoresAdmin() {
+    // 1. Récupération des magasins
+    const storesResponse = await fetch('http://stocks_service:3000/api/v1/stores', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "x-internal-api-key": process.env.INTERNAL_API_KEY,
+      },
+    });
+
+    if (!storesResponse.ok) {
+      throw new BadRequestError('Failed to fetch stores');
+    }
+    const stores = await storesResponse.json();
+
+    // 2. Récupération des stocks et produits en parallèle
+    const [stocksResponse, productsResponse] = await Promise.all([
+      // Récupération de tous les stocks
+      fetch('http://stocks_service:3000/api/v1/stocks', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          "x-internal-api-key": process.env.INTERNAL_API_KEY,
+        },
+      }),
+      
+      // Récupération de tous les produits
+      fetch('http://products_service:3000/api/v1/products', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          "x-internal-api-key": process.env.INTERNAL_API_KEY,
+        },
+      })
+    ]);
+
+    if (!stocksResponse.ok) {
+      throw new BadRequestError('Failed to fetch stocks');
+    }
+    const allStocks = await stocksResponse.json();
+
+    if (!productsResponse.ok) {
+      throw new BadRequestError('Failed to fetch products');
+    }
+    const allProducts = await productsResponse.json();
+
+    // 3. Création de maps pour accès rapide
+    const productMap = new Map(allProducts.map(p => [p.id, p]));
+    const stocksByStore = new Map();
+
+    // 4. Regroupement des stocks par magasin et association des produits
+    allStocks.forEach(stock => {
+      // Création de l'entrée pour le store s'il n'existe pas
+      if (!stocksByStore.has(stock.storeId)) {
+        stocksByStore.set(stock.storeId, []);
+      }
+      
+      // Association stock + produit
+      const product = productMap.get(stock.productId);
+      stocksByStore.get(stock.storeId).push({
+        stockId: stock.id,
+        quantityAvailable: stock.quantityAvailable,
+        criticalThreshold: stock.criticalThreshold,
+        product: product ? {
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          categoryId: product.categoryId
+        } : null
+      });
+    });
+
+    // 5. Construction de la réponse finale
+    const aggregatedStores = stores.map(store => ({
+      ...store,
+      products: stocksByStore.get(store.id) || []
+    }));
+
+    // 6. Statistiques
+    const storeCount = stores.length;
+    const productCount = allProducts.length;
+    const stockCount = allStocks.length;
+
+    return {
+      aggregatedStores,
+      storeCount,
+      productCount,
+      stockCount
+    };
   }
 
 }

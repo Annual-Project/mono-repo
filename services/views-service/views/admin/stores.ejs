@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Magasins - StoreManager</title>
+    <title>Gestion des Magasins - AmaZup</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script> -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
@@ -154,6 +153,11 @@
             box-shadow: 0 0 0 2px hsl(222.2 84% 4.9% / 0.2);
         }
         
+        .textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
         .select {
             appearance: none;
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
@@ -208,6 +212,11 @@
             color: hsl(0 84.2% 60.2%);
         }
         
+        .badge-info {
+            background: hsl(204 94% 49% / 0.1);
+            color: hsl(204 94% 49%);
+        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
@@ -253,6 +262,14 @@
             align-items: center;
             justify-content: center;
             z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
         
         .modal-content {
@@ -260,84 +277,103 @@
             border-radius: 0.5rem;
             padding: 1.5rem;
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             margin: 1rem;
             max-height: 90vh;
             overflow-y: auto;
+            transform: scale(0.9) translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .store-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9 0%, #1e293b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            font-size: 1.2rem;
         }
     </style>
 </head>
 <body class="bg-muted/30">
     <!-- Sidebar -->
     <aside class="fixed left-0 top-0 h-full w-64 bg-background border-r border-border sidebar-transition z-50">
-        <!-- Logo -->
-        <div class="flex items-center px-6 py-4 border-b border-border">
-            <div class="flex items-center justify-center w-8 h-8 bg-primary rounded-md mr-3">
-                <i data-lucide="store" class="w-4 h-4 text-primary-foreground"></i>
-            </div>
-            <span class="text-xl font-bold text-foreground">StoreManager</span>
-        </div>
-        
-        <!-- User Profile -->
-        <div class="px-6 py-4 border-b border-border">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                    <i data-lucide="user" class="w-5 h-5 text-primary"></i>
-                </div>
-                <div>
-                    <p class="font-medium text-foreground">Admin User</p>
-                    <p class="text-sm text-muted-foreground">admin@store.com</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Navigation -->
-        <nav class="px-4 py-4">
-            <div class="space-y-2">
-                <a href="#" class="sidebar-item" data-page="dashboard">
-                    <i data-lucide="layout-dashboard" class="w-4 h-4 mr-3"></i>
-                    Dashboard
-                </a>
-                
-                <a href="#" class="sidebar-item active" data-page="stores">
-                    <i data-lucide="store" class="w-4 h-4 mr-3"></i>
-                    Magasins
-                </a>
-                
-                <a href="#" class="sidebar-item" data-page="products">
-                    <i data-lucide="package" class="w-4 h-4 mr-3"></i>
-                    Produits
-                </a>
-                
-                <a href="#" class="sidebar-item" data-page="categories">
-                    <i data-lucide="tag" class="w-4 h-4 mr-3"></i>
-                    Catégories
-                </a>
-                
-                <a href="#" class="sidebar-item" data-page="inventory">
-                    <i data-lucide="warehouse" class="w-4 h-4 mr-3"></i>
-                    Stocks
-                </a>
-                
-                <a href="#" class="sidebar-item" data-page="transfers">
-                    <i data-lucide="truck" class="w-4 h-4 mr-3"></i>
-                    Transferts
-                </a>
-                
-                <a href="#" class="sidebar-item" data-page="users">
-                    <i data-lucide="users" class="w-4 h-4 mr-3"></i>
-                    Utilisateurs
-                </a>
-            </div>
-            
-            <div class="mt-8 pt-4 border-t border-border">
-                <a href="#" class="sidebar-item text-destructive hover:bg-destructive/10 hover:text-destructive">
-                    <i data-lucide="log-out" class="w-4 h-4 mr-3"></i>
-                    Se déconnecter
-                </a>
-            </div>
-        </nav>
-    </aside>
+      <!-- Logo -->
+      <div class="flex items-center px-6 py-4 border-b border-border">
+          <div class="flex items-center justify-center w-8 h-8 bg-primary rounded-md mr-3">
+              <i data-lucide="store" class="w-4 h-4 text-primary-foreground"></i>
+          </div>
+          <span class="text-xl font-bold text-foreground">AmaZup</span>
+      </div>
+      
+      <!-- User Profile -->
+      <div class="px-6 py-4 border-b border-border">
+          <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                  <i data-lucide="user" class="w-5 h-5 text-primary"></i>
+              </div>
+              <div>
+                  <p class="font-medium text-foreground">Admin</p>
+                  <p class="text-sm text-muted-foreground">admin@amazup.shop</p>
+              </div>
+          </div>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="px-4 py-4">
+          <div class="space-y-2">
+              <a href="/admin" class="sidebar-item" data-page="dashboard">
+                  <i data-lucide="layout-dashboard" class="w-4 h-4 mr-3"></i>
+                  Tableau de bord
+              </a>
+              
+              <a href="#" class="sidebar-item active" data-page="stores">
+                  <i data-lucide="store" class="w-4 h-4 mr-3"></i>
+                  Magasins
+              </a>
+              
+              <a href="/admin/products" class="sidebar-item" data-page="products">
+                  <i data-lucide="package" class="w-4 h-4 mr-3"></i>
+                  Produits
+              </a>
+              
+              <a href="/admin/categories" class="sidebar-item" data-page="categories">
+                  <i data-lucide="tag" class="w-4 h-4 mr-3"></i>
+                  Catégories
+              </a>
+              
+              <a href="/admin/stocks" class="sidebar-item" data-page="inventory">
+                  <i data-lucide="warehouse" class="w-4 h-4 mr-3"></i>
+                  Stocks
+              </a>
+              
+              <a href="/admin/transfers" class="sidebar-item" data-page="transfers">
+                  <i data-lucide="truck" class="w-4 h-4 mr-3"></i>
+                  Transferts
+              </a>
+              
+              <a href="/admin/users" class="sidebar-item" data-page="users">
+                  <i data-lucide="users" class="w-4 h-4 mr-3"></i>
+                  Utilisateurs
+              </a>
+          </div>
+          
+          <div class="mt-8 pt-4 border-t border-border">
+              <a href="/logout" class="sidebar-item text-destructive hover:bg-destructive/10 hover:text-destructive">
+                  <i data-lucide="log-out" class="w-4 h-4 mr-3"></i>
+                  Se déconnecter
+              </a>
+          </div>
+      </nav>
+  </aside>
 
     <!-- Main Content -->
     <main class="ml-64 min-h-screen">
@@ -367,9 +403,68 @@
 
         <!-- Stores Management Content -->
         <div class="p-6">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div class="card">
+                    <div class="card-content p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-muted-foreground">Total Magasins</p>
+                                <p class="text-2xl font-bold" id="totalStores"><%= stores.length %></p>
+                            </div>
+                            <div class="w-12 h-12 bg-info/10 rounded-full flex items-center justify-center">
+                                <i data-lucide="store" class="w-6 h-6 text-info"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-content p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-muted-foreground">Produits Total</p>
+                                <p class="text-2xl font-bold" id="totalProducts"><%= stores.reduce((sum, store) => sum + store.productsCount, 0) %></p>
+                            </div>
+                            <div class="w-12 h-12 bg-success/10 rounded-full flex items-center justify-center">
+                                <i data-lucide="package" class="w-6 h-6 text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-content p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-muted-foreground">Catégories Total</p>
+                                <p class="text-2xl font-bold" id="totalCategories"><%= stores.reduce((sum, store) => sum + store.categoriesCount, 0) %></p>
+                            </div>
+                            <div class="w-12 h-12 bg-warning/10 rounded-full flex items-center justify-center">
+                                <i data-lucide="tag" class="w-6 h-6 text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-content p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-muted-foreground">Stock Total</p>
+                                <p class="text-2xl font-bold" id="totalStock"><%= stores.reduce((sum, store) => sum + store.stocks.reduce((stockSum, stock) => stockSum + stock.quantityAvailable, 0), 0) %></p>
+                            </div>
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                                <i data-lucide="warehouse" class="w-6 h-6 text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Filters and Search -->
             <div class="card mb-6">
-                <div class="card-content" style="padding: 0.5rem;">
+                <div class="card-content" style="padding: 1.5rem;">
                     <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
                         <div class="flex flex-col sm:flex-row gap-4 flex-1">
                             <!-- Search -->
@@ -377,24 +472,6 @@
                                 <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground"></i>
                                 <input type="text" class="input pl-10" placeholder="Rechercher un magasin..." id="searchInput">
                             </div>
-                            
-                            <!-- Status Filter -->
-                            <select class="input select w-48" id="statusFilter">
-                                <option value="">Tous les statuts</option>
-                                <option value="actif">Actif</option>
-                                <option value="inactif">Inactif</option>
-                                <option value="maintenance">Maintenance</option>
-                            </select>
-                            
-                            <!-- City Filter -->
-                            <select class="input select w-48" id="cityFilter">
-                                <option value="">Toutes les villes</option>
-                                <option value="paris">Paris</option>
-                                <option value="lyon">Lyon</option>
-                                <option value="marseille">Marseille</option>
-                                <option value="toulouse">Toulouse</option>
-                                <option value="nice">Nice</option>
-                            </select>
                         </div>
                         
                         <div class="flex items-center gap-4">
@@ -427,41 +504,26 @@
                             <tr>
                                 <th class="sortable" data-sort="name">
                                     <div class="flex items-center gap-2">
-                                        Nom du magasin
+                                        Magasin
                                         <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
                                     </div>
                                 </th>
-                                <th class="sortable" data-sort="city">
-                                    <div class="flex items-center gap-2">
-                                        Ville
-                                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
-                                    </div>
-                                </th>
-                                <th class="sortable" data-sort="address">
-                                    <div class="flex items-center gap-2">
-                                        Adresse
-                                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
-                                    </div>
-                                </th>
-                                <th class="sortable" data-sort="manager">
-                                    <div class="flex items-center gap-2">
-                                        Responsable
-                                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
-                                    </div>
-                                </th>
-                                <th class="sortable" data-sort="status">
-                                    <div class="flex items-center gap-2">
-                                        Statut
-                                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
-                                    </div>
-                                </th>
-                                <th class="sortable" data-sort="products">
+                                <th>Localisation</th>
+                                <th class="sortable" data-sort="productsCount">
                                     <div class="flex items-center gap-2">
                                         Produits
                                         <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
                                     </div>
                                 </th>
-                                <th class="sortable" data-sort="created">
+                                <th class="sortable" data-sort="categoriesCount">
+                                    <div class="flex items-center gap-2">
+                                        Catégories
+                                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
+                                    </div>
+                                </th>
+                                <th>Stock Total</th>
+                                <th>Responsable</th>
+                                <th class="sortable" data-sort="createdAt">
                                     <div class="flex items-center gap-2">
                                         Créé le
                                         <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
@@ -479,7 +541,7 @@
                 <!-- Pagination -->
                 <div class="flex items-center justify-between p-4 border-t border-border">
                     <div class="text-sm text-muted-foreground">
-                        Affichage de <span id="showingFrom">1</span> à <span id="showingTo">10</span> sur <span id="totalResults">15</span> résultats
+                        Affichage de <span id="showingFrom">1</span> à <span id="showingTo">10</span> sur <span id="totalResults">0</span> résultats
                     </div>
                     
                     <div class="flex items-center gap-2">
@@ -500,8 +562,8 @@
         </div>
     </main>
 
-    <!-- Store Modal -->
-    <div class="modal-overlay" id="storeModal" style="display: none;">
+    <!-- Store Modal (Add/Edit) -->
+    <div class="modal-overlay" id="storeModal">
         <div class="modal-content">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xl font-bold text-foreground" id="modalTitle">Ajouter un magasin</h2>
@@ -517,26 +579,31 @@
                         <input type="text" class="input" id="storeName" required>
                     </div>
                     
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-2">Description</label>
+                        <textarea class="input textarea" id="storeDescription" rows="3" placeholder="Description du magasin..."></textarea>
+                    </div>
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-foreground mb-2">Ville</label>
-                            <input type="text" class="input" id="storeCity" required>
+                            <input type="text" class="input" id="storeCity">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-foreground mb-2">Code postal</label>
-                            <input type="text" class="input" id="storeZipCode" required>
+                            <input type="text" class="input" id="storeZipCode">
                         </div>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-foreground mb-2">Adresse</label>
-                        <input type="text" class="input" id="storeAddress" required>
+                        <input type="text" class="input" id="storeAddress">
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-foreground mb-2">Responsable</label>
-                            <input type="text" class="input" id="storeManager" required>
+                            <input type="text" class="input" id="AmaZup">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-foreground mb-2">Téléphone</label>
@@ -548,20 +615,12 @@
                         <label class="block text-sm font-medium text-foreground mb-2">Email</label>
                         <input type="email" class="input" id="storeEmail">
                     </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-foreground mb-2">Statut</label>
-                        <select class="input select" id="storeStatus" required>
-                            <option value="actif">Actif</option>
-                            <option value="inactif">Inactif</option>
-                            <option value="maintenance">Maintenance</option>
-                        </select>
-                    </div>
                 </div>
                 
                 <div class="flex justify-end gap-3 mt-6">
                     <button type="button" class="btn btn-outline" onclick="closeStoreModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" id="submitButton">
+                        <i data-lucide="plus" class="w-4 h-4 mr-2" id="submitIcon"></i>
                         <span id="submitButtonText">Ajouter</span>
                     </button>
                 </div>
@@ -569,36 +628,229 @@
         </div>
     </div>
 
+    <!-- View Store Modal -->
+    <div class="modal-overlay" id="viewStoreModal">
+        <div class="modal-content">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-foreground">Détails du magasin</h2>
+                <button class="btn btn-outline btn-sm" onclick="closeViewStoreModal()">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="store-avatar" id="viewStoreAvatar"></div>
+                    <div>
+                        <h3 class="text-lg font-semibold" id="viewStoreName"></h3>
+                        <p class="text-muted-foreground" id="viewStoreLocation"></p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-muted-foreground mb-1">Description</label>
+                        <p class="text-sm" id="viewStoreDescription"></p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-muted-foreground mb-1">Responsable</label>
+                        <p class="text-sm" id="viewAmaZup"></p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-muted-foreground mb-1">Produits</label>
+                        <p class="text-sm font-semibold" id="viewStoreProducts"></p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-muted-foreground mb-1">Catégories</label>
+                        <p class="text-sm font-semibold" id="viewStoreCategories"></p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-muted-foreground mb-1">Stock total</label>
+                        <p class="text-sm font-semibold" id="viewStoreStock"></p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-muted-foreground mb-1">Date de création</label>
+                        <p class="text-sm" id="viewStoreCreated"></p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-muted-foreground mb-2">Stocks par produit</label>
+                    <div class="bg-muted/50 rounded-lg p-3">
+                        <div id="viewStoreStocks" class="space-y-2">
+                            <!-- Stocks details will be populated -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-3">
+                    <button type="button" class="btn btn-outline" onclick="closeViewStoreModal()">Fermer</button>
+                    <button type="button" class="btn btn-secondary" onclick="editStoreFromView()">
+                        <i data-lucide="edit" class="w-4 h-4 mr-2"></i>
+                        Modifier
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content max-w-md">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center">
+                    <i data-lucide="alert-triangle" class="w-6 h-6 text-destructive"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-foreground">Confirmer la suppression</h2>
+                    <p class="text-sm text-muted-foreground">Cette action est irréversible</p>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <p class="text-sm text-foreground">
+                    Êtes-vous sûr de vouloir supprimer le magasin <span class="font-semibold" id="deleteStoreName"></span> ?
+                </p>
+                <p class="text-sm text-muted-foreground mt-2">
+                    Toutes les données associées à ce magasin seront définitivement supprimées.
+                </p>
+            </div>
+            
+            <div class="flex justify-end gap-3">
+                <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">Annuler</button>
+                <button type="button" class="btn btn-destructive" onclick="confirmDelete()" id="deleteButton">
+                    <i data-lucide="trash-2" class="w-4 h-4 mr-2"></i>
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Toast Partials -->
+    <%- include('../partials/toasts') %>
+
     <script>
-        // Sample data - plus de magasins pour tester
-        const storesData = [
-            { id: 1, name: "Store Central Paris", city: "Paris", address: "123 Rue de Rivoli", manager: "Marie Dubois", status: "actif", products: 245, created: "2024-01-15" },
-            { id: 2, name: "Store Lyon Part-Dieu", city: "Lyon", address: "87 Cours Lafayette", manager: "Jean Martin", status: "actif", products: 189, created: "2024-02-03" },
-            { id: 3, name: "Store Marseille Vieux Port", city: "Marseille", address: "45 Quai du Port", manager: "Sophie Leroux", status: "maintenance", products: 156, created: "2024-01-28" },
-            { id: 4, name: "Store Toulouse Capitole", city: "Toulouse", address: "12 Place du Capitole", manager: "Pierre Durand", status: "actif", products: 203, created: "2024-03-12" },
-            { id: 5, name: "Store Nice Promenade", city: "Nice", address: "78 Promenade des Anglais", manager: "Laura Blanc", status: "inactif", products: 167, created: "2024-02-18" },
-            { id: 6, name: "Store Paris Montparnasse", city: "Paris", address: "34 Boulevard Montparnasse", manager: "Thomas Petit", status: "actif", products: 289, created: "2024-01-05" },
-            { id: 7, name: "Store Lyon Bellecour", city: "Lyon", address: "67 Place Bellecour", manager: "Anne Moreau", status: "actif", products: 198, created: "2024-02-25" },
-            { id: 8, name: "Store Marseille Canebière", city: "Marseille", address: "123 La Canebière", manager: "Marc Garcia", status: "actif", products: 234, created: "2024-03-01" },
-            { id: 9, name: "Store Toulouse Saint-Sernin", city: "Toulouse", address: "56 Rue Saint-Sernin", manager: "Claire Lefevre", status: "maintenance", products: 175, created: "2024-01-20" },
-            { id: 10, name: "Store Nice Gare", city: "Nice", address: "89 Avenue Thiers", manager: "Lucie Bernard", status: "actif", products: 210, created: "2024-02-10" },
-            { id: 11, name: "Store Paris Gare de Lyon", city: "Paris", address: "22 Rue de Bercy", manager: "Julien Simon", status: "actif", products: 300, created: "2024-03-15" },
-            { id: 12, name: "Store Lyon Croix-Rousse", city: "Lyon", address: "44 Boulevard de la Croix-Rousse", manager: "Elise Dubois", status: "inactif", products: 120, created: "2024-01-30" },
-            { id: 13, name: "Store Marseille Prado", city: "Marseille", address: "90 Avenue du Prado", manager: "Antoine Martin", status: "actif", products: 250, created: "2024-02-05" },
-            { id: 14, name: "Store Toulouse Minimes", city: "Toulouse", address: "33 Avenue des Minimes", manager: "Céline Moreau", status: "actif", products: 180, created: "2024-03-10" },
-            { id: 15, name: "Store Nice Cimiez", city: "Nice", address: "11 Avenue de Cimiez", manager: "Nicolas Lefevre", status: "maintenance", products: 140, created: "2024-01-25" }
+        // Configuration de l'API
+        const API_BASE_URL = 'http://localhost/api/v1';
+        
+        // Données magasins provenant du serveur
+        const storesData = <%- JSON.stringify(stores) %>;
+        
+        // Données générées aléatoirement pour les champs manquants
+        const cities = ['Paris', 'Lyon', 'Marseille', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Montpellier', 'Bordeaux', 'Lille'];
+        const addresses = [
+            '123 Rue de la République', '45 Avenue des Champs', '67 Boulevard Saint-Michel',
+            '89 Place de la Bastille', '12 Rue du Commerce', '34 Avenue Montaigne',
+            '56 Boulevard Haussmann', '78 Rue de Rivoli', '90 Place Vendôme', '11 Rue du Faubourg'
+        ];
+        const managers = [
+            'Marie Dubois', 'Jean Martin', 'Sophie Leroux', 'Pierre Durand', 'Laura Blanc',
+            'Thomas Petit', 'Anne Moreau', 'Marc Garcia', 'Claire Lefevre', 'Lucie Bernard'
         ];
 
+        // Enrichir les données des magasins avec des informations aléatoires
+        storesData.forEach((store, index) => {
+            const cityIndex = index % cities.length;
+            const addressIndex = index % addresses.length;
+            const managerIndex = index % managers.length;
+            
+            store.city = cities[cityIndex];
+            store.address = addresses[addressIndex];
+            store.zipCode = `${69000 + index}`;
+            store.manager = managers[managerIndex];
+            store.phone = `0${1 + Math.floor(Math.random() * 5)} ${Math.floor(Math.random() * 90) + 10} ${Math.floor(Math.random() * 90) + 10} ${Math.floor(Math.random() * 90) + 10} ${Math.floor(Math.random() * 90) + 10}`;
+            store.email = `${store.name.toLowerCase().replace(/\s+/g, '.')}@AmaZup.com`;
+            store.totalStock = store.stocks.reduce((sum, stock) => sum + stock.quantityAvailable, 0);
+        });
+
         let currentPage = 1;
-        let itemsPerPage = 10; // Par défaut 10
+        let itemsPerPage = 10;
         let sortField = null;
         let sortDirection = 'asc';
         let filteredData = [...storesData];
         let editingStoreId = null;
+        let deletingStoreId = null;
+        let viewingStoreId = null;
+
+        // Service Store
+        class StoreService {
+            constructor() {
+                this.baseUrl = API_BASE_URL;
+            }
+            
+            async createStore(data) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/stores`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Erreur lors de la création');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            async updateStore(storeId, data) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/stores/${storeId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Erreur lors de la modification');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            async deleteStore(storeId) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/stores/${storeId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Erreur lors de la suppression');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    throw error;
+                }
+            }
+        }
+
+        const storeService = new StoreService();
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, initializing...');
+            console.log('DOM loaded, initializing stores page...');
             
             // Initialize Lucide icons
             if (typeof lucide !== 'undefined') {
@@ -608,43 +860,35 @@
 
             renderTable();
             setupEventListeners();
-            console.log('Application initialized successfully');
+            console.log('Stores page initialized successfully');
         });
 
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
         function setupEventListeners() {
-            console.log('Setting up event listeners...');
-            
             // Search
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', debounce(filterData, 300));
-                console.log('Search listener added');
-            }
-            
-            // Filters
-            const statusFilter = document.getElementById('statusFilter');
-            if (statusFilter) {
-                statusFilter.addEventListener('change', filterData);
-                console.log('Status filter listener added');
-            }
-            
-            const cityFilter = document.getElementById('cityFilter');
-            if (cityFilter) {
-                cityFilter.addEventListener('change', filterData);
-                console.log('City filter listener added');
             }
             
             const perPageSelect = document.getElementById('perPageSelect');
             if (perPageSelect) {
                 perPageSelect.addEventListener('change', changeItemsPerPage);
-                console.log('Per page selector listener added');
             }
             
             // Sorting
             document.querySelectorAll('.sortable').forEach(header => {
                 header.addEventListener('click', () => sortTable(header.dataset.sort));
             });
-            console.log('Sort listeners added');
             
             // Pagination
             const prevPage = document.getElementById('prevPage');
@@ -656,46 +900,43 @@
             if (nextPage) {
                 nextPage.addEventListener('click', () => changePage(currentPage + 1));
             }
-            console.log('Pagination listeners added');
             
             // Form submission
             const storeForm = document.getElementById('storeForm');
             if (storeForm) {
                 storeForm.addEventListener('submit', handleFormSubmit);
-                console.log('Form listener added');
             }
             
             // Sidebar navigation
             document.querySelectorAll('.sidebar-item').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-                    this.classList.add('active');
-                });
+                if (!item.getAttribute('href') || item.getAttribute('href') === '#') {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                }
             });
 
-            // Close modal when clicking outside
-            const storeModal = document.getElementById('storeModal');
-            if (storeModal) {
-                storeModal.addEventListener('click', function(e) {
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.addEventListener('click', function(e) {
                     if (e.target === this) {
-                        closeStoreModal();
+                        closeAllModals();
                     }
                 });
-            }
+            });
 
             // Keyboard shortcuts
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
-                    closeStoreModal();
+                    closeAllModals();
                 }
                 if (e.ctrlKey && e.key === 'n') {
                     e.preventDefault();
                     openStoreModal();
                 }
             });
-            
-            console.log('All event listeners set up successfully');
         }
 
         function debounce(func, wait) {
@@ -711,36 +952,23 @@
         }
 
         function filterData() {
-            console.log('Filtering data...');
-            
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const statusFilter = document.getElementById('statusFilter').value;
-            const cityFilter = document.getElementById('cityFilter').value;
-
-            console.log('Search term:', searchTerm);
-            console.log('Status filter:', statusFilter);
-            console.log('City filter:', cityFilter);
 
             filteredData = storesData.filter(store => {
                 const matchesSearch = !searchTerm || 
                     store.name.toLowerCase().includes(searchTerm) ||
-                    store.manager.toLowerCase().includes(searchTerm) ||
-                    store.address.toLowerCase().includes(searchTerm);
-                
-                const matchesStatus = !statusFilter || store.status === statusFilter;
-                const matchesCity = !cityFilter || store.city.toLowerCase() === cityFilter;
+                    store.description.toLowerCase().includes(searchTerm) ||
+                    (store.manager && store.manager.toLowerCase().includes(searchTerm)) ||
+                    (store.city && store.city.toLowerCase().includes(searchTerm));
 
-                return matchesSearch && matchesStatus && matchesCity;
+                return matchesSearch;
             });
 
-            console.log('Filtered data length:', filteredData.length);
             currentPage = 1;
             renderTable();
         }
 
         function sortTable(field) {
-            console.log('Sorting by:', field);
-            
             if (sortField === field) {
                 sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
             } else {
@@ -752,15 +980,15 @@
                 let aValue = a[field];
                 let bValue = b[field];
 
-                if (field === 'products') {
-                    aValue = parseInt(aValue);
-                    bValue = parseInt(bValue);
-                } else if (field === 'created') {
+                if (field === 'productsCount' || field === 'categoriesCount') {
+                    aValue = parseInt(aValue) || 0;
+                    bValue = parseInt(bValue) || 0;
+                } else if (field === 'createdAt') {
                     aValue = new Date(aValue);
                     bValue = new Date(bValue);
                 } else {
-                    aValue = aValue.toString().toLowerCase();
-                    bValue = bValue.toString().toLowerCase();
+                    aValue = aValue ? aValue.toString().toLowerCase() : '';
+                    bValue = bValue ? bValue.toString().toLowerCase() : '';
                 }
 
                 if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
@@ -790,9 +1018,7 @@
         }
 
         function changeItemsPerPage() {
-            console.log('Changing items per page...');
             itemsPerPage = parseInt(document.getElementById('perPageSelect').value);
-            console.log('New items per page:', itemsPerPage);
             currentPage = 1;
             renderTable();
         }
@@ -806,34 +1032,38 @@
         }
 
         function renderTable() {
-            console.log('Rendering table...');
-            console.log('Current page:', currentPage);
-            console.log('Items per page:', itemsPerPage);
-            console.log('Filtered data length:', filteredData.length);
-            
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
             const pageData = filteredData.slice(startIndex, endIndex);
-
-            console.log('Page data length:', pageData.length);
 
             const tbody = document.getElementById('storesTableBody');
             tbody.innerHTML = '';
 
             pageData.forEach(store => {
+                const initials = store.name.split(' ').map(word => word.charAt(0)).join('').substring(0, 2);
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td class="font-medium">${store.name}</td>
-                    <td>${store.city}</td>
-                    <td>${store.address}</td>
-                    <td>${store.manager}</td>
                     <td>
-                        <span class="badge ${getStatusBadgeClass(store.status)}">
-                            ${getStatusText(store.status)}
-                        </span>
+                        <div class="flex items-center gap-3">
+                            <div class="store-avatar">${initials}</div>
+                            <div>
+                                <div class="font-medium">${store.name}</div>
+                                <div class="text-xs text-muted-foreground">ID: ${store.id}</div>
+                            </div>
+                        </div>
                     </td>
-                    <td class="font-mono">${store.products}</td>
-                    <td>${formatDate(store.created)}</td>
+                    <td>
+                        <div>
+                            <div class="font-medium">${store.city || 'Non défini'}</div>
+                            <div class="text-xs text-muted-foreground">${store.address || 'Adresse non définie'}</div>
+                        </div>
+                    </td>
+                    <td class="font-semibold">${store.productsCount}</td>
+                    <td class="font-semibold">${store.categoriesCount}</td>
+                    <td class="font-semibold">${store.totalStock}</td>
+                    <td>${store.manager || 'Non assigné'}</td>
+                    <td>${formatDate(store.createdAt)}</td>
                     <td>
                         <div class="flex items-center gap-2">
                             <button class="btn btn-outline btn-sm" onclick="viewStore(${store.id})" title="Voir">
@@ -857,29 +1087,6 @@
             updatePagination();
         }
 
-        function getStatusBadgeClass(status) {
-            switch (status) {
-                case 'actif': return 'badge-success';
-                case 'inactif': return 'badge-destructive';
-                case 'maintenance': return 'badge-warning';
-                default: return 'badge-secondary';
-            }
-        }
-
-        function getStatusText(status) {
-            switch (status) {
-                case 'actif': return 'Actif';
-                case 'inactif': return 'Inactif';
-                case 'maintenance': return 'Maintenance';
-                default: return status;
-            }
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('fr-FR');
-        }
-
         function updatePagination() {
             const totalItems = filteredData.length;
             const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -900,23 +1107,19 @@
             paginationContainer.innerHTML = '';
 
             if (totalPages <= 7) {
-                // Show all pages if 7 or fewer
                 for (let i = 1; i <= totalPages; i++) {
                     createPageButton(i, paginationContainer);
                 }
             } else {
-                // Show first page
                 createPageButton(1, paginationContainer);
 
                 if (currentPage > 4) {
-                    // Show ellipsis
                     const ellipsis = document.createElement('span');
                     ellipsis.className = 'px-2 text-muted-foreground';
                     ellipsis.textContent = '...';
                     paginationContainer.appendChild(ellipsis);
                 }
 
-                // Show pages around current page
                 const start = Math.max(2, currentPage - 2);
                 const end = Math.min(totalPages - 1, currentPage + 2);
 
@@ -925,14 +1128,12 @@
                 }
 
                 if (currentPage < totalPages - 3) {
-                    // Show ellipsis
                     const ellipsis = document.createElement('span');
                     ellipsis.className = 'px-2 text-muted-foreground';
                     ellipsis.textContent = '...';
                     paginationContainer.appendChild(ellipsis);
                 }
 
-                // Show last page
                 if (totalPages > 1) {
                     createPageButton(totalPages, paginationContainer);
                 }
@@ -947,153 +1148,273 @@
             container.appendChild(button);
         }
 
-        // Store Management Functions
         function openStoreModal(storeId = null) {
             editingStoreId = storeId;
             const modal = document.getElementById('storeModal');
             const modalTitle = document.getElementById('modalTitle');
             const submitButton = document.getElementById('submitButtonText');
+            const submitIcon = document.getElementById('submitIcon');
             const form = document.getElementById('storeForm');
-
+            
             if (storeId) {
                 const store = storesData.find(s => s.id === storeId);
                 if (store) {
                     modalTitle.textContent = 'Modifier le magasin';
                     submitButton.textContent = 'Modifier';
+                    submitIcon.setAttribute('data-lucide', 'save');
                     
                     // Fill form with store data
                     document.getElementById('storeName').value = store.name;
-                    document.getElementById('storeCity').value = store.city;
-                    document.getElementById('storeAddress').value = store.address;
-                    document.getElementById('storeManager').value = store.manager;
-                    document.getElementById('storeStatus').value = store.status;
-                    
-                    // Set default values for fields not in sample data
-                    document.getElementById('storeZipCode').value = '75001';
-                    document.getElementById('storePhone').value = '01 23 45 67 89';
-                    document.getElementById('storeEmail').value = 'contact@store.com';
+                    document.getElementById('storeDescription').value = store.description;
+                    document.getElementById('storeCity').value = store.city || '';
+                    document.getElementById('storeZipCode').value = store.zipCode || '';
+                    document.getElementById('storeAddress').value = store.address || '';
+                    document.getElementById('AmaZup').value = store.manager || '';
+                    document.getElementById('storePhone').value = store.phone || '';
+                    document.getElementById('storeEmail').value = store.email || '';
                 }
             } else {
                 modalTitle.textContent = 'Ajouter un magasin';
                 submitButton.textContent = 'Ajouter';
+                submitIcon.setAttribute('data-lucide', 'plus');
                 form.reset();
-                document.getElementById('storeStatus').value = 'actif';
             }
-
-            modal.style.display = 'flex';
+            
+            modal.classList.add('show');
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
         }
 
         function closeStoreModal() {
-            document.getElementById('storeModal').style.display = 'none';
+            document.getElementById('storeModal').classList.remove('show');
             editingStoreId = null;
         }
 
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            
-            const formData = {
-                name: document.getElementById('storeName').value,
-                city: document.getElementById('storeCity').value,
-                zipCode: document.getElementById('storeZipCode').value,
-                address: document.getElementById('storeAddress').value,
-                manager: document.getElementById('storeManager').value,
-                phone: document.getElementById('storePhone').value,
-                email: document.getElementById('storeEmail').value,
-                status: document.getElementById('storeStatus').value
-            };
-
-            if (editingStoreId) {
-                // Update existing store
-                const storeIndex = storesData.findIndex(s => s.id === editingStoreId);
-                if (storeIndex !== -1) {
-                    storesData[storeIndex] = {
-                        ...storesData[storeIndex],
-                        ...formData
-                    };
-                    showNotification('Magasin modifié avec succès', 'success');
-                }
-            } else {
-                // Add new store
-                const newStore = {
-                    id: Math.max(...storesData.map(s => s.id)) + 1,
-                    ...formData,
-                    products: 0,
-                    created: new Date().toISOString().split('T')[0]
-                };
-                storesData.push(newStore);
-                showNotification('Magasin ajouté avec succès', 'success');
-            }
-
-            closeStoreModal();
-            filterData(); // Refresh the table
-        }
-
         function viewStore(storeId) {
+            viewingStoreId = storeId;
             const store = storesData.find(s => s.id === storeId);
             if (store) {
-                alert(`Détails du magasin:\n\nNom: ${store.name}\nVille: ${store.city}\nAdresse: ${store.address}\nResponsable: ${store.manager}\nStatut: ${store.status}\nProduits: ${store.products}\nCréé le: ${formatDate(store.created)}`);
+                const initials = store.name.split(' ').map(word => word.charAt(0)).join('').substring(0, 2);
+                
+                document.getElementById('viewStoreAvatar').textContent = initials;
+                document.getElementById('viewStoreName').textContent = store.name;
+                document.getElementById('viewStoreLocation').textContent = `${store.city || 'Ville non définie'} - ${store.address || 'Adresse non définie'}`;
+                document.getElementById('viewStoreDescription').textContent = store.description || 'Aucune description';
+                document.getElementById('viewAmaZup').textContent = store.manager || 'Non assigné';
+                document.getElementById('viewStoreProducts').textContent = store.productsCount;
+                document.getElementById('viewStoreCategories').textContent = store.categoriesCount;
+                document.getElementById('viewStoreStock').textContent = store.totalStock;
+                document.getElementById('viewStoreCreated').textContent = formatDate(store.createdAt);
+                
+                // Populate stocks details
+                const stocksContainer = document.getElementById('viewStoreStocks');
+                stocksContainer.innerHTML = '';
+                
+                if (store.stocks && store.stocks.length > 0) {
+                    store.stocks.forEach(stock => {
+                        const stockItem = document.createElement('div');
+                        stockItem.className = 'flex justify-between items-center text-sm';
+                        stockItem.innerHTML = `
+                            <span>Produit ID: ${stock.productId}</span>
+                            <div class="flex gap-4">
+                                <span class="text-muted-foreground">Stock: ${stock.quantityAvailable}</span>
+                                <span class="text-warning">Seuil: ${stock.criticalThreshold}</span>
+                                ${stock.quantityAvailable <= stock.criticalThreshold ? 
+                                    '<span class="badge badge-warning">Critique</span>' : 
+                                    '<span class="badge badge-success">OK</span>'
+                                }
+                            </div>
+                        `;
+                        stocksContainer.appendChild(stockItem);
+                    });
+                } else {
+                    stocksContainer.innerHTML = '<p class="text-muted-foreground text-sm">Aucun stock enregistré</p>';
+                }
+                
+                document.getElementById('viewStoreModal').classList.add('show');
             }
+        }
+
+        function closeViewStoreModal() {
+            document.getElementById('viewStoreModal').classList.remove('show');
+            viewingStoreId = null;
+        }
+
+        function editStoreFromView() {
+            closeViewStoreModal();
+            openStoreModal(viewingStoreId);
+        }
+
+        function deleteStore(storeId) {
+            deletingStoreId = storeId;
+            const store = storesData.find(s => s.id === storeId);
+            if (store) {
+                document.getElementById('deleteStoreName').textContent = store.name;
+                document.getElementById('deleteModal').classList.add('show');
+            }
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            deletingStoreId = null;
+        }
+
+        async function confirmDelete() {
+            if (!deletingStoreId) return;
+            
+            const deleteButton = document.getElementById('deleteButton');
+            const originalContent = deleteButton.innerHTML;
+            
+            // Set loading state
+            deleteButton.disabled = true;
+            deleteButton.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 mr-2 animate-spin"></i>Suppression...';
+            
+            try {
+                await storeService.deleteStore(deletingStoreId);
+                
+                // Remove from local data
+                const index = storesData.findIndex(s => s.id === deletingStoreId);
+                if (index !== -1) {
+                    storesData.splice(index, 1);
+                }
+                
+                showToast('Magasin supprimé avec succès', 'success');
+                updateStats();
+                filterData();
+                closeDeleteModal();
+                
+            } catch (error) {
+                console.error('Erreur lors de la suppression:', error);
+                showToast('Erreur lors de la suppression du magasin', 'error');
+            } finally {
+                deleteButton.disabled = false;
+                deleteButton.innerHTML = originalContent;
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+        }
+
+        function closeAllModals() {
+            closeStoreModal();
+            closeViewStoreModal();
+            closeDeleteModal();
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const submitButton = document.getElementById('submitButton');
+            const originalContent = submitButton.innerHTML;
+            
+            const name = document.getElementById('storeName').value;
+            const description = document.getElementById('storeDescription').value;
+            const city = document.getElementById('storeCity').value;
+            const zipCode = document.getElementById('storeZipCode').value;
+            const address = document.getElementById('storeAddress').value;
+            const manager = document.getElementById('AmaZup').value;
+            const phone = document.getElementById('storePhone').value;
+            const email = document.getElementById('storeEmail').value;
+            
+            // Validate email format if provided
+            if (email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showToast('Veuillez entrer une adresse email valide', 'error');
+                    return;
+                }
+            }
+            
+            // Set loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 mr-2 animate-spin"></i>Traitement...';
+            
+            try {
+                if (editingStoreId) {
+                    // Update existing store
+                    const storeData = {
+                        name: name,
+                        description: description
+                    };
+                    
+                    await storeService.updateStore(editingStoreId, storeData);
+                    
+                    // Update local data
+                    const storeIndex = storesData.findIndex(s => s.id === editingStoreId);
+                    if (storeIndex !== -1) {
+                        storesData[storeIndex] = {
+                            ...storesData[storeIndex],
+                            ...storeData,
+                            city,
+                            zipCode,
+                            address,
+                            manager,
+                            phone,
+                            email,
+                            updatedAt: new Date().toISOString()
+                        };
+                    }
+                    
+                    showToast('Magasin modifié avec succès', 'success');
+                    
+                } else {
+                    // Create new store
+                    const storeData = {
+                        name: name,
+                        description: description
+                    };
+                    
+                    const newStore = await storeService.createStore(storeData);
+                    
+                    // Add to local data
+                    const storeToAdd = {
+                        id: newStore.id || Math.max(...storesData.map(s => s.id)) + 1,
+                        name: name,
+                        description: description,
+                        city,
+                        zipCode,
+                        address,
+                        manager,
+                        phone,
+                        email,
+                        productsCount: 0,
+                        categoriesCount: 0,
+                        stocks: [],
+                        totalStock: 0,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+                    
+                    storesData.push(storeToAdd);
+                    showToast('Magasin ajouté avec succès', 'success');
+                }
+                
+                updateStats();
+                filterData();
+                closeStoreModal();
+                
+            } catch (error) {
+                console.error('Erreur lors de l\'opération:', error);
+                showToast(error.message || 'Erreur lors de l\'opération', 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalContent;
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalStores').textContent = storesData.length;
+            document.getElementById('totalProducts').textContent = storesData.reduce((sum, store) => sum + store.productsCount, 0);
+            document.getElementById('totalCategories').textContent = storesData.reduce((sum, store) => sum + store.categoriesCount, 0);
+            document.getElementById('totalStock').textContent = storesData.reduce((sum, store) => sum + store.totalStock, 0);
         }
 
         function editStore(storeId) {
             openStoreModal(storeId);
-        }
-
-        function deleteStore(storeId) {
-            const store = storesData.find(s => s.id === storeId);
-            if (store && confirm(`Êtes-vous sûr de vouloir supprimer le magasin "${store.name}" ?\n\nCette action est irréversible.`)) {
-                const index = storesData.findIndex(s => s.id === storeId);
-                storesData.splice(index, 1);
-                showNotification('Magasin supprimé avec succès', 'success');
-                filterData(); // Refresh the table
-            }
-        }
-
-        function showNotification(message, type = 'info') {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-full`;
-            
-            switch (type) {
-                case 'success':
-                    notification.className += ' bg-success text-success-foreground';
-                    break;
-                case 'error':
-                    notification.className += ' bg-destructive text-destructive-foreground';
-                    break;
-                default:
-                    notification.className += ' bg-info text-info-foreground';
-            }
-
-            notification.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info'}" class="w-4 h-4"></i>
-                    <span>${message}</span>
-                    <button onclick="this.parentElement.parentElement.remove()" class="ml-2">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            `;
-
-            document.body.appendChild(notification);
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-
-            // Animate in
-            setTimeout(() => {
-                notification.classList.remove('translate-x-full');
-            }, 100);
-
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                notification.classList.add('translate-x-full');
-                setTimeout(() => {
-                    if (notification.parentElement) {
-                        notification.remove();
-                    }
-                }, 300);
-            }, 5000);
         }
     </script>
 </body>

@@ -6,6 +6,7 @@
     <title>Connexion - StoreManager</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -225,6 +226,11 @@
         
         .login-btn:hover {
             background: rgba(30, 41, 59, 0.9);
+        }
+        
+        .login-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
         }
         
         .divider {
@@ -461,7 +467,6 @@
             transition: all 0.3s ease;
         }
         
-        /* Correction pour l'icône d'œil supplémentaire */
         input[type="password"]::-ms-reveal,
         input[type="password"]::-ms-clear {
             display: none;
@@ -472,7 +477,6 @@
             display: none !important;
         }
         
-        /* Styles pour les écrans plus petits */
         @media (max-width: 768px) {
             .login-container {
                 flex-direction: column;
@@ -564,7 +568,7 @@
                         <label class="form-label" for="email">Adresse email</label>
                         <div class="relative">
                             <i data-lucide="mail" class="input-icon"></i>
-                            <input type="email" class="form-input" id="loginEmail" placeholder="email@exemple.com" required>
+                            <input type="email" class="form-input" id="loginEmail" name="email" placeholder="email@exemple.com" required>
                         </div>
                     </div>
                     
@@ -572,7 +576,7 @@
                         <label class="form-label" for="password">Mot de passe</label>
                         <div class="relative">
                             <i data-lucide="lock" class="input-icon"></i>
-                            <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" required>
+                            <input type="password" class="form-input" id="loginPassword" name="password" placeholder="••••••••" required>
                             <span class="password-toggle" onclick="togglePasswordVisibility('loginPassword')">
                                 <i data-lucide="eye" id="eyeIconLogin"></i>
                             </span>
@@ -582,10 +586,10 @@
                     
                     <div class="remember-forgot">
                         <div class="remember">
-                            <input type="checkbox" id="remember">
+                            <input type="checkbox" id="remember" name="remember">
                             <label for="remember">Se souvenir de moi</label>
                         </div>
-                        <a href="#" class="forgot-password">Mot de passe oublié?</a>
+                        <a href="/change-password" class="forgot-password">Mot de passe oublié ?</a>
                     </div>
                     
                     <button type="submit" class="login-btn">
@@ -623,14 +627,101 @@
                     
                     <p class="signup-link">
                         Vous n'avez pas de compte ? 
-                        <a href="inscription.html">S'inscrire</a>
+                        <a href="/signup">S'inscrire</a>
                     </p>
                 </form>
             </div>
         </div>
     </div>
 
+    <%- include('../partials/toasts') %>
+
     <script>
+        // Configuration de l'API
+        const API_BASE_URL = 'http://localhost/api/v1'; // Remplacez par votre URL d'API
+        
+        // Service d'authentification
+        class AuthService {
+            constructor() {
+                this.baseUrl = API_BASE_URL;
+            }
+            
+            async signin(email) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/auth/signin`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de la connexion');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    throw error;
+                }
+            }
+            
+            async signinValidate(data) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/auth/signinValidate`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de la validation');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    throw error;
+                }
+            }
+            
+            setUser(userData) {
+                // Stocker les données utilisateur dans le localStorage
+                localStorage.setItem('user', JSON.stringify(userData));
+                
+                // Rediriger vers le dashboard
+                window.location.href = 'dashboard.html';
+            }
+            
+            getCurrentUser() {
+                const userData = localStorage.getItem('user');
+                return userData ? JSON.parse(userData) : null;
+            }
+            
+            logout() {
+                localStorage.removeItem('user');
+                window.location.href = 'signin.html';
+            }
+        }
+        
+        // Instance du service d'authentification
+        const authService = new AuthService();
+        
+        // Fonction de proof of work
+        function calculateProofOfWork(challenge, difficulty) {
+            let proof = 0;
+            const prefix = "0".repeat(parseInt(difficulty));
+            
+            while (true) {
+                const hash = CryptoJS.SHA256(challenge + proof).toString(CryptoJS.enc.Hex);
+                if (hash.startsWith(prefix)) {
+                    return proof;
+                }
+                proof++;
+            }
+        }
+        
         // Initialiser les icônes Lucide
         document.addEventListener('DOMContentLoaded', function() {
             try {
@@ -663,62 +754,114 @@
             errorElement.textContent = message;
             errorElement.style.display = 'block';
             
-            // Hide error after 3 seconds
+            // Hide error after 5 seconds
             setTimeout(() => {
                 errorElement.style.display = 'none';
-            }, 3000);
+            }, 5000);
         }
         
-        function simulateLogin() {
+        function setLoadingState(isLoading) {
             const loginBtn = document.querySelector('.login-btn');
             const loginText = document.getElementById('loginText');
             const loginIcon = document.getElementById('loginIcon');
             
-            // Show loading state
-            loginBtn.disabled = true;
-            loginText.textContent = 'Connexion en cours...';
-            loginIcon.setAttribute('data-lucide', 'loader-2');
-            loginIcon.classList.add('spinner');
+            if (isLoading) {
+                loginBtn.disabled = true;
+                loginText.textContent = 'Connexion en cours...';
+                loginIcon.setAttribute('data-lucide', 'loader-2');
+                loginIcon.classList.add('spinner');
+            } else {
+                loginBtn.disabled = false;
+                loginText.textContent = 'Se connecter';
+                loginIcon.setAttribute('data-lucide', 'log-in');
+                loginIcon.classList.remove('spinner');
+            }
             
             // Réinitialiser les icônes
             lucide.createIcons();
-            
-            // Simulate API call
-            setTimeout(() => {
-                // Successful login - redirect to dashboard
-                window.location.href = 'dashboard.html';
-            }, 2000);
         }
         
-        // Login form submission
+        // Gestion de la soumission du formulaire
         const loginForm = document.getElementById('loginForm');
-        loginForm.addEventListener('submit', function(event) {
+        loginForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
-            // Simple validation
+            // Validation simple
             if (!email || !password) {
-                showError('Veuillez remplir tous les champs');
+                // showError('Veuillez remplir tous les champs');
+                showToast('Veuillez remplir tous les champs', 'error');
                 return;
             }
             
-            // Email validation
+            // Validation email
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                showError('Veuillez entrer une adresse email valide');
+                // showError('Veuillez entrer une adresse email valide');
+                showToast('Veuillez entrer une adresse email valide', 'error');
                 return;
             }
             
-            // Simulate login process
-            simulateLogin();
+            setLoadingState(true);
+            
+            try {
+                // Première requête : obtenir le salt et le défi proof of work
+                const signinResponse = await authService.signin(email);
+                const { salt, pow } = signinResponse;
+                
+                // Calculer le proof of work
+                const proof = calculateProofOfWork(pow.challenge, pow.difficulty);
+                
+                // Hacher le mot de passe avec le salt
+                const hashPassword = CryptoJS.SHA256(password + salt).toString(CryptoJS.enc.Hex);
+                
+                // Deuxième requête : validation avec le mot de passe haché et le proof
+                const validateResponse = await authService.signinValidate({
+                    email: email,
+                    hashPassword: hashPassword,
+                    challenge: pow.challenge,
+                    signature: pow.signature,
+                    proof: proof
+                });
+                
+                console.log('Connexion réussie!');
+                window.location.href = '/';
+                
+            } catch (error) {
+                console.error('Erreur de connexion:', error);
+                // showError(error.message || 'Une erreur est survenue lors de la connexion');
+                showToast('Une erreur est survenue lors de la connexion', 'error');
+                setLoadingState(false);
+            } finally {
+                setLoadingState(false);
+            }
+        });
+        
+        // Vérifier si l'utilisateur est déjà connecté au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = authService.getCurrentUser();
+            if (currentUser) {
+                // L'utilisateur est déjà connecté, rediriger vers le dashboard
+                window.location.href = '/';
+            }
         });
         
         // Add animation to form elements
         document.querySelectorAll('.form-group, .remember-forgot, .login-btn').forEach((el, index) => {
             el.style.animationDelay = `${index * 0.1}s`;
             el.classList.add('form-animation');
+        });
+        
+        // Gestion des boutons de connexion sociale (optionnel)
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Ici vous pouvez ajouter la logique pour la connexion sociale
+                console.log('Connexion sociale non implémentée');
+                // showError('Connexion sociale non disponible pour le moment');
+                showToast('Connexion sociale non disponible pour le moment', 'info');
+            });
         });
     </script>
 </body>

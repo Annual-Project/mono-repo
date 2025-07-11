@@ -71,7 +71,7 @@ router.post(
 
 // PUT update a product by ID
 router.put(
-  "/api/v1/products",
+  "/api/v1/products/:id",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(updateProductIdSchema, "params"),
   validationsMiddleware(updateProductSchema, "body"),
@@ -81,7 +81,7 @@ router.put(
 // DELETE a product by ID
 router.delete(
   "/api/v1/products/:id",
-  authorizationMiddleware([], ["superadmin"]),
+  authorizationMiddleware([], ["admin"]),
   validationsMiddleware(deleteProductSchema, "params"),
   controllersHandler(ProductController.deleteProductById)
 );
@@ -112,7 +112,7 @@ router.post(
 
 // PUT update a category by ID
 router.put(
-  "/api/v1/categories",
+  "/api/v1/categories/:id",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(updateCategoryIdSchema, "params"),
   validationsMiddleware(updateCategorySchema, "body"),
@@ -122,7 +122,7 @@ router.put(
 // DELETE a category by ID
 router.delete(
   "/api/v1/categories/:id",
-  authorizationMiddleware([], ["superadmin"]),
+  authorizationMiddleware([], ["admin"]),
   validationsMiddleware(deleteCategorySchema, "params"),
   controllersHandler(CategoryController.deleteCategoryById)
 );

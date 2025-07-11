@@ -24,6 +24,31 @@ class AggregatedUserService {
     return user;
   }
 
+  // Méthode pour la page admin crud user
+  static async getAggregatedUsers() {
+    // 1. Récupération de tous les utilisateurs
+    const usersResponse = await fetch('http://auth_service:3000/api/v1/users', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "x-internal-api-key": process.env.INTERNAL_API_KEY,
+      },
+    });
+
+    if (!usersResponse.ok) {
+      throw new BadRequestError('Failed to fetch users');
+    }
+    const users = await usersResponse.json();
+
+    // 6. Statistiques
+    const userCount = users.length;
+
+    return {
+      users,
+      userCount,
+    };
+  }
+
 }
 
 export default AggregatedUserService;

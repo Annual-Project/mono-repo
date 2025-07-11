@@ -4,6 +4,8 @@ import { StatusCodes } from 'http-status-codes';
 
 export default (err, _, res, next) => {
 
+  console.log('Error Middleware:');
+
   //! Passer la main au gestionnaire d'erreurs d'Express si les en-têtes ont déjà été envoyés au client
   if (res.headersSent) return next(err);
 
@@ -20,9 +22,7 @@ export default (err, _, res, next) => {
       message: `${issue.path.join('.')} is ${issue.message}`,
     }))
 
-    res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid data', details: errorMessages });
-  } else {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
+    return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid data', details: errorMessages });
   }
 
   // Erreur inconnue (non prévue)

@@ -156,28 +156,7 @@
 </head>
 <body class="min-h-screen bg-background font-sans antialiased">
     <!-- Header -->
-    <header class="sticky top-0 z-50 glass-effect border-b border-border/40">
-        <div class="container mx-auto px-4">
-            <div class="flex h-16 items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <div class="flex items-center justify-center w-8 h-8 bg-primary rounded-md">
-                        <i data-lucide="store" class="w-4 h-4 text-primary-foreground"></i>
-                    </div>
-                    <span class="text-xl font-bold text-foreground">AmaZup</span>
-                </div>
-                
-                <nav class="hidden md:flex items-center space-x-6">
-                    <a href="/" class="text-foreground font-medium">Accueil</a>
-                    <a href="/stores" class="text-muted-foreground hover:text-foreground transition-colors">Magasins</a>
-                </nav>
-                
-                <div class="flex items-center space-x-3">
-                    <a href="/signin" class="btn btn-outline">Connexion</a>
-                    <a href="/signup" class="btn btn-primary">Inscription</a>
-                </div>
-            </div>
-        </div>
-    </header>
+    <%- include('../partials/header') %>
 
     <!-- Hero Section -->
     <section class="relative overflow-hidden">
@@ -389,56 +368,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-muted/50 py-12">
-        <div class="container mx-auto px-4">
-            <div class="grid md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <div class="flex items-center justify-center w-8 h-8 bg-primary rounded-md">
-                            <i data-lucide="store" class="w-4 h-4 text-primary-foreground"></i>
-                        </div>
-                        <span class="text-xl font-bold text-foreground">AmaZup</span>
-                    </div>
-                    <p class="text-muted-foreground">
-                        Découvrez notre réseau de magasins et leurs produits
-                    </p>
-                </div>
-                
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Navigation</h4>
-                    <ul class="space-y-2 text-muted-foreground">
-                        <li><a href="/stores" class="hover:text-foreground transition-colors">Nos magasins</a></li>
-                        <li><a href="/signin" class="hover:text-foreground transition-colors">Se connecter</a></li>
-                        <li><a href="/signup" class="hover:text-foreground transition-colors">S'inscrire</a></li>
-                        <li><a href="/profile" class="hover:text-foreground transition-colors">Mon profil</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Support</h4>
-                    <ul class="space-y-2 text-muted-foreground">
-                        <li><a href="#" class="hover:text-foreground transition-colors">Documentation</a></li>
-                        <li><a href="#" class="hover:text-foreground transition-colors">FAQ</a></li>
-                        <li><a href="#" class="hover:text-foreground transition-colors">Contact</a></li>
-                        <li><a href="#" class="hover:text-foreground transition-colors">Support</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Légal</h4>
-                    <ul class="space-y-2 text-muted-foreground">
-                        <li><a href="#" class="hover:text-foreground transition-colors">Conditions d'utilisation</a></li>
-                        <li><a href="#" class="hover:text-foreground transition-colors">Politique de confidentialité</a></li>
-                        <li><a href="#" class="hover:text-foreground transition-colors">Mentions légales</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="border-t border-border/40 mt-8 pt-8 text-center text-muted-foreground">
-                <p>&copy; 2024 AmaZup. Tous droits réservés.</p>
-            </div>
-        </div>
-    </footer>
+    <%- include('../partials/footer') %>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

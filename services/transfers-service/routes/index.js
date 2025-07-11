@@ -44,7 +44,7 @@ router.post(
 
 // PUT update a transfer by ID
 router.put(
-  "/api/v1/transfers",
+  "/api/v1/transfers/:id",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(updateTransferIdSchema, "params"),
   validationsMiddleware(updateTransferSchema, "body"),
@@ -54,7 +54,7 @@ router.put(
 // DELETE a transfer by ID
 router.delete(
   "/api/v1/transfers/:id",
-  authorizationMiddleware([], ["superadmin"]),
+  authorizationMiddleware([], ["admin"]),
   validationsMiddleware(deleteTransferSchema, "params"),
   controllersHandler(TransferController.deleteTransferById)
 );

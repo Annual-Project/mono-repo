@@ -1,0 +1,119 @@
+<style>
+/* Toast Notification */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #10b981;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 1000;
+    transform: translateX(400px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast.hide {
+    transform: translateX(400px);
+    opacity: 0;
+}
+
+/* Responsive mobile */
+@media (max-width: 768px) {
+    .toast {
+        right: 10px;
+        left: 10px;
+        transform: translateY(-100px);
+    }
+    
+    .toast.show {
+        transform: translateY(0);
+    }
+    
+    .toast.hide {
+        transform: translateY(-100px);
+    }
+}
+</style>
+
+<!-- Toast Container -->
+<div id="toastContainer"></div>
+
+<script>
+// Fonction showToast pour gérer les notifications
+function showToast(message, type = 'success') {
+    const toastContainer = document.getElementById('toastContainer');
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    
+    // Pour pages avec Lucide Icons
+    const iconMapLucide = {
+        success: 'check-circle',
+        error: 'x-circle',
+        warning: 'alert-triangle',
+        info: 'info'
+    };
+    
+    // Pour pages avec FontAwesome
+    const iconMapFA = {
+        success: 'fa-check-circle',
+        error: 'fa-times-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+    
+    const colorMap = {
+        success: '#10b981',
+        error: '#ef4444',
+        warning: '#f59e0b',
+        info: '#0ea5e9'
+    };
+    
+    toast.style.background = colorMap[type];
+    
+    // Détecter si c'est Lucide ou FontAwesome
+    if (typeof lucide !== 'undefined') {
+        // Page avec Lucide
+        toast.innerHTML = `
+            <i data-lucide="${iconMapLucide[type]}"></i>
+            <span>${message}</span>
+        `;
+        toastContainer.appendChild(toast);
+        lucide.createIcons();
+    } else {
+        // Page avec FontAwesome
+        toast.innerHTML = `
+            <i class="fas ${iconMapFA[type]}"></i>
+            <span>${message}</span>
+        `;
+        toastContainer.appendChild(toast);
+    }
+    
+    // Afficher le toast
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+    
+    // Masquer et supprimer le toast après 4 secondes
+    setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 300);
+    }, 4000);
+}
+</script>

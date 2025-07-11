@@ -28,8 +28,11 @@ class RoleController {
 
   static async deleteRoleById(req, res) {
     const { id } = req.params;
-    await RoleService.deleteRoleById(id);
-    return res.status(204).send();
+    const deletedRole = await RoleService.deleteRoleById(id);
+    return res.status(204).json({
+      message: 'Role deleted successfully.',
+      deletedRole,
+    });
   }
 }
 

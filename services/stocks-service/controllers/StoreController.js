@@ -15,17 +15,18 @@ class StoreController {
   }
 
   static async createStore(req, res) {
-    const newStore = await StoreService.createStore(req.body);
+    const newStore = await StoreService.createStore(req.validated.body);
     res.status(201).json(newStore);
   }
 
   static async updateStoreById(req, res) {
-    const updatedStore = await StoreService.updateStoreById(req.body);
+    const { id } = req.validated.params;
+    const updatedStore = await StoreService.updateStoreById({ id, ...req.validated.body });
     res.status(200).json(updatedStore);
   }
 
   static async deleteStoreById(req, res) {
-    const { id } = req.params;
+    const { id } = req.validated.params;
     await StoreService.deleteStoreById(id);
     res.status(200).json({ message: `Store with ID ${id} has been successfully deleted.` });
   }

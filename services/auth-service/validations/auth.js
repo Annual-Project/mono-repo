@@ -19,6 +19,8 @@ export const signupSchema = z.object({
 
 export const signupValidateSchema = z.object({
   email: safeStringEmail(),
+  firstname: safeString(),
+  lastname: safeString(),
   hashPassword: safeString(),
   challenge: safeString(),
   proof: z.number().nonnegative(),

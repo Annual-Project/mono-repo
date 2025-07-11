@@ -45,6 +45,7 @@ class StoreService {
   }
 
   static async updateStoreById(data) {
+    console.log(data);
     const { id, name, description } = data;
 
     const updatedStore = await prisma.store.update({

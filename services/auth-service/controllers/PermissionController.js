@@ -28,8 +28,11 @@ class PermissionController {
 
   static async deletePermissionById(req, res) {
     const { id } = req.params;
-    await PermissionService.deletePermissionById(id);
-    return res.status(204).send();
+    const deletedPerm = await PermissionService.deletePermissionById(id);
+    return res.status(204).json({
+      message: 'Permission deleted successfully.',
+      deletedPerm,
+    });
   }
 }
 

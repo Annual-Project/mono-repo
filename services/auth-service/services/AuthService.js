@@ -22,7 +22,7 @@ class AuthService {
       throw new BadRequestError('Email already in use');
     }
 
-    const salt = AuthService.generateSalt(16, 'hex');
+    const salt = AuthUtils.generateSalt(16, 'hex');
 
     const user = await prisma.user.create({
       data: {
@@ -36,7 +36,7 @@ class AuthService {
     }
 
     // Generation du challenge avec une durée de 5 minutes
-    const { challenge, signature } = AuthService.generateSignedChallenge();
+    const { challenge, signature } = AuthUtils.generateSignedChallenge();
 
     if (!challenge || !signature) {
       throw new InternalServerError('Error generating challenge during signup');
@@ -68,20 +68,20 @@ class AuthService {
     }
 
     // Verification du challenge avec la signature
-    const signedChallenge = AuthService.verifySignedChallenge(body.challenge, body.signature);
+    const signedChallenge = AuthUtils.verifySignedChallenge(body.challenge, body.signature);
 
     if (!signedChallenge) {
       throw new ForbiddenError('Invalid challenge or signature');
     }
 
     // Verification de la preuve de travail (proof)
-    const proofVerify = AuthService.verifyProofOfChallenge(body.challenge, body.proof);
+    const proofVerify = AuthUtils.verifyProofOfChallenge(body.challenge, body.proof);
 
     if (!proofVerify) {
       throw new ForbiddenError('Invalid proof of challenge');
     }
 
-    const { accessToken, refreshToken } = AuthService.generateJWTTokens({
+    const { accessToken, refreshToken } = AuthUtils.generateJWTTokens({
       sub: userFound.id,
       fingerprint: {
         ip,
@@ -94,6 +94,8 @@ class AuthService {
         id: userFound.id,
       },
       data: {
+        firstname: body.firstname,
+        lastname: body.lastname,
         password: body.hashPassword,
         accessToken,
         refreshToken,
@@ -144,6 +146,7 @@ class AuthService {
     const userFound = await prisma.user.findUnique({
       where: {
         email,
+        isActive: true,
       },
     });
 
@@ -152,7 +155,7 @@ class AuthService {
     }
 
     // Generation du challenge avec une duree de 5 minutes
-    const { challenge, signature } = AuthService.generateSignedChallenge();
+    const { challenge, signature } = AuthUtils.generateSignedChallenge();
 
     if (!challenge || !signature) {
       throw new InternalServerError('Error generating challenge during signin');
@@ -194,20 +197,20 @@ class AuthService {
     }
 
     // Verification du challenge avec la signature
-    const signedChallenge = AuthService.verifySignedChallenge(body.challenge, body.signature);
+    const signedChallenge = AuthUtils.verifySignedChallenge(body.challenge, body.signature);
 
     if (!signedChallenge) {
       throw new ForbiddenError('Invalid challenge or signature');
     }
 
     // Verification de la preuve de travail (proof)
-    const proofVerify = AuthService.verifyProofOfChallenge(body.challenge, body.proof);
+    const proofVerify = AuthUtils.verifyProofOfChallenge(body.challenge, body.proof);
 
     if (!proofVerify) {
       throw new ForbiddenError('Invalid proof of challenge');
     }
 
-    const { accessToken, refreshToken } = AuthService.generateJWTTokens({
+    const { accessToken, refreshToken } = AuthUtils.generateJWTTokens({
       sub: id,
       fingerprint: {
         ip,
@@ -286,7 +289,7 @@ class AuthService {
     }
 
     const { userId } = auth;
-    const { accessToken, refreshToken } = AuthService.generateJWTTokens({
+    const { accessToken, refreshToken } = AuthUtils.generateJWTTokens({
       sub: userId,
       fingerprint: {
         ip: req.ip,
@@ -341,20 +344,20 @@ class AuthService {
     }
 
     // Verification du challenge avec la signature
-    const signedChallenge = AuthService.verifySignedChallenge(challenge, signature);
+    const signedChallenge = AuthUtils.verifySignedChallenge(challenge, signature);
 
     if (!signedChallenge) {
       throw new ForbiddenError('Invalid challenge or signature');
     }
 
     // Verification de la preuve de travail (proof)
-    const proofVerify = AuthService.verifyProofOfChallenge(challenge, proof);
+    const proofVerify = AuthUtils.verifyProofOfChallenge(challenge, proof);
 
     if (!proofVerify) {
       throw new ForbiddenError('Invalid proof of challenge');
     }
 
-    const { accessToken, refreshToken } = AuthService.generateJWTTokens({
+    const { accessToken, refreshToken } = AuthUtils.generateJWTTokens({
       sub: user.id,
       fingerprint: {
         ip,

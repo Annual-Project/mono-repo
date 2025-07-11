@@ -37,6 +37,8 @@ import {
   updateStoreSchema,
 } from "../validations/store.js";
 
+import NotFoundError from "../exceptions/NotFoundError.js";
+
 const router = Router();
 
 router.get(
@@ -109,21 +111,21 @@ router.post(
 );
 
 router.put(
-  "/api/v1/stores",
+  "/api/v1/stores/:id",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(updateStoreIdSchema, "params"),
   validationsMiddleware(updateStoreSchema, "body"),
   controllersHandler(StoreController.updateStoreById)
 );
 router.put(
-  "/api/v1/stocks",
+  "/api/v1/stocks/:id",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(updateStockIdSchema, "params"),
   validationsMiddleware(updateStockSchema, "body"),
   controllersHandler(StockController.updateStockById)
 );
 router.put(
-  "/api/v1/stocks/history",
+  "/api/v1/stocks/history/:id",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(updateHistoryIdSchema, "params"),
   validationsMiddleware(updateHistorySchema, "body"),
@@ -132,19 +134,19 @@ router.put(
 
 router.delete(
   "/api/v1/stores/:id",
-  authorizationMiddleware([], ["superadmin"]),
+  authorizationMiddleware([], ["admin"]),
   validationsMiddleware(deleteStoreSchema, "params"),
   controllersHandler(StoreController.deleteStoreById)
 );
 router.delete(
   "/api/v1/stocks/:id",
-  authorizationMiddleware([], ["superadmin"]),
+  authorizationMiddleware([], ["admin"]),
   validationsMiddleware(deleteStockSchema, "params"),
   controllersHandler(StockController.deleteStockById)
 );
 router.delete(
   "/api/v1/stocks/history/:id",
-  authorizationMiddleware([], ["superadmin"]),
+  authorizationMiddleware([], ["admin"]),
   validationsMiddleware(deleteHistorySchema, "params"),
   controllersHandler(StockHistoryController.deleteHistoryById)
 );

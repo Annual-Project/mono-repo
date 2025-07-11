@@ -2,7 +2,7 @@ import ProductService from '../services/ProductService.js';
 
 class ProductController {
   static async getAllProducts(req, res) {
-    const { limit, offset } = req.query;
+    const { limit, offset } = req.validated.query;
     const products = await ProductService.getAllProducts(limit, offset);
     res.status(200).json(products);
   }
@@ -27,7 +27,7 @@ class ProductController {
   // }
 
   static async createProduct(req, res) {
-    const newProduct = await ProductService.createProduct(req.body);
+    const newProduct = await ProductService.createProduct(req.validated.body);
     res.status(201).json({
       message: 'Product created successfully',
       data: newProduct,
@@ -35,7 +35,8 @@ class ProductController {
   }
 
   static async updateProductById(req, res) {
-    const updatedProduct = await ProductService.updateProductById(req.body);
+    const { id } = req.validated.params;
+    const updatedProduct = await ProductService.updateProductById({ id, ...req.validated.body });
     res.status(200).json({
       message: 'Product updated successfully',
       data: updatedProduct,
@@ -43,7 +44,7 @@ class ProductController {
   }
 
   static async deleteProductById(req, res) {
-    const { id } = req.params;
+    const { id } = req.validated.params;
     const deletedProduct = await ProductService.deleteProductById(id);
     res.status(200).json({ message: 'Product deleted successfully', data: deletedProduct });
   }

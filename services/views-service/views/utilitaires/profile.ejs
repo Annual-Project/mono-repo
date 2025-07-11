@@ -6,6 +6,7 @@
     <title>Profil - AmaZup</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -419,6 +420,56 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
+        .error-message {
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            display: none;
+            color: #ef4444;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+        }
+        
+        .password-strength {
+            height: 5px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin-top: 0.4rem;
+            overflow: hidden;
+        }
+        
+        .strength-meter {
+            height: 100%;
+            width: 0;
+            background: #ef4444;
+            transition: width 0.3s, background 0.3s;
+        }
+        
+        .password-requirements {
+            margin-top: 0.4rem;
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+        
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.2rem;
+        }
+        
+        .requirement i {
+            margin-right: 0.4rem;
+            font-size: 0.65rem;
+            width: 12px;
+            color: #64748b;
+            transition: color 0.3s ease;
+        }
+        
+        .requirement.met i {
+            color: #10b981;
+        }
+        
         @media (max-width: 768px) {
             .profile-content {
                 flex-direction: column;
@@ -595,7 +646,7 @@
                             <i data-lucide="user-pen"></i>
                             Informations du profil
                         </h2>
-                        <button class="btn">
+                        <button class="btn" id="saveProfileBtn">
                             <i data-lucide="save"></i>
                             Enregistrer
                         </button>
@@ -611,7 +662,7 @@
                         </div>
                     </div>
                     
-                    <form>
+                    <form id="profileForm">
                         <div class="grid-cols-2">
                             <div class="form-group">
                                 <label class="form-label" for="firstName">Prénom</label>
@@ -653,41 +704,68 @@
                             <i data-lucide="shield"></i>
                             Sécurité du compte
                         </h2>
-                        <button class="btn">
+                        <button class="btn" id="updatePasswordBtn">
                             <i data-lucide="lock"></i>
                             Mettre à jour
                         </button>
                     </div>
                     
-                    <div class="grid-cols-2">
-                        <div class="form-group">
-                            <label class="form-label" for="currentPassword">Mot de passe actuel</label>
-                            <input type="password" class="form-input" id="currentPassword">
+                    <form id="passwordForm">
+                        <div class="grid-cols-2">
+                            <div class="form-group">
+                                <label class="form-label" for="currentPassword">Mot de passe actuel</label>
+                                <div style="position: relative;">
+                                    <input type="password" class="form-input" id="currentPassword" required style="padding-right: 3rem;">
+                                    <span style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); cursor: pointer; color: #64748b; transition: color 0.2s;" onclick="togglePasswordVisibility('currentPassword', this)">
+                                        <i data-lucide="eye"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="newPassword">Nouveau mot de passe</label>
+                                <div style="position: relative;">
+                                    <input type="password" class="form-input" id="newPassword" required style="padding-right: 3rem;">
+                                    <span style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); cursor: pointer; color: #64748b; transition: color 0.2s;" onclick="togglePasswordVisibility('newPassword', this)">
+                                        <i data-lucide="eye"></i>
+                                    </span>
+                                </div>
+                                <div class="password-strength">
+                                    <div class="strength-meter" id="passwordStrength"></div>
+                                </div>
+                                <div class="password-requirements">
+                                    <div class="requirement" id="reqLength"><i data-lucide="circle"></i> 8 caractères minimum</div>
+                                    <div class="requirement" id="reqNumber"><i data-lucide="circle"></i> Au moins un chiffre</div>
+                                    <div class="requirement" id="reqUpper"><i data-lucide="circle"></i> Au moins une majuscule</div>
+                                    <div class="requirement" id="reqSpecial"><i data-lucide="circle"></i> Au moins un caractère spécial</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="confirmPassword">Confirmer le mot de passe</label>
+                                <div style="position: relative;">
+                                    <input type="password" class="form-input" id="confirmPassword" required style="padding-right: 3rem;">
+                                    <span style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); cursor: pointer; color: #64748b; transition: color 0.2s;" onclick="togglePasswordVisibility('confirmPassword', this)">
+                                        <i data-lucide="eye"></i>
+                                    </span>
+                                </div>
+                                <div class="error-message" id="passwordError"></div>
+                            </div>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label" for="newPassword">Nouveau mot de passe</label>
-                            <input type="password" class="form-input" id="newPassword">
+                            <label class="form-label" style="margin-top: 1rem;">Authentification à deux facteurs</label>
+                            <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.25rem;">
+                                <% if (user.isActive) { %>
+                                    <i data-lucide="check-circle" style="color: #10b981; width: 16px; height: 16px; vertical-align: text-bottom;"></i>
+                                    Activée
+                                <% } else { %>
+                                    <i data-lucide="x-circle" style="color: #ef4444; width: 16px; height: 16px; vertical-align: text-bottom;"></i>
+                                    Désactivée
+                                <% } %>
+                            </p>
                         </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label" for="confirmPassword">Confirmer le mot de passe</label>
-                            <input type="password" class="form-input" id="confirmPassword">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" style="margin-top: 1rem;">Authentification à deux facteurs</label>
-                        <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.25rem;">
-                            <% if (user.isActive) { %>
-                                <i data-lucide="check-circle" style="color: #10b981; width: 16px; height: 16px; vertical-align: text-bottom;"></i>
-                                Activée
-                            <% } else { %>
-                                <i data-lucide="x-circle" style="color: #ef4444; width: 16px; height: 16px; vertical-align: text-bottom;"></i>
-                                Désactivée
-                            <% } %>
-                        </p>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -720,6 +798,19 @@
     </div>
 
     <script>
+        // Variables globales pour stocker les données de changement de mot de passe
+        let passwordChangeData = {
+            email: '<%= user.email %>',
+            oldPassword: '',
+            newPassword: '',
+            confirmNewPassword: '',
+            hashOldPassword: '',
+            hashNewPassword: '',
+            hashNewConfirmPassword: '',
+            newSalt: '',
+            errorMessage: ''
+        };
+
         // Initialiser les icônes Lucide
         document.addEventListener('DOMContentLoaded', function() {
             try {
@@ -729,7 +820,261 @@
             } catch (error) {
                 console.log('Lucide initialization failed');
             }
+            
+            // Initialiser les écouteurs de mot de passe
+            initPasswordListeners();
+            
+            // Vérifier s'il y a une erreur de déconnexion à afficher
+            if (sessionStorage.getItem('logoutError') === 'true') {
+                sessionStorage.removeItem('logoutError');
+                showToast('Erreur lors de la déconnexion', 'error');
+            }
         });
+        
+        // Fonction pour initialiser les écouteurs de changement de mot de passe
+        function initPasswordListeners() {
+            const newPasswordField = document.getElementById('newPassword');
+            if (newPasswordField) {
+                newPasswordField.addEventListener('input', checkPasswordStrength);
+            }
+        }
+        
+        // Fonction pour vérifier la force du mot de passe (reprise de change-password)
+        function checkPasswordStrength() {
+            const password = document.getElementById('newPassword').value;
+            const strengthBar = document.getElementById('passwordStrength');
+            const requirements = {
+                reqLength: password.length >= 8,
+                reqNumber: /\d/.test(password),
+                reqUpper: /[A-Z]/.test(password),
+                reqSpecial: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+            
+            let strength = 0;
+            
+            // Update requirements and calculate strength
+            Object.keys(requirements).forEach(reqId => {
+                const element = document.getElementById(reqId);
+                if (element) {
+                    element.classList.toggle('met', requirements[reqId]);
+                    if (requirements[reqId]) strength += 25;
+                }
+            });
+            
+            // Update strength bar
+            if (strengthBar) {
+                strengthBar.style.width = strength + '%';
+                
+                if (strength < 50) {
+                    strengthBar.style.background = '#ef4444';
+                } else if (strength < 75) {
+                    strengthBar.style.background = '#f59e0b';
+                } else {
+                    strengthBar.style.background = '#10b981';
+                }
+            }
+        }
+        
+        // Fonction pour afficher les erreurs de mot de passe
+        function showPasswordError(message) {
+            passwordChangeData.errorMessage = message;
+            const errorElement = document.getElementById('passwordError');
+            if (!errorElement) return;
+            
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            // Aussi afficher un toast d'erreur
+            showToast('Erreur lors du changement de mot de passe', 'error');
+            
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Fonction pour basculer la visibilité du mot de passe
+        function togglePasswordVisibility(fieldId, toggleElement) {
+            const passwordField = document.getElementById(fieldId);
+            const eyeIcon = toggleElement.querySelector('i');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                eyeIcon.setAttribute('data-lucide', 'eye-off');
+                toggleElement.style.color = '#0ea5e9';
+            } else {
+                passwordField.type = 'password';
+                eyeIcon.setAttribute('data-lucide', 'eye');
+                toggleElement.style.color = '#64748b';
+            }
+            
+            // Réinitialiser les icônes Lucide
+            lucide.createIcons();
+        }
+        
+        // Fonction pour mettre à jour les informations de base du profil
+        async function handleProfileUpdate() {
+            const firstNameField = document.getElementById('firstName');
+            const lastNameField = document.getElementById('lastName');
+            const emailField = document.getElementById('email');
+            
+            // Récupération des valeurs
+            const firstName = firstNameField.value.trim();
+            const lastName = lastNameField.value.trim();
+            const email = emailField.value.trim();
+            
+            // Validation basique
+            if (!firstName || !lastName || !email) {
+                showToast('Veuillez remplir tous les champs obligatoires', 'error');
+                return false;
+            }
+            
+            // Validation email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showToast('Veuillez saisir une adresse email valide', 'error');
+                return false;
+            }
+            
+            try {
+                // Appel de l'API PUT /api/v1/user/:id
+                const response = await fetch(`http://localhost/api/v1/user/<%= user.id %>`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        firstname: firstName,
+                        lastname: lastName,
+                        email: email
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Erreur lors de la mise à jour du profil');
+                }
+                
+                // Succès - afficher le toast de succès
+                showToast('Profil mis à jour avec succès !', 'success');
+                return true;
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                showToast('Erreur lors de la mise à jour du profil', 'error');
+                return false;
+            }
+        }
+        
+        // Fonction pour gérer le changement de mot de passe (reprise de change-password)
+        async function handlePasswordChange() {
+            const currentPasswordField = document.getElementById('currentPassword');
+            const newPasswordField = document.getElementById('newPassword');
+            const confirmPasswordField = document.getElementById('confirmPassword');
+            
+            // Récupération des valeurs
+            passwordChangeData.oldPassword = currentPasswordField.value;
+            passwordChangeData.newPassword = newPasswordField.value;
+            passwordChangeData.confirmNewPassword = confirmPasswordField.value;
+            
+            // Validation basique
+            if (!passwordChangeData.oldPassword || !passwordChangeData.newPassword || !passwordChangeData.confirmNewPassword) {
+                // showPasswordError('Veuillez remplir tous les champs');
+                showToast('Veuillez remplir tous les champs', 'error');
+                return false;
+            }
+            
+            if (passwordChangeData.newPassword !== passwordChangeData.confirmNewPassword) {
+                // showPasswordError('Les nouveaux mots de passe ne correspondent pas');
+                showToast('Les nouveaux mots de passe ne correspondent pas', 'error');
+                return false;
+            }
+            
+            // Vérification de la force du mot de passe
+            const strengthBar = document.getElementById('passwordStrength');
+            if (strengthBar && strengthBar.style.width !== '100%') {
+                // showPasswordError('Veuillez créer un mot de passe plus fort');
+                showToast('Veuillez créer un mot de passe plus fort', 'error');
+                return false;
+            }
+            
+            try {
+                // Étape 1: Appel de l'API signin
+                const signinResponse = await fetch('http://localhost/api/v1/auth/signin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: passwordChangeData.email })
+                });
+                
+                if (!signinResponse.ok) {
+                    throw new Error('Erreur lors de la récupération des données utilisateur');
+                }
+                
+                const { salt, pow } = await signinResponse.json();
+                
+                // Étape 2: Calculer le proof of work
+                const proof = (() => {
+                    let proof = 0;
+                    const prefix = "0".repeat(parseInt(pow.difficulty));
+                    while (true) {
+                        const hash = CryptoJS.SHA256(pow.challenge + proof).toString(CryptoJS.enc.Hex);
+                        if (hash.startsWith(prefix)) {
+                            return proof;
+                        }
+                        proof++;
+                    }
+                })();
+                
+                // Étape 3: Générer un nouveau salt et hasher les mots de passe
+                passwordChangeData.newSalt = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex);
+                passwordChangeData.hashOldPassword = CryptoJS.SHA256(passwordChangeData.oldPassword + salt).toString(CryptoJS.enc.Hex);
+                passwordChangeData.hashNewPassword = CryptoJS.SHA256(passwordChangeData.newPassword + passwordChangeData.newSalt).toString(CryptoJS.enc.Hex);
+                passwordChangeData.hashNewConfirmPassword = CryptoJS.SHA256(passwordChangeData.confirmNewPassword + passwordChangeData.newSalt).toString(CryptoJS.enc.Hex);
+                
+                // Vérification que les mots de passe hachés correspondent
+                if (passwordChangeData.hashNewPassword !== passwordChangeData.hashNewConfirmPassword) {
+                    // showPasswordError('Erreur lors du hachage des mots de passe');
+                    showToast('Erreur lors du hachage des mots de passe', 'error');
+                    return false;
+                }
+                
+                // Étape 4: Appel de l'API changePassword
+                const changePasswordResponse = await fetch('http://localhost/api/v1/auth/changePassword', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: passwordChangeData.email,
+                        hashOldPassword: passwordChangeData.hashOldPassword,
+                        hashNewPassword: passwordChangeData.hashNewPassword,
+                        hashNewConfirmPassword: passwordChangeData.hashNewConfirmPassword,
+                        newSalt: passwordChangeData.newSalt,
+                        signature: pow.signature,
+                        challenge: pow.challenge,
+                        proof: proof
+                    })
+                });
+                
+                if (!changePasswordResponse.ok) {
+                    const errorData = await changePasswordResponse.json();
+                    throw new Error(errorData.message || 'Erreur lors du changement de mot de passe');
+                }
+                
+                // Succès - vider les champs et afficher le toast
+                document.getElementById('passwordForm').reset();
+                showToast('Mot de passe mis à jour avec succès !', 'success');
+                return true;
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                passwordChangeData.errorMessage = error.message;
+                // showPasswordError('Erreur lors du changement de mot de passe: ' + error.message);
+                showToast('Erreur lors du changement de mot de passe', 'error');
+                return false;
+            }
+        }
         
         // Fonction pour afficher un toast
         function showToast(message, type = 'success') {
@@ -792,38 +1137,51 @@
             modal.classList.remove('show');
         }
         
-        // Simulation de sauvegarde
-        document.querySelectorAll('.btn').forEach(button => {
-            if (button.textContent.includes('Enregistrer') || button.textContent.includes('Mettre à jour')) {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const originalHTML = button.innerHTML;
-                    const isUpdate = button.textContent.includes('Mettre à jour');
-                    
-                    // Afficher l'état de chargement
-                    button.innerHTML = '<i data-lucide="loader-2" style="animation: spin 1s linear infinite;"></i> En cours...';
-                    button.disabled = true;
-                    
-                    // Réinitialiser les icônes après modification du DOM
-                    setTimeout(() => {
-                        lucide.createIcons();
-                    }, 100);
-                    
-                    // Simuler la sauvegarde
-                    setTimeout(() => {
-                        button.innerHTML = originalHTML;
-                        button.disabled = false;
-                        
-                        // Réinitialiser les icônes
-                        lucide.createIcons();
-                        
-                        // Afficher le toast de succès
-                        const message = isUpdate ? 
-                            'Paramètres de sécurité mis à jour avec succès !' : 
-                            'Profil enregistré avec succès !';
-                        showToast(message, 'success');
-                    }, 1500);
-                });
+        // Fonction pour définir l'état de chargement des boutons
+        function setButtonLoadingState(button, loading, originalText) {
+            if (loading) {
+                button.disabled = true;
+                button.innerHTML = '<i data-lucide="loader-2" style="animation: spin 1s linear infinite;"></i> En cours...';
+                setTimeout(() => {
+                    lucide.createIcons();
+                }, 100);
+            } else {
+                button.disabled = false;
+                button.innerHTML = originalText;
+                lucide.createIcons();
+            }
+        }
+        
+        // Gestion du bouton de sauvegarde du profil
+        document.getElementById('saveProfileBtn').addEventListener('click', async function(e) {
+            e.preventDefault();
+            const originalHTML = this.innerHTML;
+            
+            setButtonLoadingState(this, true, originalHTML);
+            
+            const success = await handleProfileUpdate();
+            
+            setButtonLoadingState(this, false, originalHTML);
+            
+            if (!success) {
+                console.log('Échec de la mise à jour du profil');
+            }
+        });
+        
+        // Gestion du bouton de mise à jour du mot de passe
+        document.getElementById('updatePasswordBtn').addEventListener('click', async function(e) {
+            e.preventDefault();
+            const originalHTML = this.innerHTML;
+            
+            setButtonLoadingState(this, true, originalHTML);
+            
+            const success = await handlePasswordChange();
+            
+            setButtonLoadingState(this, false, originalHTML);
+            
+            if (!success) {
+                // L'erreur est déjà affichée dans handlePasswordChange
+                console.log('Échec du changement de mot de passe');
             }
         });
         
@@ -837,10 +1195,10 @@
             hideLogoutModal();
         });
         
-        document.getElementById('confirmLogout').addEventListener('click', function() {
+        document.getElementById('confirmLogout').addEventListener('click', async function() {
             hideLogoutModal();
             
-            // Simuler la déconnexion
+            // Afficher l'état de chargement
             document.body.innerHTML = `
                 <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; gap:2rem; background:#f8fafc;">
                     <div>
@@ -855,9 +1213,31 @@
                 lucide.createIcons();
             }, 100);
             
-            setTimeout(() => {
-                window.location.href = '/signin'; // Rediriger vers la page de connexion
-            }, 1500);
+            try {
+                // Appel de l'API de déconnexion
+                const response = await fetch('/api/v1/auth/logout', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la déconnexion');
+                }
+                
+                // Succès - rediriger vers la page d'accueil
+                window.location.href = '/';
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                
+                // Restaurer la page et afficher un toast d'erreur
+                location.reload();
+                
+                // Le toast sera affiché après le rechargement via sessionStorage
+                sessionStorage.setItem('logoutError', 'true');
+            }
         });
         
         // Fermer la modal en cliquant sur l'overlay

@@ -6,9 +6,6 @@ import NotFoundError from '../exceptions/NotFoundError.js';
 class UserService {
   static async getUsers(limit, offset) {
     return await prisma.user.findMany({
-      where: {
-        isActive: true,
-      },
       take: limit,
       skip: offset,
     });
@@ -88,7 +85,6 @@ class UserService {
     const user = await prisma.user.findUnique({
       where: {
         id,
-        isActive: true,
       },
     });
 

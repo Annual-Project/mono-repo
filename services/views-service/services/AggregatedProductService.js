@@ -92,6 +92,67 @@ class AggregatedProductService {
     };
   }
 
+  // Méthode pour la page products (admin)
+  static async getAggregatedProductsForAdmin() {
+    // 1. Récupération de tous les produits
+    const productsResponse = await fetch('http://products_service:3000/api/v1/products', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "x-internal-api-key": process.env.INTERNAL_API_KEY,
+      },
+    });
+
+    if (!productsResponse.ok) {
+      throw new BadRequestError('Failed to fetch products');
+    }
+    const products = await productsResponse.json();
+
+    // 2. Récupération de toutes les catégories
+    const categoriesResponse = await fetch('http://products_service:3000/api/v1/categories', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "x-internal-api-key": process.env.INTERNAL_API_KEY,
+      },
+    });
+
+    if (!categoriesResponse.ok) {
+      throw new BadRequestError('Failed to fetch categories');
+    }
+    const categories = await categoriesResponse.json();
+
+    // 3. Création d'une Map pour accéder rapidement aux catégories par ID
+    const categoryMap = new Map();
+    categories.forEach(category => {
+      categoryMap.set(category.id, {
+        id: category.id,
+        name: category.name,
+        description: category.description
+      });
+    });
+
+    // 4. Association des produits avec leurs catégories
+    const aggregatedProducts = products.map(product => ({
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      categoryId: product.categoryId,
+      category: categoryMap.get(product.categoryId) || null
+    }));
+
+    // 5. Calcul des statistiques
+    const productCount = products.length;
+    const categoryCount = categories.length;
+
+    return {
+      aggregatedProducts,
+      productCount,
+      categoryCount
+    };
+  }
+
 }
 
 export default AggregatedProductService;

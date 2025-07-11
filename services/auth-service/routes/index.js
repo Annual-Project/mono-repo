@@ -8,7 +8,7 @@ import validationsMiddleware from "../middlewares/validationsMiddleware.js";
 import controllersHandler from "../handlers/controllersHandler.js";
 
 // Import des contrôleurs
-import AuthController from "../controllers/authController.js";
+import AuthController from "../controllers/AuthController.js";
 import UserController from "../controllers/UserController.js";
 import RoleController from "../controllers/RoleController.js";
 import PermissionController from "../controllers/PermissionController.js";
@@ -136,6 +136,11 @@ router.post(
   controllersHandler(UserController.createUser)
 );
 router.put(
+  "/api/v1/users/me",
+  validationsMiddleware(updateUserByIdBodySchema, "body"),
+  controllersHandler(UserController.updateCurrentUser)
+);
+router.put(
   "/api/v1/users/:id",
   authorizationMiddleware([], ["admin"]),
   validationsMiddleware(updateUserByIdParamsSchema, "params"),
@@ -144,7 +149,7 @@ router.put(
 );
 router.delete(
   "/api/v1/users/:id",
-  authorizationMiddleware([], ["superadmin"]),
+  authorizationMiddleware([], ["admin"]),
   validationsMiddleware(deleteUserByIdSchema, "params"),
   controllersHandler(UserController.deleteUserById)
 );
@@ -177,7 +182,7 @@ router.put(
 );
 router.delete(
   "/api/v1/roles/:id",
-  authorizationMiddleware([], ["superadmin"]),
+  authorizationMiddleware([], ["admin"]),
   validationsMiddleware(deleteRoleByIdSchema, "params"),
   controllersHandler(RoleController.deleteRoleById)
 );
@@ -210,7 +215,7 @@ router.put(
 );
 router.delete(
   "/api/v1/permissions/:id",
-  authorizationMiddleware([], ["superadmin"]),
+  authorizationMiddleware([], ["admin"]),
   validationsMiddleware(deletePermissionByIdSchema, "params"),
   controllersHandler(PermissionController.deletePermissionById)
 );
@@ -230,7 +235,7 @@ router.post(
 );
 router.delete(
   "/api/v1/users/:userId/roles/:roleId",
-  authorizationMiddleware([], ["superadmin"]),
+  authorizationMiddleware([], ["admin"]),
   validationsMiddleware(deleteUserRoleSchema, "params"),
   controllersHandler(UserRoleController.removeRoleFromUser)
 );
@@ -250,7 +255,7 @@ router.post(
 );
 router.delete(
   "/api/v1/users/:userId/permissions/:permissionId",
-  authorizationMiddleware([], ["superadmin"]),
+  authorizationMiddleware([], ["admin"]),
   validationsMiddleware(deleteUserPermissionSchema, "params"),
   controllersHandler(UserPermissionController.removePermissionFromUser)
 );

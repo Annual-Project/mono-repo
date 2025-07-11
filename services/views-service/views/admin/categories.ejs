@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Catégories - StoreManager</title>
+    <title>Gestion des Catégories - AmaZup</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script> -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
@@ -268,6 +267,14 @@
             align-items: center;
             justify-content: center;
             z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
         
         .modal-content {
@@ -279,6 +286,12 @@
             margin: 1rem;
             max-height: 90vh;
             overflow-y: auto;
+            transform: scale(0.9) translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal-content {
+            transform: scale(1) translateY(0);
         }
         
         .category-icon {
@@ -324,7 +337,7 @@
             <div class="flex items-center justify-center w-8 h-8 bg-primary rounded-md mr-3">
                 <i data-lucide="store" class="w-4 h-4 text-primary-foreground"></i>
             </div>
-            <span class="text-xl font-bold text-foreground">StoreManager</span>
+            <span class="text-xl font-bold text-foreground">AmaZup</span>
         </div>
         
         <!-- User Profile -->
@@ -334,8 +347,8 @@
                     <i data-lucide="user" class="w-5 h-5 text-primary"></i>
                 </div>
                 <div>
-                    <p class="font-medium text-foreground">Admin User</p>
-                    <p class="text-sm text-muted-foreground">admin@store.com</p>
+                    <p class="font-medium text-foreground">Admin</p>
+                    <p class="text-sm text-muted-foreground">admin@amazup.shop</p>
                 </div>
             </div>
         </div>
@@ -343,17 +356,17 @@
         <!-- Navigation -->
         <nav class="px-4 py-4">
             <div class="space-y-2">
-                <a href="#" class="sidebar-item" data-page="dashboard">
+                <a href="/admin" class="sidebar-item" data-page="dashboard">
                     <i data-lucide="layout-dashboard" class="w-4 h-4 mr-3"></i>
-                    Dashboard
+                    Tableau de bord
                 </a>
                 
-                <a href="#" class="sidebar-item" data-page="stores">
+                <a href="/admin/stores" class="sidebar-item" data-page="stores">
                     <i data-lucide="store" class="w-4 h-4 mr-3"></i>
                     Magasins
                 </a>
                 
-                <a href="#" class="sidebar-item" data-page="products">
+                <a href="/admin/products" class="sidebar-item" data-page="products">
                     <i data-lucide="package" class="w-4 h-4 mr-3"></i>
                     Produits
                 </a>
@@ -363,24 +376,24 @@
                     Catégories
                 </a>
                 
-                <a href="#" class="sidebar-item" data-page="inventory">
+                <a href="/admin/stocks" class="sidebar-item" data-page="inventory">
                     <i data-lucide="warehouse" class="w-4 h-4 mr-3"></i>
                     Stocks
                 </a>
                 
-                <a href="#" class="sidebar-item" data-page="transfers">
+                <a href="/admin/transfers" class="sidebar-item" data-page="transfers">
                     <i data-lucide="truck" class="w-4 h-4 mr-3"></i>
                     Transferts
                 </a>
                 
-                <a href="#" class="sidebar-item" data-page="users">
+                <a href="/admin/users" class="sidebar-item" data-page="users">
                     <i data-lucide="users" class="w-4 h-4 mr-3"></i>
                     Utilisateurs
                 </a>
             </div>
             
             <div class="mt-8 pt-4 border-t border-border">
-                <a href="#" class="sidebar-item text-destructive hover:bg-destructive/10 hover:text-destructive">
+                <a href="/logout" class="sidebar-item text-destructive hover:bg-destructive/10 hover:text-destructive">
                     <i data-lucide="log-out" class="w-4 h-4 mr-3"></i>
                     Se déconnecter
                 </a>
@@ -423,7 +436,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-muted-foreground">Total Catégories</p>
-                                <p class="text-2xl font-bold" id="totalCategories">0</p>
+                                <p class="text-2xl font-bold" id="totalCategories"><%= categoryCount %></p>
                             </div>
                             <div class="w-12 h-12 bg-info/10 rounded-lg flex items-center justify-center">
                                 <i data-lucide="tag" class="w-6 h-6 text-info"></i>
@@ -436,25 +449,11 @@
                     <div class="card-content p-6">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-sm font-medium text-muted-foreground">Catégories Actives</p>
-                                <p class="text-2xl font-bold" id="activeCategories">0</p>
+                                <p class="text-sm font-medium text-muted-foreground">Produits Total</p>
+                                <p class="text-2xl font-bold" id="totalProducts"><%= productCount %></p>
                             </div>
                             <div class="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center">
-                                <i data-lucide="check-circle" class="w-6 h-6 text-success"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-content p-6">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-muted-foreground">Produits Totaux</p>
-                                <p class="text-2xl font-bold" id="totalProducts">0</p>
-                            </div>
-                            <div class="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center">
-                                <i data-lucide="package" class="w-6 h-6 text-warning"></i>
+                                <i data-lucide="package" class="w-6 h-6 text-success"></i>
                             </div>
                         </div>
                     </div>
@@ -465,10 +464,34 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-muted-foreground">Catégorie Populaire</p>
-                                <p class="text-sm font-bold" id="popularCategory">-</p>
+                                <p class="text-sm font-bold" id="popularCategory">
+                                    <% 
+                                    const popularCat = aggregatedCategories.reduce((max, cat) => 
+                                        cat.products.length > (max?.products?.length || 0) ? cat : max, 
+                                        aggregatedCategories[0] || null
+                                    );
+                                    %>
+                                    <%= popularCat ? popularCat.name : '-' %>
+                                </p>
+                            </div>
+                            <div class="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center">
+                                <i data-lucide="trending-up" class="w-6 h-6 text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-content p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-muted-foreground">Moyenne Produits</p>
+                                <p class="text-2xl font-bold" id="avgProducts">
+                                    <%= categoryCount > 0 ? Math.round(productCount / categoryCount) : 0 %>
+                                </p>
                             </div>
                             <div class="w-12 h-12 bg-destructive/10 rounded-lg flex items-center justify-center">
-                                <i data-lucide="trending-up" class="w-6 h-6 text-destructive"></i>
+                                <i data-lucide="bar-chart" class="w-6 h-6 text-destructive"></i>
                             </div>
                         </div>
                     </div>
@@ -477,7 +500,7 @@
             
             <!-- Filters and Search -->
             <div class="card mb-6">
-                <div class="card-content" style="padding: 0.5rem;">
+                <div class="card-content" style="padding: 1.5rem;">
                     <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
                         <div class="flex flex-col sm:flex-row gap-4 flex-1">
                             <!-- Search -->
@@ -485,13 +508,6 @@
                                 <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground"></i>
                                 <input type="text" class="input pl-10" placeholder="Rechercher une catégorie..." id="searchInput">
                             </div>
-                            
-                            <!-- Status Filter -->
-                            <select class="input select w-48" id="statusFilter">
-                                <option value="">Tous les statuts</option>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
                         </div>
                         
                         <div class="flex items-center gap-4">
@@ -536,18 +552,7 @@
                                         <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
                                     </div>
                                 </th>
-                                <th class="sortable" data-sort="status">
-                                    <div class="flex items-center gap-2">
-                                        Statut
-                                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
-                                    </div>
-                                </th>
-                                <th class="sortable" data-sort="created">
-                                    <div class="flex items-center gap-2">
-                                        Créée le
-                                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
-                                    </div>
-                                </th>
+                                <th>Prix Moyen</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -581,8 +586,8 @@
         </div>
     </main>
 
-    <!-- Category Modal -->
-    <div class="modal-overlay" id="categoryModal" style="display: none;">
+    <!-- Category Modal (Add/Edit) -->
+    <div class="modal-overlay" id="categoryModal">
         <div class="modal-content">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xl font-bold text-foreground" id="modalTitle">Ajouter une catégorie</h2>
@@ -610,36 +615,23 @@
                             <p class="text-xs text-muted-foreground mt-1">Utilisez un emoji pour représenter la catégorie</p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-foreground mb-2">Statut</label>
-                            <select class="input select" id="categoryStatus" required>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
+                            <label class="block text-sm font-medium text-foreground mb-2">Couleur du badge</label>
+                            <div class="color-picker">
+                                <div class="color-option" data-color="info" style="background: hsl(204 94% 49%);" title="Bleu"></div>
+                                <div class="color-option" data-color="success" style="background: hsl(142 76% 36%);" title="Vert"></div>
+                                <div class="color-option" data-color="warning" style="background: hsl(45 93% 47%);" title="Jaune"></div>
+                                <div class="color-option" data-color="destructive" style="background: hsl(0 84.2% 60.2%);" title="Rouge"></div>
+                                <div class="color-option" data-color="secondary" style="background: hsl(210 40% 96%); border: 1px solid hsl(214.3 31.8% 91.4%);" title="Gris"></div>
+                            </div>
+                            <input type="hidden" id="categoryColor" value="info">
                         </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-foreground mb-2">Couleur du badge</label>
-                        <div class="color-picker">
-                            <div class="color-option" data-color="info" style="background: hsl(204 94% 49%);" title="Bleu"></div>
-                            <div class="color-option" data-color="success" style="background: hsl(142 76% 36%);" title="Vert"></div>
-                            <div class="color-option" data-color="warning" style="background: hsl(45 93% 47%);" title="Jaune"></div>
-                            <div class="color-option" data-color="destructive" style="background: hsl(0 84.2% 60.2%);" title="Rouge"></div>
-                            <div class="color-option" data-color="secondary" style="background: hsl(210 40% 96%); border: 1px solid hsl(214.3 31.8% 91.4%);" title="Gris"></div>
-                        </div>
-                        <input type="hidden" id="categoryColor" value="info">
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-foreground mb-2">Ordre d'affichage</label>
-                        <input type="number" class="input" id="categoryOrder" min="1" value="1">
-                        <p class="text-xs text-muted-foreground mt-1">Plus le nombre est petit, plus la catégorie apparaîtra en premier</p>
                     </div>
                 </div>
                 
                 <div class="flex justify-end gap-3 mt-6">
                     <button type="button" class="btn btn-outline" onclick="closeCategoryModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" id="submitButton">
+                        <i data-lucide="plus" class="w-4 h-4 mr-2" id="submitIcon"></i>
                         <span id="submitButtonText">Ajouter</span>
                     </button>
                 </div>
@@ -647,47 +639,117 @@
         </div>
     </div>
 
-    <script>
-        // Sample categories data with more fields
-        const categoriesData = [
-            { id: 1, name: "Électronique", description: "Produits électroniques et high-tech", icon: "📱", color: "info", status: "active", order: 1, created: "2024-01-10" },
-            { id: 2, name: "Vêtements", description: "Mode et textile", icon: "👕", color: "success", status: "active", order: 2, created: "2024-01-15" },
-            { id: 3, name: "Maison & Jardin", description: "Électroménager et jardinage", icon: "🏠", color: "warning", status: "active", order: 3, created: "2024-01-20" },
-            { id: 4, name: "Sport & Loisirs", description: "Articles de sport et loisirs", icon: "⚽", color: "destructive", status: "active", order: 4, created: "2024-01-25" },
-            { id: 5, name: "Alimentation", description: "Produits alimentaires", icon: "🍎", color: "secondary", status: "active", order: 5, created: "2024-02-01" },
-            { id: 6, name: "Beauté & Santé", description: "Cosmétiques et produits de santé", icon: "💄", color: "info", status: "inactive", order: 6, created: "2024-02-10" },
-            { id: 7, name: "Livres & Média", description: "Livres, films et musique", icon: "📚", color: "success", status: "active", order: 7, created: "2024-02-15" },
-            { id: 8, name: "Jouets", description: "Jeux et jouets pour enfants", icon: "🧸", color: "warning", status: "active", order: 8, created: "2024-02-20" }
-        ];
+    <!-- View Category Modal -->
+    <div class="modal-overlay" id="viewCategoryModal">
+        <div class="modal-content">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-foreground">Détails de la catégorie</h2>
+                <button class="btn btn-outline btn-sm" onclick="closeViewCategoryModal()">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="category-icon" id="viewCategoryIcon" style="background: hsl(204 94% 49%);">📂</div>
+                    <div>
+                        <h3 class="text-lg font-semibold" id="viewCategoryName"></h3>
+                        <p class="text-muted-foreground" id="viewCategoryDescription"></p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-muted-foreground mb-1">Nombre de produits</label>
+                        <p class="text-sm font-semibold" id="viewCategoryProductCount"></p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-muted-foreground mb-1">Prix moyen</label>
+                        <p class="text-sm font-semibold" id="viewCategoryAvgPrice"></p>
+                    </div>
+                </div>
 
-        // Sample products data for counting
-        const productsData = [
-            { id: 1, name: "iPhone 15 Pro", categoryId: 1 },
-            { id: 2, name: "T-shirt Nike", categoryId: 2 },
-            { id: 3, name: "Aspirateur Dyson", categoryId: 3 },
-            { id: 4, name: "Raquette Tennis", categoryId: 4 },
-            { id: 5, name: "Café Bio", categoryId: 5 },
-            { id: 6, name: "MacBook Air M2", categoryId: 1 },
-            { id: 7, name: "Jean Levis 501", categoryId: 2 },
-            { id: 8, name: "Tondeuse Bosch", categoryId: 3 },
-            { id: 9, name: "Ballon Football", categoryId: 4 },
-            { id: 10, name: "Chocolat Noir 70%", categoryId: 5 },
-            { id: 11, name: "Casque Sony", categoryId: 1 },
-            { id: 12, name: "Robe d'été", categoryId: 2 },
-            { id: 13, name: "Samsung Galaxy S24", categoryId: 1 },
-            { id: 14, name: "Baskets Adidas", categoryId: 2 },
-            { id: 15, name: "Micro-ondes LG", categoryId: 3 },
-            { id: 16, name: "Vélo VTT", categoryId: 4 },
-            { id: 17, name: "Thé Vert Bio", categoryId: 5 },
-            { id: 18, name: "iPad Pro", categoryId: 1 },
-            { id: 19, name: "Veste Cuir", categoryId: 2 },
-            { id: 20, name: "Robot Cuisine", categoryId: 3 },
-            { id: 21, name: "Parfum Chanel", categoryId: 6 },
-            { id: 22, name: "Livre Harry Potter", categoryId: 7 },
-            { id: 23, name: "Lego Star Wars", categoryId: 8 },
-            { id: 24, name: "Crème hydratante", categoryId: 6 },
-            { id: 25, name: "BD Astérix", categoryId: 7 }
-        ];
+                <div>
+                    <label class="block text-sm font-medium text-muted-foreground mb-2">Produits dans cette catégorie</label>
+                    <div class="bg-muted/50 rounded-lg p-3 max-h-48 overflow-y-auto">
+                        <div id="viewCategoryProducts" class="space-y-2">
+                            <!-- Products will be populated -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-3">
+                    <button type="button" class="btn btn-outline" onclick="closeViewCategoryModal()">Fermer</button>
+                    <button type="button" class="btn btn-secondary" onclick="editCategoryFromView()">
+                        <i data-lucide="edit" class="w-4 h-4 mr-2"></i>
+                        Modifier
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content max-w-md">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center">
+                    <i data-lucide="alert-triangle" class="w-6 h-6 text-destructive"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-foreground">Confirmer la suppression</h2>
+                    <p class="text-sm text-muted-foreground">Cette action est irréversible</p>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <p class="text-sm text-foreground">
+                    Êtes-vous sûr de vouloir supprimer la catégorie <span class="font-semibold" id="deleteCategoryName"></span> ?
+                </p>
+                <p class="text-sm text-muted-foreground mt-2" id="deleteCategoryWarning">
+                    Cette catégorie contient des produits qui seront également affectés.
+                </p>
+            </div>
+            
+            <div class="flex justify-end gap-3">
+                <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">Annuler</button>
+                <button type="button" class="btn btn-destructive" onclick="confirmDelete()" id="deleteButton">
+                    <i data-lucide="trash-2" class="w-4 h-4 mr-2"></i>
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Toast Partials -->
+    <%- include('../partials/toasts') %>
+
+    <script>
+        // Configuration de l'API
+        const API_BASE_URL = 'http://localhost/api/v1';
+        
+        // Données catégories provenant du serveur
+        const categoriesData = <%- JSON.stringify(aggregatedCategories) %>;
+        
+        // Données générées aléatoirement pour les champs manquants
+        const icons = ['📱', '📚', '👕', '🏠', '🧸', '⚽', '💄', '🍎', '🔧', '🎮'];
+        const colors = ['info', 'success', 'warning', 'destructive', 'secondary'];
+        
+        // Enrichir les données des catégories avec des informations aléatoires
+        categoriesData.forEach((category, index) => {
+            const iconIndex = index % icons.length;
+            const colorIndex = index % colors.length;
+            
+            category.icon = icons[iconIndex];
+            category.color = colors[colorIndex];
+            category.status = 'active'; // Toutes les catégories sont actives par défaut
+            category.order = index + 1;
+            category.createdAt = new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString();
+            category.productCount = category.products.length;
+            category.avgPrice = category.products.length > 0 ? 
+                category.products.reduce((sum, p) => sum + p.price, 0) / category.products.length : 0;
+        });
 
         let currentPage = 1;
         let itemsPerPage = 10;
@@ -695,6 +757,79 @@
         let sortDirection = 'asc';
         let filteredData = [...categoriesData];
         let editingCategoryId = null;
+        let deletingCategoryId = null;
+        let viewingCategoryId = null;
+
+        // Service Category
+        class CategoryService {
+            constructor() {
+                this.baseUrl = API_BASE_URL;
+            }
+            
+            async createCategory(data) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/categories`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Erreur lors de la création');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            async updateCategory(categoryId, data) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/categories/${categoryId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Erreur lors de la modification');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            async deleteCategory(categoryId) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/categories/${categoryId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Erreur lors de la suppression');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    throw error;
+                }
+            }
+        }
+
+        const categoryService = new CategoryService();
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -706,68 +841,44 @@
                 console.log('Lucide icons initialized');
             }
 
-            updateStats();
             renderTable();
             setupEventListeners();
             console.log('Categories page initialized successfully');
         });
 
-        function updateStats() {
-            const totalCategories = categoriesData.length;
-            const activeCategories = categoriesData.filter(cat => cat.status === 'active').length;
-            const totalProducts = productsData.length;
-            
-            // Find most popular category
-            const categoryProductCounts = {};
-            productsData.forEach(product => {
-                categoryProductCounts[product.categoryId] = (categoryProductCounts[product.categoryId] || 0) + 1;
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
             });
-            
-            let popularCategoryId = null;
-            let maxProducts = 0;
-            Object.entries(categoryProductCounts).forEach(([categoryId, count]) => {
-                if (count > maxProducts) {
-                    maxProducts = count;
-                    popularCategoryId = parseInt(categoryId);
-                }
-            });
-            
-            const popularCategory = categoriesData.find(cat => cat.id === popularCategoryId);
-            
-            document.getElementById('totalCategories').textContent = totalCategories;
-            document.getElementById('activeCategories').textContent = activeCategories;
-            document.getElementById('totalProducts').textContent = totalProducts;
-            document.getElementById('popularCategory').textContent = popularCategory ? popularCategory.name : '-';
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: 'EUR'
+            }).format(price);
         }
 
         function setupEventListeners() {
-            console.log('Setting up event listeners...');
-            
             // Search
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', debounce(filterData, 300));
-                console.log('Search listener added');
-            }
-            
-            // Filters
-            const statusFilter = document.getElementById('statusFilter');
-            if (statusFilter) {
-                statusFilter.addEventListener('change', filterData);
-                console.log('Status filter listener added');
             }
             
             const perPageSelect = document.getElementById('perPageSelect');
             if (perPageSelect) {
                 perPageSelect.addEventListener('change', changeItemsPerPage);
-                console.log('Per page selector listener added');
             }
             
             // Sorting
             document.querySelectorAll('.sortable').forEach(header => {
                 header.addEventListener('click', () => sortTable(header.dataset.sort));
             });
-            console.log('Sort listeners added');
             
             // Pagination
             const prevPage = document.getElementById('prevPage');
@@ -779,13 +890,11 @@
             if (nextPage) {
                 nextPage.addEventListener('click', () => changePage(currentPage + 1));
             }
-            console.log('Pagination listeners added');
             
             // Form submission
             const categoryForm = document.getElementById('categoryForm');
             if (categoryForm) {
                 categoryForm.addEventListener('submit', handleFormSubmit);
-                console.log('Form listener added');
             }
             
             // Color picker
@@ -799,35 +908,34 @@
             
             // Sidebar navigation
             document.querySelectorAll('.sidebar-item').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-                    this.classList.add('active');
-                });
+                if (!item.getAttribute('href') || item.getAttribute('href') === '#') {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                }
             });
 
-            // Close modal when clicking outside
-            const categoryModal = document.getElementById('categoryModal');
-            if (categoryModal) {
-                categoryModal.addEventListener('click', function(e) {
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.addEventListener('click', function(e) {
                     if (e.target === this) {
-                        closeCategoryModal();
+                        closeAllModals();
                     }
                 });
-            }
+            });
 
             // Keyboard shortcuts
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
-                    closeCategoryModal();
+                    closeAllModals();
                 }
                 if (e.ctrlKey && e.key === 'n') {
                     e.preventDefault();
                     openCategoryModal();
                 }
             });
-            
-            console.log('All event listeners set up successfully');
         }
 
         function debounce(func, wait) {
@@ -843,32 +951,21 @@
         }
 
         function filterData() {
-            console.log('Filtering categories data...');
-            
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const statusFilter = document.getElementById('statusFilter').value;
-
-            console.log('Search term:', searchTerm);
-            console.log('Status filter:', statusFilter);
 
             filteredData = categoriesData.filter(category => {
                 const matchesSearch = !searchTerm || 
                     category.name.toLowerCase().includes(searchTerm) ||
                     (category.description && category.description.toLowerCase().includes(searchTerm));
-                
-                const matchesStatus = !statusFilter || category.status === statusFilter;
 
-                return matchesSearch && matchesStatus;
+                return matchesSearch;
             });
 
-            console.log('Filtered categories data length:', filteredData.length);
             currentPage = 1;
             renderTable();
         }
 
         function sortTable(field) {
-            console.log('Sorting categories by:', field);
-            
             if (sortField === field) {
                 sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
             } else {
@@ -881,17 +978,14 @@
                 let bValue = b[field];
 
                 if (field === 'productCount') {
-                    aValue = getProductCount(a.id);
-                    bValue = getProductCount(b.id);
-                } else if (field === 'created') {
+                    aValue = parseInt(aValue) || 0;
+                    bValue = parseInt(bValue) || 0;
+                } else if (field === 'createdAt') {
                     aValue = new Date(aValue);
                     bValue = new Date(bValue);
-                } else if (field === 'order') {
-                    aValue = parseInt(aValue);
-                    bValue = parseInt(bValue);
                 } else {
-                    aValue = aValue.toString().toLowerCase();
-                    bValue = bValue.toString().toLowerCase();
+                    aValue = aValue ? aValue.toString().toLowerCase() : '';
+                    bValue = bValue ? bValue.toString().toLowerCase() : '';
                 }
 
                 if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
@@ -921,9 +1015,7 @@
         }
 
         function changeItemsPerPage() {
-            console.log('Changing items per page...');
             itemsPerPage = parseInt(document.getElementById('perPageSelect').value);
-            console.log('New items per page:', itemsPerPage);
             currentPage = 1;
             renderTable();
         }
@@ -936,38 +1028,37 @@
             }
         }
 
-        function getProductCount(categoryId) {
-            return productsData.filter(product => product.categoryId === categoryId).length;
+        function getCategoryBackgroundColor(color) {
+            switch (color) {
+                case 'info': return 'hsl(204 94% 49%)';
+                case 'success': return 'hsl(142 76% 36%)';
+                case 'warning': return 'hsl(45 93% 47%)';
+                case 'destructive': return 'hsl(0 84.2% 60.2%)';
+                case 'secondary': return 'hsl(215.4 16.3% 46.9%)';
+                default: return 'hsl(204 94% 49%)';
+            }
         }
 
         function renderTable() {
-            console.log('Rendering categories table...');
-            console.log('Current page:', currentPage);
-            console.log('Items per page:', itemsPerPage);
-            console.log('Filtered data length:', filteredData.length);
-            
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
             const pageData = filteredData.slice(startIndex, endIndex);
-
-            console.log('Page data length:', pageData.length);
 
             const tbody = document.getElementById('categoriesTableBody');
             tbody.innerHTML = '';
 
             pageData.forEach(category => {
-                const productCount = getProductCount(category.id);
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>
-                        <div class="category-icon badge-${category.color}" style="background: ${getCategoryBackgroundColor(category.color)}">
+                        <div class="category-icon" style="background: ${getCategoryBackgroundColor(category.color)}">
                             ${category.icon || '📂'}
                         </div>
                     </td>
                     <td>
                         <div>
                             <div class="font-medium">${category.name}</div>
-                            <div class="text-sm text-muted-foreground">Ordre: ${category.order}</div>
+                            <div class="text-sm text-muted-foreground">ID: ${category.id}</div>
                         </div>
                     </td>
                     <td>
@@ -977,16 +1068,15 @@
                     </td>
                     <td>
                         <div class="flex items-center gap-2">
-                            <span class="font-mono font-medium">${productCount}</span>
-                            <span class="badge badge-${category.color}">${productCount} produit${productCount !== 1 ? 's' : ''}</span>
+                            <span class="font-mono font-medium">${category.productCount}</span>
+                            <span class="badge badge-${category.color}">${category.productCount} produit${category.productCount !== 1 ? 's' : ''}</span>
                         </div>
                     </td>
                     <td>
-                        <span class="badge ${getStatusBadgeClass(category.status)}">
-                            ${getStatusText(category.status)}
-                        </span>
+                        <div class="font-semibold text-success">
+                            ${category.avgPrice > 0 ? formatPrice(category.avgPrice) : '-'}
+                        </div>
                     </td>
-                    <td>${formatDate(category.created)}</td>
                     <td>
                         <div class="flex items-center gap-2">
                             <button class="btn btn-outline btn-sm" onclick="viewCategory(${category.id})" title="Voir">
@@ -1010,38 +1100,6 @@
             updatePagination();
         }
 
-        function getCategoryBackgroundColor(color) {
-            switch (color) {
-                case 'info': return 'hsl(204 94% 49%)';
-                case 'success': return 'hsl(142 76% 36%)';
-                case 'warning': return 'hsl(45 93% 47%)';
-                case 'destructive': return 'hsl(0 84.2% 60.2%)';
-                case 'secondary': return 'hsl(215.4 16.3% 46.9%)';
-                default: return 'hsl(204 94% 49%)';
-            }
-        }
-
-        function getStatusBadgeClass(status) {
-            switch (status) {
-                case 'active': return 'badge-success';
-                case 'inactive': return 'badge-secondary';
-                default: return 'badge-secondary';
-            }
-        }
-
-        function getStatusText(status) {
-            switch (status) {
-                case 'active': return 'Active';
-                case 'inactive': return 'Inactive';
-                default: return status;
-            }
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('fr-FR');
-        }
-
         function updatePagination() {
             const totalItems = filteredData.length;
             const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -1062,23 +1120,19 @@
             paginationContainer.innerHTML = '';
 
             if (totalPages <= 7) {
-                // Show all pages if 7 or fewer
                 for (let i = 1; i <= totalPages; i++) {
                     createPageButton(i, paginationContainer);
                 }
             } else {
-                // Show first page
                 createPageButton(1, paginationContainer);
 
                 if (currentPage > 4) {
-                    // Show ellipsis
                     const ellipsis = document.createElement('span');
                     ellipsis.className = 'px-2 text-muted-foreground';
                     ellipsis.textContent = '...';
                     paginationContainer.appendChild(ellipsis);
                 }
 
-                // Show pages around current page
                 const start = Math.max(2, currentPage - 2);
                 const end = Math.min(totalPages - 1, currentPage + 2);
 
@@ -1087,14 +1141,12 @@
                 }
 
                 if (currentPage < totalPages - 3) {
-                    // Show ellipsis
                     const ellipsis = document.createElement('span');
                     ellipsis.className = 'px-2 text-muted-foreground';
                     ellipsis.textContent = '...';
                     paginationContainer.appendChild(ellipsis);
                 }
 
-                // Show last page
                 if (totalPages > 1) {
                     createPageButton(totalPages, paginationContainer);
                 }
@@ -1109,12 +1161,12 @@
             container.appendChild(button);
         }
 
-        // Category Management Functions
         function openCategoryModal(categoryId = null) {
             editingCategoryId = categoryId;
             const modal = document.getElementById('categoryModal');
             const modalTitle = document.getElementById('modalTitle');
             const submitButton = document.getElementById('submitButtonText');
+            const submitIcon = document.getElementById('submitIcon');
             const form = document.getElementById('categoryForm');
 
             // Reset color selection
@@ -1125,14 +1177,13 @@
                 if (category) {
                     modalTitle.textContent = 'Modifier la catégorie';
                     submitButton.textContent = 'Modifier';
+                    submitIcon.setAttribute('data-lucide', 'save');
                     
                     // Fill form with category data
                     document.getElementById('categoryName').value = category.name;
                     document.getElementById('categoryDescription').value = category.description || '';
                     document.getElementById('categoryIcon').value = category.icon || '';
-                    document.getElementById('categoryStatus').value = category.status;
                     document.getElementById('categoryColor').value = category.color;
-                    document.getElementById('categoryOrder').value = category.order;
                     
                     // Select the right color
                     const colorOption = document.querySelector(`[data-color="${category.color}"]`);
@@ -1143,10 +1194,9 @@
             } else {
                 modalTitle.textContent = 'Ajouter une catégorie';
                 submitButton.textContent = 'Ajouter';
+                submitIcon.setAttribute('data-lucide', 'plus');
                 form.reset();
-                document.getElementById('categoryStatus').value = 'active';
                 document.getElementById('categoryColor').value = 'info';
-                document.getElementById('categoryOrder').value = categoriesData.length + 1;
                 
                 // Select default color
                 const defaultColorOption = document.querySelector('[data-color="info"]');
@@ -1155,146 +1205,241 @@
                 }
             }
 
-            modal.style.display = 'flex';
+            modal.classList.add('show');
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
         }
 
         function closeCategoryModal() {
-            document.getElementById('categoryModal').style.display = 'none';
+            document.getElementById('categoryModal').classList.remove('show');
             editingCategoryId = null;
         }
 
-        function handleFormSubmit(event) {
+        function viewCategory(categoryId) {
+            viewingCategoryId = categoryId;
+            const category = categoriesData.find(c => c.id === categoryId);
+            if (category) {
+                document.getElementById('viewCategoryIcon').textContent = category.icon || '📂';
+                document.getElementById('viewCategoryIcon').style.background = getCategoryBackgroundColor(category.color);
+                document.getElementById('viewCategoryName').textContent = category.name;
+                document.getElementById('viewCategoryDescription').textContent = category.description || 'Aucune description';
+                document.getElementById('viewCategoryProductCount').textContent = category.productCount;
+                document.getElementById('viewCategoryAvgPrice').textContent = category.avgPrice > 0 ? formatPrice(category.avgPrice) : 'N/A';
+                
+                // Populate products
+                const productsContainer = document.getElementById('viewCategoryProducts');
+                productsContainer.innerHTML = '';
+                
+                if (category.products && category.products.length > 0) {
+                    category.products.forEach(product => {
+                        const productItem = document.createElement('div');
+                        productItem.className = 'flex justify-between items-center text-sm p-2 bg-background rounded border';
+                        productItem.innerHTML = `
+                            <div>
+                                <span class="font-medium">${product.name}</span>
+                                <p class="text-muted-foreground text-xs">${product.description}</p>
+                            </div>
+                            <span class="font-semibold text-success">${formatPrice(product.price)}</span>
+                        `;
+                        productsContainer.appendChild(productItem);
+                    });
+                } else {
+                    productsContainer.innerHTML = '<p class="text-muted-foreground text-sm">Aucun produit dans cette catégorie</p>';
+                }
+                
+                document.getElementById('viewCategoryModal').classList.add('show');
+            }
+        }
+
+        function closeViewCategoryModal() {
+            document.getElementById('viewCategoryModal').classList.remove('show');
+            viewingCategoryId = null;
+        }
+
+        function editCategoryFromView() {
+            closeViewCategoryModal();
+            openCategoryModal(viewingCategoryId);
+        }
+
+        function deleteCategory(categoryId) {
+            deletingCategoryId = categoryId;
+            const category = categoriesData.find(c => c.id === categoryId);
+            if (category) {
+                document.getElementById('deleteCategoryName').textContent = category.name;
+                
+                const warningElement = document.getElementById('deleteCategoryWarning');
+                if (category.productCount > 0) {
+                    warningElement.textContent = `Cette catégorie contient ${category.productCount} produit(s) qui seront également affectés.`;
+                } else {
+                    warningElement.textContent = 'Cette catégorie ne contient aucun produit.';
+                }
+                
+                document.getElementById('deleteModal').classList.add('show');
+            }
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            deletingCategoryId = null;
+        }
+
+        async function confirmDelete() {
+            if (!deletingCategoryId) return;
+            
+            const deleteButton = document.getElementById('deleteButton');
+            const originalContent = deleteButton.innerHTML;
+            
+            // Set loading state
+            deleteButton.disabled = true;
+            deleteButton.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 mr-2 animate-spin"></i>Suppression...';
+            
+            try {
+                await categoryService.deleteCategory(deletingCategoryId);
+                
+                // Remove from local data
+                const index = categoriesData.findIndex(c => c.id === deletingCategoryId);
+                if (index !== -1) {
+                    categoriesData.splice(index, 1);
+                }
+                
+                showToast('Catégorie supprimée avec succès', 'success');
+                updateStats();
+                filterData();
+                closeDeleteModal();
+                
+            } catch (error) {
+                console.error('Erreur lors de la suppression:', error);
+                showToast('Erreur lors de la suppression de la catégorie', 'error');
+            } finally {
+                deleteButton.disabled = false;
+                deleteButton.innerHTML = originalContent;
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+        }
+
+        function closeAllModals() {
+            closeCategoryModal();
+            closeViewCategoryModal();
+            closeDeleteModal();
+        }
+
+        async function handleFormSubmit(event) {
             event.preventDefault();
             
-            const formData = {
-                name: document.getElementById('categoryName').value,
-                description: document.getElementById('categoryDescription').value,
-                icon: document.getElementById('categoryIcon').value || '📂',
-                status: document.getElementById('categoryStatus').value,
-                color: document.getElementById('categoryColor').value,
-                order: parseInt(document.getElementById('categoryOrder').value)
-            };
-
+            const submitButton = document.getElementById('submitButton');
+            const originalContent = submitButton.innerHTML;
+            
+            const name = document.getElementById('categoryName').value;
+            const description = document.getElementById('categoryDescription').value;
+            const icon = document.getElementById('categoryIcon').value || '📂';
+            const color = document.getElementById('categoryColor').value;
+            
             // Check if name already exists (excluding current category if editing)
             const existingCategory = categoriesData.find(cat => 
-                cat.name.toLowerCase() === formData.name.toLowerCase() && 
+                cat.name.toLowerCase() === name.toLowerCase() && 
                 cat.id !== editingCategoryId
             );
 
             if (existingCategory) {
-                showNotification('Une catégorie avec ce nom existe déjà', 'error');
+                showToast('Une catégorie avec ce nom existe déjà', 'error');
                 return;
             }
-
-            if (editingCategoryId) {
-                // Update existing category
-                const categoryIndex = categoriesData.findIndex(c => c.id === editingCategoryId);
-                if (categoryIndex !== -1) {
-                    categoriesData[categoryIndex] = {
-                        ...categoriesData[categoryIndex],
-                        ...formData
+            
+            // Set loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 mr-2 animate-spin"></i>Traitement...';
+            
+            try {
+                if (editingCategoryId) {
+                    // Update existing category
+                    const categoryData = {
+                        name: name,
+                        description: description
                     };
-                    showNotification('Catégorie modifiée avec succès', 'success');
+                    
+                    await categoryService.updateCategory(editingCategoryId, categoryData);
+                    
+                    // Update local data
+                    const categoryIndex = categoriesData.findIndex(c => c.id === editingCategoryId);
+                    if (categoryIndex !== -1) {
+                        categoriesData[categoryIndex] = {
+                            ...categoriesData[categoryIndex],
+                            ...categoryData,
+                            icon,
+                            color,
+                            updatedAt: new Date().toISOString()
+                        };
+                    }
+                    
+                    showToast('Catégorie modifiée avec succès', 'success');
+                    
+                } else {
+                    // Create new category
+                    const categoryData = {
+                        name: name,
+                        description: description
+                    };
+                    
+                    const newCategory = await categoryService.createCategory(categoryData);
+                    
+                    // Add to local data
+                    const categoryToAdd = {
+                        id: newCategory.data.id,
+                        name: name,
+                        description: description,
+                        icon,
+                        color,
+                        status: 'active',
+                        order: categoriesData.length + 1,
+                        products: [],
+                        productCount: 0,
+                        avgPrice: 0,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+                    
+                    categoriesData.push(categoryToAdd);
+                    showToast('Catégorie ajoutée avec succès', 'success');
                 }
-            } else {
-                // Add new category
-                const newCategory = {
-                    id: Math.max(...categoriesData.map(c => c.id)) + 1,
-                    ...formData,
-                    created: new Date().toISOString().split('T')[0]
-                };
-                categoriesData.push(newCategory);
-                showNotification('Catégorie ajoutée avec succès', 'success');
+                
+                updateStats();
+                filterData();
+                closeCategoryModal();
+                
+            } catch (error) {
+                console.error('Erreur lors de l\'opération:', error);
+                showToast(error.message || 'Erreur lors de l\'opération', 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalContent;
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
             }
-
-            closeCategoryModal();
-            updateStats();
-            filterData(); // Refresh the table
         }
 
-        function viewCategory(categoryId) {
-            const category = categoriesData.find(c => c.id === categoryId);
-            if (category) {
-                const productCount = getProductCount(categoryId);
-                const products = productsData.filter(p => p.categoryId === categoryId);
-                const productNames = products.map(p => p.name).join(', ');
-                
-                alert(`Détails de la catégorie:\n\nNom: ${category.name}\nDescription: ${category.description || 'Aucune description'}\nIcone: ${category.icon}\nCouleur: ${category.color}\nStatut: ${getStatusText(category.status)}\nOrdre: ${category.order}\nNombre de produits: ${productCount}\nCréée le: ${formatDate(category.created)}\n\nProduits dans cette catégorie:\n${productNames || 'Aucun produit'}`);
-            }
+        function updateStats() {
+            document.getElementById('totalCategories').textContent = categoriesData.length;
+            document.getElementById('totalProducts').textContent = categoriesData.reduce((sum, cat) => sum + cat.productCount, 0);
+            
+            // Find most popular category
+            const popularCategory = categoriesData.reduce((max, cat) => 
+                cat.productCount > (max?.productCount || 0) ? cat : max, 
+                categoriesData[0] || null
+            );
+            document.getElementById('popularCategory').textContent = popularCategory ? popularCategory.name : '-';
+            
+            // Calculate average products per category
+            const avgProducts = categoriesData.length > 0 ? 
+                Math.round(categoriesData.reduce((sum, cat) => sum + cat.productCount, 0) / categoriesData.length) : 0;
+            document.getElementById('avgProducts').textContent = avgProducts;
         }
 
         function editCategory(categoryId) {
             openCategoryModal(categoryId);
-        }
-
-        function deleteCategory(categoryId) {
-            const category = categoriesData.find(c => c.id === categoryId);
-            if (category) {
-                const productCount = getProductCount(categoryId);
-                
-                if (productCount > 0) {
-                    if (!confirm(`La catégorie "${category.name}" contient ${productCount} produit(s).\n\nÊtes-vous sûr de vouloir la supprimer ?\n\nCette action supprimera également l'association de ces produits à cette catégorie.`)) {
-                        return;
-                    }
-                } else {
-                    if (!confirm(`Êtes-vous sûr de vouloir supprimer la catégorie "${category.name}" ?\n\nCette action est irréversible.`)) {
-                        return;
-                    }
-                }
-                
-                const index = categoriesData.findIndex(c => c.id === categoryId);
-                categoriesData.splice(index, 1);
-                showNotification('Catégorie supprimée avec succès', 'success');
-                updateStats();
-                filterData(); // Refresh the table
-            }
-        }
-
-        function showNotification(message, type = 'info') {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-full`;
-            
-            switch (type) {
-                case 'success':
-                    notification.className += ' bg-success text-success-foreground';
-                    break;
-                case 'error':
-                    notification.className += ' bg-destructive text-destructive-foreground';
-                    break;
-                default:
-                    notification.className += ' bg-info text-info-foreground';
-            }
-
-            notification.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info'}" class="w-4 h-4"></i>
-                    <span>${message}</span>
-                    <button onclick="this.parentElement.parentElement.remove()" class="ml-2">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            `;
-
-            document.body.appendChild(notification);
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-
-            // Animate in
-            setTimeout(() => {
-                notification.classList.remove('translate-x-full');
-            }, 100);
-
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                notification.classList.add('translate-x-full');
-                setTimeout(() => {
-                    if (notification.parentElement) {
-                        notification.remove();
-                    }
-                }, 300);
-            }, 5000);
         }
     </script>
 </body>

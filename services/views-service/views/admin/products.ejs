@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Produits - StoreManager</title>
+    <title>Gestion des Produits - AmaZup</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script> -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
@@ -268,6 +267,14 @@
             align-items: center;
             justify-content: center;
             z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
         
         .modal-content {
@@ -279,6 +286,12 @@
             margin: 1rem;
             max-height: 90vh;
             overflow-y: auto;
+            transform: scale(0.9) translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal-content {
+            transform: scale(1) translateY(0);
         }
         
         .product-image {
@@ -298,74 +311,74 @@
 <body class="bg-muted/30">
     <!-- Sidebar -->
     <aside class="fixed left-0 top-0 h-full w-64 bg-background border-r border-border sidebar-transition z-50">
-        <!-- Logo -->
-        <div class="flex items-center px-6 py-4 border-b border-border">
-            <div class="flex items-center justify-center w-8 h-8 bg-primary rounded-md mr-3">
-                <i data-lucide="store" class="w-4 h-4 text-primary-foreground"></i>
-            </div>
-            <span class="text-xl font-bold text-foreground">StoreManager</span>
-        </div>
-        
-        <!-- User Profile -->
-        <div class="px-6 py-4 border-b border-border">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                    <i data-lucide="user" class="w-5 h-5 text-primary"></i>
-                </div>
-                <div>
-                    <p class="font-medium text-foreground">Admin User</p>
-                    <p class="text-sm text-muted-foreground">admin@store.com</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Navigation -->
-        <nav class="px-4 py-4">
-            <div class="space-y-2">
-                <a href="#" class="sidebar-item" data-page="dashboard">
-                    <i data-lucide="layout-dashboard" class="w-4 h-4 mr-3"></i>
-                    Dashboard
-                </a>
-                
-                <a href="#" class="sidebar-item" data-page="stores">
-                    <i data-lucide="store" class="w-4 h-4 mr-3"></i>
-                    Magasins
-                </a>
-                
-                <a href="#" class="sidebar-item active" data-page="products">
-                    <i data-lucide="package" class="w-4 h-4 mr-3"></i>
-                    Produits
-                </a>
-                
-                <a href="#" class="sidebar-item" data-page="categories">
-                    <i data-lucide="tag" class="w-4 h-4 mr-3"></i>
-                    Catégories
-                </a>
-                
-                <a href="#" class="sidebar-item" data-page="inventory">
-                    <i data-lucide="warehouse" class="w-4 h-4 mr-3"></i>
-                    Stocks
-                </a>
-                
-                <a href="#" class="sidebar-item" data-page="transfers">
-                    <i data-lucide="truck" class="w-4 h-4 mr-3"></i>
-                    Transferts
-                </a>
-                
-                <a href="#" class="sidebar-item" data-page="users">
-                    <i data-lucide="users" class="w-4 h-4 mr-3"></i>
-                    Utilisateurs
-                </a>
-            </div>
-            
-            <div class="mt-8 pt-4 border-t border-border">
-                <a href="#" class="sidebar-item text-destructive hover:bg-destructive/10 hover:text-destructive">
-                    <i data-lucide="log-out" class="w-4 h-4 mr-3"></i>
-                    Se déconnecter
-                </a>
-            </div>
-        </nav>
-    </aside>
+      <!-- Logo -->
+      <div class="flex items-center px-6 py-4 border-b border-border">
+          <div class="flex items-center justify-center w-8 h-8 bg-primary rounded-md mr-3">
+              <i data-lucide="store" class="w-4 h-4 text-primary-foreground"></i>
+          </div>
+          <span class="text-xl font-bold text-foreground">AmaZup</span>
+      </div>
+      
+      <!-- User Profile -->
+      <div class="px-6 py-4 border-b border-border">
+          <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                  <i data-lucide="user" class="w-5 h-5 text-primary"></i>
+              </div>
+              <div>
+                  <p class="font-medium text-foreground">Admin</p>
+                  <p class="text-sm text-muted-foreground">admin@amazup.shop</p>
+              </div>
+          </div>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="px-4 py-4">
+          <div class="space-y-2">
+              <a href="/admin" class="sidebar-item" data-page="dashboard">
+                  <i data-lucide="layout-dashboard" class="w-4 h-4 mr-3"></i>
+                  Tableau de bord
+              </a>
+              
+              <a href="/admin/stores" class="sidebar-item" data-page="stores">
+                  <i data-lucide="store" class="w-4 h-4 mr-3"></i>
+                  Magasins
+              </a>
+              
+              <a href="#" class="sidebar-item active" data-page="products">
+                  <i data-lucide="package" class="w-4 h-4 mr-3"></i>
+                  Produits
+              </a>
+              
+              <a href="/admin/categories" class="sidebar-item" data-page="categories">
+                  <i data-lucide="tag" class="w-4 h-4 mr-3"></i>
+                  Catégories
+              </a>
+              
+              <a href="/admin/stocks" class="sidebar-item" data-page="inventory">
+                  <i data-lucide="warehouse" class="w-4 h-4 mr-3"></i>
+                  Stocks
+              </a>
+              
+              <a href="/admin/transfers" class="sidebar-item" data-page="transfers">
+                  <i data-lucide="truck" class="w-4 h-4 mr-3"></i>
+                  Transferts
+              </a>
+              
+              <a href="/admin/users" class="sidebar-item" data-page="users">
+                  <i data-lucide="users" class="w-4 h-4 mr-3"></i>
+                  Utilisateurs
+              </a>
+          </div>
+          
+          <div class="mt-8 pt-4 border-t border-border">
+              <a href="/logout" class="sidebar-item text-destructive hover:bg-destructive/10 hover:text-destructive">
+                  <i data-lucide="log-out" class="w-4 h-4 mr-3"></i>
+                  Se déconnecter
+              </a>
+          </div>
+      </nav>
+  </aside>
 
     <!-- Main Content -->
     <main class="ml-64 min-h-screen">
@@ -395,9 +408,82 @@
 
         <!-- Products Management Content -->
         <div class="p-6">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div class="card">
+                    <div class="card-content p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-muted-foreground">Total Produits</p>
+                                <p class="text-2xl font-bold" id="totalProducts"><%= productCount %></p>
+                            </div>
+                            <div class="w-12 h-12 bg-info/10 rounded-lg flex items-center justify-center">
+                                <i data-lucide="package" class="w-6 h-6 text-info"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-content p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-muted-foreground">Catégories</p>
+                                <p class="text-2xl font-bold" id="totalCategories"><%= categoryCount %></p>
+                            </div>
+                            <div class="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center">
+                                <i data-lucide="tag" class="w-6 h-6 text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-content p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-muted-foreground">Prix Moyen</p>
+                                <p class="text-2xl font-bold" id="avgPrice">
+                                    <% 
+                                    const avgPrice = aggregatedProducts.length > 0 ? 
+                                        aggregatedProducts.reduce((sum, p) => sum + p.price, 0) / aggregatedProducts.length : 0;
+                                    %>
+                                    <%= avgPrice.toFixed(2) %>€
+                                </p>
+                            </div>
+                            <div class="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center">
+                                <i data-lucide="euro" class="w-6 h-6 text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-content p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-muted-foreground">Produit le Plus Cher</p>
+                                <p class="text-sm font-bold" id="mostExpensive">
+                                    <% 
+                                    const mostExpensive = aggregatedProducts.reduce((max, p) => 
+                                        p.price > (max?.price || 0) ? p : max, 
+                                        aggregatedProducts[0] || null
+                                    );
+                                    %>
+                                    <%= mostExpensive ? mostExpensive.name : '-' %>
+                                </p>
+                            </div>
+                            <div class="w-12 h-12 bg-destructive/10 rounded-lg flex items-center justify-center">
+                                <i data-lucide="trending-up" class="w-6 h-6 text-destructive"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Filters and Search -->
             <div class="card mb-6">
-                <div class="card-content" style="padding: 0.5rem;">
+                <div class="card-content" style="padding: 1.5rem;">
                     <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
                         <div class="flex flex-col sm:flex-row gap-4 flex-1">
                             <!-- Search -->
@@ -409,19 +495,7 @@
                             <!-- Category Filter -->
                             <select class="input select w-48" id="categoryFilter">
                                 <option value="">Toutes les catégories</option>
-                                <option value="1">Électronique</option>
-                                <option value="2">Vêtements</option>
-                                <option value="3">Maison & Jardin</option>
-                                <option value="4">Sport & Loisirs</option>
-                                <option value="5">Alimentation</option>
-                            </select>
-                            
-                            <!-- Status Filter -->
-                            <select class="input select w-48" id="statusFilter">
-                                <option value="">Tous les statuts</option>
-                                <option value="disponible">Disponible</option>
-                                <option value="rupture">Rupture de stock</option>
-                                <option value="discontinue">Discontinué</option>
+                                <!-- Categories will be populated by JavaScript -->
                             </select>
                         </div>
                         
@@ -472,24 +546,7 @@
                                         <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
                                     </div>
                                 </th>
-                                <th class="sortable" data-sort="stock">
-                                    <div class="flex items-center gap-2">
-                                        Stock
-                                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
-                                    </div>
-                                </th>
-                                <th class="sortable" data-sort="status">
-                                    <div class="flex items-center gap-2">
-                                        Statut
-                                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
-                                    </div>
-                                </th>
-                                <th class="sortable" data-sort="created">
-                                    <div class="flex items-center gap-2">
-                                        Créé le
-                                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
-                                    </div>
-                                </th>
+                                <th>Description</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -502,7 +559,7 @@
                 <!-- Pagination -->
                 <div class="flex items-center justify-between p-4 border-t border-border">
                     <div class="text-sm text-muted-foreground">
-                        Affichage de <span id="showingFrom">1</span> à <span id="showingTo">10</span> sur <span id="totalResults">35</span> résultats
+                        Affichage de <span id="showingFrom">1</span> à <span id="showingTo">10</span> sur <span id="totalResults">0</span> résultats
                     </div>
                     
                     <div class="flex items-center gap-2">
@@ -523,8 +580,8 @@
         </div>
     </main>
 
-    <!-- Product Modal -->
-    <div class="modal-overlay" id="productModal" style="display: none;">
+    <!-- Product Modal (Add/Edit) -->
+    <div class="modal-overlay" id="productModal">
         <div class="modal-content">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xl font-bold text-foreground" id="modalTitle">Ajouter un produit</h2>
@@ -540,68 +597,30 @@
                         <input type="text" class="input" id="productName" required>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-foreground mb-2">Catégorie</label>
-                            <select class="input select" id="productCategory" required>
-                                <option value="">Sélectionner une catégorie</option>
-                                <option value="1">Électronique</option>
-                                <option value="2">Vêtements</option>
-                                <option value="3">Maison & Jardin</option>
-                                <option value="4">Sport & Loisirs</option>
-                                <option value="5">Alimentation</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-foreground mb-2">SKU</label>
-                            <input type="text" class="input" id="productSku" required>
-                        </div>
-                    </div>
-                    
                     <div>
                         <label class="block text-sm font-medium text-foreground mb-2">Description</label>
-                        <textarea class="input textarea" id="productDescription" rows="3"></textarea>
+                        <textarea class="input textarea" id="productDescription" rows="3" placeholder="Description du produit"></textarea>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-foreground mb-2">Prix (€)</label>
                             <input type="number" class="input" id="productPrice" step="0.01" min="0" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-foreground mb-2">Stock initial</label>
-                            <input type="number" class="input" id="productStock" min="0" required>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-foreground mb-2">Stock minimum</label>
-                            <input type="number" class="input" id="productMinStock" min="0" value="5">
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-foreground mb-2">Marque</label>
-                            <input type="text" class="input" id="productBrand">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-foreground mb-2">Statut</label>
-                            <select class="input select" id="productStatus" required>
-                                <option value="disponible">Disponible</option>
-                                <option value="rupture">Rupture de stock</option>
-                                <option value="discontinue">Discontinué</option>
+                            <label class="block text-sm font-medium text-foreground mb-2">Catégorie</label>
+                            <select class="input select" id="productCategory" required>
+                                <option value="">Sélectionner une catégorie</option>
+                                <!-- Categories will be populated by JavaScript -->
                             </select>
                         </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-foreground mb-2">URL de l'image</label>
-                        <input type="url" class="input" id="productImage" placeholder="https://exemple.com/image.jpg">
                     </div>
                 </div>
                 
                 <div class="flex justify-end gap-3 mt-6">
                     <button type="button" class="btn btn-outline" onclick="closeProductModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" id="submitButton">
+                        <i data-lucide="plus" class="w-4 h-4 mr-2" id="submitIcon"></i>
                         <span id="submitButtonText">Ajouter</span>
                     </button>
                 </div>
@@ -609,62 +628,202 @@
         </div>
     </div>
 
-    <script>
-        // Sample categories data
-        const categoriesData = {
-            1: { id: 1, name: "Électronique", color: "info" },
-            2: { id: 2, name: "Vêtements", color: "success" },
-            3: { id: 3, name: "Maison & Jardin", color: "warning" },
-            4: { id: 4, name: "Sport & Loisirs", color: "destructive" },
-            5: { id: 5, name: "Alimentation", color: "secondary" }
-        };
+    <!-- View Product Modal -->
+    <div class="modal-overlay" id="viewProductModal">
+        <div class="modal-content">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-foreground">Détails du produit</h2>
+                <button class="btn btn-outline btn-sm" onclick="closeViewProductModal()">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="product-image" id="viewProductImage">📦</div>
+                    <div>
+                        <h3 class="text-lg font-semibold" id="viewProductName"></h3>
+                        <p class="text-muted-foreground" id="viewProductCategory"></p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-muted-foreground mb-1">Prix</label>
+                        <p class="text-lg font-bold text-success" id="viewProductPrice"></p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-muted-foreground mb-1">ID</label>
+                        <p class="text-sm font-mono" id="viewProductId"></p>
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-muted-foreground mb-1">Description</label>
+                        <p class="text-sm" id="viewProductDescription"></p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-3">
+                    <button type="button" class="btn btn-outline" onclick="closeViewProductModal()">Fermer</button>
+                    <button type="button" class="btn btn-secondary" onclick="editProductFromView()">
+                        <i data-lucide="edit" class="w-4 h-4 mr-2"></i>
+                        Modifier
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // Sample products data - plus de produits
-        const productsData = [
-            { id: 1, name: "iPhone 15 Pro", categoryId: 1, sku: "IPH15P-128", description: "Smartphone Apple dernière génération", price: 1199.00, stock: 45, minStock: 5, brand: "Apple", status: "disponible", image: "", created: "2024-01-15" },
-            { id: 2, name: "T-shirt Nike", categoryId: 2, sku: "TNK-001", description: "T-shirt de sport Nike en coton", price: 29.99, stock: 120, minStock: 10, brand: "Nike", status: "disponible", image: "", created: "2024-01-20" },
-            { id: 3, name: "Aspirateur Dyson", categoryId: 3, sku: "DYS-V11", description: "Aspirateur sans fil Dyson V11", price: 549.00, stock: 8, minStock: 5, brand: "Dyson", status: "disponible", image: "", created: "2024-02-01" },
-            { id: 4, name: "Raquette Tennis", categoryId: 4, sku: "TEN-PRO", description: "Raquette de tennis professionnelle", price: 189.99, stock: 0, minStock: 3, brand: "Wilson", status: "rupture", image: "", created: "2024-02-05" },
-            { id: 5, name: "Café Bio", categoryId: 5, sku: "CAF-BIO-1KG", description: "Café bio en grains 1kg", price: 24.99, stock: 250, minStock: 20, brand: "Bio Nature", status: "disponible", image: "", created: "2024-02-10" },
-            { id: 6, name: "MacBook Air M2", categoryId: 1, sku: "MBA-M2-256", description: "Ordinateur portable Apple MacBook Air M2", price: 1499.00, stock: 12, minStock: 2, brand: "Apple", status: "disponible", image: "", created: "2024-02-15" },
-            { id: 7, name: "Jean Levis 501", categoryId: 2, sku: "LEV-501-32", description: "Jean Levis 501 taille 32", price: 89.99, stock: 35, minStock: 5, brand: "Levis", status: "disponible", image: "", created: "2024-02-20" },
-            { id: 8, name: "Tondeuse Bosch", categoryId: 3, sku: "BSC-TON-2000", description: "Tondeuse électrique Bosch 2000W", price: 299.99, stock: 6, minStock: 2, brand: "Bosch", status: "disponible", image: "", created: "2024-02-25" },
-            { id: 9, name: "Ballon Football", categoryId: 4, sku: "BAL-FIFA", description: "Ballon de football FIFA approuvé", price: 45.99, stock: 2, minStock: 5, brand: "Adidas", status: "disponible", image: "", created: "2024-03-01" },
-            { id: 10, name: "Chocolat Noir 70%", categoryId: 5, sku: "CHO-70-100G", description: "Chocolat noir 70% cacao 100g", price: 8.99, stock: 180, minStock: 25, brand: "Lindt", status: "disponible", image: "", created: "2024-03-05" },
-            { id: 11, name: "Casque Sony", categoryId: 1, sku: "SNY-WH1000", description: "Casque audio sans fil Sony WH-1000XM4", price: 349.99, stock: 0, minStock: 3, brand: "Sony", status: "discontinue", image: "", created: "2024-03-10" },
-            { id: 12, name: "Robe d'été", categoryId: 2, sku: "ROB-ETE-M", description: "Robe d'été légère taille M", price: 59.99, stock: 25, minStock: 3, brand: "Zara", status: "disponible", image: "", created: "2024-03-15" },
-            // Produits supplémentaires pour la pagination
-            { id: 13, name: "Samsung Galaxy S24", categoryId: 1, sku: "SAM-S24-256", description: "Smartphone Samsung Galaxy S24", price: 899.00, stock: 28, minStock: 5, brand: "Samsung", status: "disponible", image: "", created: "2024-03-20" },
-            { id: 14, name: "Baskets Adidas", categoryId: 2, sku: "ADI-ULTRA-42", description: "Baskets Adidas Ultraboost 42", price: 179.99, stock: 42, minStock: 8, brand: "Adidas", status: "disponible", image: "", created: "2024-03-25" },
-            { id: 15, name: "Micro-ondes LG", categoryId: 3, sku: "LG-MO-1000W", description: "Micro-ondes LG 1000W", price: 189.99, stock: 15, minStock: 3, brand: "LG", status: "disponible", image: "", created: "2024-04-01" },
-            { id: 16, name: "Vélo VTT", categoryId: 4, sku: "VTT-TREK-29", description: "VTT Trek 29 pouces", price: 1299.99, stock: 4, minStock: 2, brand: "Trek", status: "disponible", image: "", created: "2024-04-05" },
-            { id: 17, name: "Thé Vert Bio", categoryId: 5, sku: "THE-VERT-250G", description: "Thé vert bio 250g", price: 18.99, stock: 95, minStock: 15, brand: "Bio Thé", status: "disponible", image: "", created: "2024-04-10" },
-            { id: 18, name: "iPad Pro", categoryId: 1, sku: "IPD-PRO-512", description: "iPad Pro 12.9 512GB", price: 1399.00, stock: 18, minStock: 3, brand: "Apple", status: "disponible", image: "", created: "2024-04-15" },
-            { id: 19, name: "Veste Cuir", categoryId: 2, sku: "VES-CUIR-L", description: "Veste en cuir taille L", price: 299.99, stock: 12, minStock: 2, brand: "Oakwood", status: "disponible", image: "", created: "2024-04-20" },
-            { id: 20, name: "Robot Cuisine", categoryId: 3, sku: "ROB-COOK-1500", description: "Robot de cuisine multifonction", price: 449.99, stock: 1, minStock: 3, brand: "Kenwood", status: "disponible", image: "", created: "2024-04-25" },
-            { id: 21, name: "Haltères 20kg", categoryId: 4, sku: "HAL-20KG", description: "Set d'haltères 20kg", price: 89.99, stock: 22, minStock: 5, brand: "Domyos", status: "disponible", image: "", created: "2024-05-01" },
-            { id: 22, name: "Miel de Lavande", categoryId: 5, sku: "MIE-LAV-500G", description: "Miel de lavande 500g", price: 15.99, stock: 68, minStock: 10, brand: "Provence Miel", status: "disponible", image: "", created: "2024-05-05" },
-            { id: 23, name: "Nintendo Switch", categoryId: 1, sku: "NIN-SW-OLED", description: "Console Nintendo Switch OLED", price: 349.99, stock: 25, minStock: 5, brand: "Nintendo", status: "disponible", image: "", created: "2024-05-10" },
-            { id: 24, name: "Chemise Homme", categoryId: 2, sku: "CHE-HOM-M", description: "Chemise homme coton M", price: 49.99, stock: 38, minStock: 8, brand: "Celio", status: "disponible", image: "", created: "2024-05-15" },
-            { id: 25, name: "Frigo Samsung", categoryId: 3, sku: "FRI-SAM-300L", description: "Réfrigérateur Samsung 300L", price: 799.99, stock: 7, minStock: 2, brand: "Samsung", status: "disponible", image: "", created: "2024-05-20" },
-            { id: 26, name: "Tapis Yoga", categoryId: 4, sku: "TAP-YOG-6MM", description: "Tapis de yoga 6mm", price: 34.99, stock: 0, minStock: 10, brand: "Yoga Pro", status: "rupture", image: "", created: "2024-05-25" },
-            { id: 27, name: "Huile Olive Extra", categoryId: 5, sku: "HUI-OLI-1L", description: "Huile d'olive extra vierge 1L", price: 22.99, stock: 145, minStock: 20, brand: "Château d'Estoublon", status: "disponible", image: "", created: "2024-06-01" },
-            { id: 28, name: "AirPods Pro", categoryId: 1, sku: "AIR-PRO-2ND", description: "AirPods Pro 2ème génération", price: 279.99, stock: 33, minStock: 8, brand: "Apple", status: "disponible", image: "", created: "2024-06-05" },
-            { id: 29, name: "Pantalon Jogger", categoryId: 2, sku: "PAN-JOG-L", description: "Pantalon jogger taille L", price: 39.99, stock: 0, minStock: 12, brand: "Puma", status: "discontinue", image: "", created: "2024-06-10" },
-            { id: 30, name: "Lave-vaisselle", categoryId: 3, sku: "LAV-VAI-12COV", description: "Lave-vaisselle 12 couverts", price: 549.99, stock: 9, minStock: 2, brand: "Bosch", status: "disponible", image: "", created: "2024-06-15" },
-            { id: 31, name: "Sac de Sport", categoryId: 4, sku: "SAC-SPO-40L", description: "Sac de sport 40L", price: 49.99, stock: 28, minStock: 6, brand: "Nike", status: "disponible", image: "", created: "2024-06-20" },
-            { id: 32, name: "Confiture Fraise", categoryId: 5, sku: "CON-FRA-350G", description: "Confiture de fraise 350g", price: 7.99, stock: 89, minStock: 15, brand: "Bonne Maman", status: "disponible", image: "", created: "2024-06-25" },
-            { id: 33, name: "PlayStation 5", categoryId: 1, sku: "PS5-DISC", description: "Console PlayStation 5 avec lecteur", price: 549.99, stock: 3, minStock: 2, brand: "Sony", status: "disponible", image: "", created: "2024-07-01" },
-            { id: 34, name: "Blouson Cuir", categoryId: 2, sku: "BLO-CUIR-XL", description: "Blouson cuir moto XL", price: 399.99, stock: 6, minStock: 2, brand: "Schott", status: "disponible", image: "", created: "2024-07-05" },
-            { id: 35, name: "Machine à Café", categoryId: 3, sku: "MAC-CAF-AUTO", description: "Machine à café automatique", price: 699.99, stock: 11, minStock: 3, brand: "DeLonghi", status: "disponible", image: "", created: "2024-07-10" }
-        ];
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content max-w-md">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center">
+                    <i data-lucide="alert-triangle" class="w-6 h-6 text-destructive"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-foreground">Confirmer la suppression</h2>
+                    <p class="text-sm text-muted-foreground">Cette action est irréversible</p>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <p class="text-sm text-foreground">
+                    Êtes-vous sûr de vouloir supprimer le produit <span class="font-semibold" id="deleteProductName"></span> ?
+                </p>
+                <p class="text-sm text-muted-foreground mt-2">
+                    Toutes les données associées à ce produit seront définitivement supprimées.
+                </p>
+            </div>
+            
+            <div class="flex justify-end gap-3">
+                <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">Annuler</button>
+                <button type="button" class="btn btn-destructive" onclick="confirmDelete()" id="deleteButton">
+                    <i data-lucide="trash-2" class="w-4 h-4 mr-2"></i>
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Toast Partials -->
+    <%- include('../partials/toasts') %>
+
+    <script>
+        // Configuration de l'API
+        const API_BASE_URL = 'http://localhost/api/v1';
+        
+        // Données produits provenant du serveur
+        const productsData = <%- JSON.stringify(aggregatedProducts) %>;
+        
+        // Extraire les catégories uniques des produits
+        const categoriesData = {};
+        const categoryColors = ['info', 'success', 'warning', 'destructive', 'secondary'];
+        
+        productsData.forEach((product, index) => {
+            if (product.category && !categoriesData[product.category.id]) {
+                const colorIndex = Object.keys(categoriesData).length % categoryColors.length;
+                categoriesData[product.category.id] = {
+                    id: product.category.id,
+                    name: product.category.name,
+                    description: product.category.description,
+                    color: categoryColors[colorIndex]
+                };
+            }
+        });
+
+        // Enrichir les données des produits avec des informations aléatoirement générées
+        productsData.forEach((product, index) => {
+            // Ajouter des champs manquants si nécessaire
+            product.sku = `SKU-${String(product.id).padStart(4, '0')}`;
+            product.brand = ['Apple', 'Samsung', 'Nike', 'Adidas', 'Sony', 'LG', 'Bosch', 'Generic'][Math.floor(Math.random() * 8)];
+            product.status = 'disponible'; // Par défaut, tous disponibles
+            product.stock = Math.floor(Math.random() * 100) + 1;
+            product.minStock = Math.floor(Math.random() * 10) + 1;
+            product.createdAt = new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString();
+            product.updatedAt = new Date().toISOString();
+        });
 
         let currentPage = 1;
-        let itemsPerPage = 10; // Par défaut 10
+        let itemsPerPage = 10;
         let sortField = null;
         let sortDirection = 'asc';
         let filteredData = [...productsData];
         let editingProductId = null;
+        let deletingProductId = null;
+        let viewingProductId = null;
+
+        // Service Product
+        class ProductService {
+            constructor() {
+                this.baseUrl = API_BASE_URL;
+            }
+            
+            async createProduct(data) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/products`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Erreur lors de la création');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            async updateProduct(productId, data) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/products/${productId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Erreur lors de la modification');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            async deleteProduct(productId) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/products/${productId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Erreur lors de la suppression');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    throw error;
+                }
+            }
+        }
+
+        const productService = new ProductService();
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -676,45 +835,72 @@
                 console.log('Lucide icons initialized');
             }
 
+            populateCategorySelects();
             renderTable();
             setupEventListeners();
             console.log('Products page initialized successfully');
         });
 
-        function setupEventListeners() {
-            console.log('Setting up event listeners...');
+        function populateCategorySelects() {
+            const categoryFilter = document.getElementById('categoryFilter');
+            const productCategory = document.getElementById('productCategory');
             
+            // Populate category filter
+            Object.values(categoriesData).forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                categoryFilter.appendChild(option);
+            });
+            
+            // Populate product category select
+            Object.values(categoriesData).forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                productCategory.appendChild(option);
+            });
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: 'EUR'
+            }).format(price);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function setupEventListeners() {
             // Search
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', debounce(filterData, 300));
-                console.log('Search listener added');
             }
             
             // Filters
             const categoryFilter = document.getElementById('categoryFilter');
             if (categoryFilter) {
                 categoryFilter.addEventListener('change', filterData);
-                console.log('Category filter listener added');
-            }
-            
-            const statusFilter = document.getElementById('statusFilter');
-            if (statusFilter) {
-                statusFilter.addEventListener('change', filterData);
-                console.log('Status filter listener added');
             }
             
             const perPageSelect = document.getElementById('perPageSelect');
             if (perPageSelect) {
                 perPageSelect.addEventListener('change', changeItemsPerPage);
-                console.log('Per page selector listener added');
             }
             
             // Sorting
             document.querySelectorAll('.sortable').forEach(header => {
                 header.addEventListener('click', () => sortTable(header.dataset.sort));
             });
-            console.log('Sort listeners added');
             
             // Pagination
             const prevPage = document.getElementById('prevPage');
@@ -726,46 +912,43 @@
             if (nextPage) {
                 nextPage.addEventListener('click', () => changePage(currentPage + 1));
             }
-            console.log('Pagination listeners added');
             
             // Form submission
             const productForm = document.getElementById('productForm');
             if (productForm) {
                 productForm.addEventListener('submit', handleFormSubmit);
-                console.log('Form listener added');
             }
             
             // Sidebar navigation
             document.querySelectorAll('.sidebar-item').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-                    this.classList.add('active');
-                });
+                if (!item.getAttribute('href') || item.getAttribute('href') === '#') {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                }
             });
 
-            // Close modal when clicking outside
-            const productModal = document.getElementById('productModal');
-            if (productModal) {
-                productModal.addEventListener('click', function(e) {
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.addEventListener('click', function(e) {
                     if (e.target === this) {
-                        closeProductModal();
+                        closeAllModals();
                     }
                 });
-            }
+            });
 
             // Keyboard shortcuts
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
-                    closeProductModal();
+                    closeAllModals();
                 }
                 if (e.ctrlKey && e.key === 'n') {
                     e.preventDefault();
                     openProductModal();
                 }
             });
-            
-            console.log('All event listeners set up successfully');
         }
 
         function debounce(func, wait) {
@@ -781,37 +964,26 @@
         }
 
         function filterData() {
-            console.log('Filtering products data...');
-            
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const categoryFilter = document.getElementById('categoryFilter').value;
-            const statusFilter = document.getElementById('statusFilter').value;
-
-            console.log('Search term:', searchTerm);
-            console.log('Category filter:', categoryFilter);
-            console.log('Status filter:', statusFilter);
 
             filteredData = productsData.filter(product => {
                 const matchesSearch = !searchTerm || 
                     product.name.toLowerCase().includes(searchTerm) ||
-                    product.sku.toLowerCase().includes(searchTerm) ||
-                    product.brand.toLowerCase().includes(searchTerm) ||
-                    product.description.toLowerCase().includes(searchTerm);
+                    (product.description && product.description.toLowerCase().includes(searchTerm)) ||
+                    (product.sku && product.sku.toLowerCase().includes(searchTerm)) ||
+                    (product.brand && product.brand.toLowerCase().includes(searchTerm));
                 
                 const matchesCategory = !categoryFilter || product.categoryId.toString() === categoryFilter;
-                const matchesStatus = !statusFilter || product.status === statusFilter;
 
-                return matchesSearch && matchesCategory && matchesStatus;
+                return matchesSearch && matchesCategory;
             });
 
-            console.log('Filtered products data length:', filteredData.length);
             currentPage = 1;
             renderTable();
         }
 
         function sortTable(field) {
-            console.log('Sorting products by:', field);
-            
             if (sortField === field) {
                 sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
             } else {
@@ -823,20 +995,20 @@
                 let aValue = a[field];
                 let bValue = b[field];
 
-                if (field === 'price' || field === 'stock') {
-                    aValue = parseFloat(aValue);
-                    bValue = parseFloat(bValue);
-                } else if (field === 'created') {
-                    aValue = new Date(aValue);
-                    bValue = new Date(bValue);
+                if (field === 'price') {
+                    aValue = parseFloat(aValue) || 0;
+                    bValue = parseFloat(bValue) || 0;
                 } else if (field === 'category') {
-                    aValue = categoriesData[a.categoryId]?.name || '';
-                    bValue = categoriesData[b.categoryId]?.name || '';
+                    aValue = a.category?.name || '';
+                    bValue = b.category?.name || '';
                     aValue = aValue.toLowerCase();
                     bValue = bValue.toLowerCase();
+                } else if (field === 'createdAt') {
+                    aValue = new Date(aValue);
+                    bValue = new Date(bValue);
                 } else {
-                    aValue = aValue.toString().toLowerCase();
-                    bValue = bValue.toString().toLowerCase();
+                    aValue = aValue ? aValue.toString().toLowerCase() : '';
+                    bValue = bValue ? bValue.toString().toLowerCase() : '';
                 }
 
                 if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
@@ -866,9 +1038,7 @@
         }
 
         function changeItemsPerPage() {
-            console.log('Changing items per page...');
             itemsPerPage = parseInt(document.getElementById('perPageSelect').value);
-            console.log('New items per page:', itemsPerPage);
             currentPage = 1;
             renderTable();
         }
@@ -882,33 +1052,26 @@
         }
 
         function renderTable() {
-            console.log('Rendering products table...');
-            console.log('Current page:', currentPage);
-            console.log('Items per page:', itemsPerPage);
-            console.log('Filtered data length:', filteredData.length);
-            
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
             const pageData = filteredData.slice(startIndex, endIndex);
-
-            console.log('Page data length:', pageData.length);
 
             const tbody = document.getElementById('productsTableBody');
             tbody.innerHTML = '';
 
             pageData.forEach(product => {
-                const category = categoriesData[product.categoryId];
+                const category = categoriesData[product.categoryId] || product.category;
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>
                         <div class="product-image">
-                            ${product.image ? `<img src="${product.image}" alt="${product.name}" class="product-image" onerror="this.parentElement.innerHTML='📦'">` : '📦'}
+                            📦
                         </div>
                     </td>
                     <td>
                         <div>
                             <div class="font-medium">${product.name}</div>
-                            <div class="text-sm text-muted-foreground">SKU: ${product.sku}</div>
+                            <div class="text-sm text-muted-foreground">SKU: ${product.sku || 'N/A'}</div>
                         </div>
                     </td>
                     <td>
@@ -916,19 +1079,17 @@
                             ${category?.name || 'Sans catégorie'}
                         </span>
                     </td>
-                    <td class="font-mono font-medium">${formatPrice(product.price)}</td>
+                    <td class="font-mono font-medium text-success">${formatPrice(product.price)}</td>
                     <td>
-                        <div class="flex items-center gap-2">
-                            <span class="font-mono ${product.stock <= product.minStock ? 'text-destructive font-bold' : ''}">${product.stock}</span>
-                            ${product.stock <= product.minStock ? '<i data-lucide="alert-triangle" class="w-4 h-4 text-warning"></i>' : ''}
+                        <div class="text-sm ${product.description ? '' : 'text-muted-foreground italic'}">
+                            ${product.description ? 
+                                (product.description.length > 50 ? 
+                                    product.description.substring(0, 50) + '...' : 
+                                    product.description
+                                ) : 'Aucune description'
+                            }
                         </div>
                     </td>
-                    <td>
-                        <span class="badge ${getStatusBadgeClass(product.status)}">
-                            ${getStatusText(product.status)}
-                        </span>
-                    </td>
-                    <td>${formatDate(product.created)}</td>
                     <td>
                         <div class="flex items-center gap-2">
                             <button class="btn btn-outline btn-sm" onclick="viewProduct(${product.id})" title="Voir">
@@ -952,36 +1113,6 @@
             updatePagination();
         }
 
-        function getStatusBadgeClass(status) {
-            switch (status) {
-                case 'disponible': return 'badge-success';
-                case 'rupture': return 'badge-warning';
-                case 'discontinue': return 'badge-destructive';
-                default: return 'badge-secondary';
-            }
-        }
-
-        function getStatusText(status) {
-            switch (status) {
-                case 'disponible': return 'Disponible';
-                case 'rupture': return 'Rupture';
-                case 'discontinue': return 'Discontinué';
-                default: return status;
-            }
-        }
-
-        function formatPrice(price) {
-            return new Intl.NumberFormat('fr-FR', {
-                style: 'currency',
-                currency: 'EUR'
-            }).format(price);
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('fr-FR');
-        }
-
         function updatePagination() {
             const totalItems = filteredData.length;
             const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -1002,23 +1133,19 @@
             paginationContainer.innerHTML = '';
 
             if (totalPages <= 7) {
-                // Show all pages if 7 or fewer
                 for (let i = 1; i <= totalPages; i++) {
                     createPageButton(i, paginationContainer);
                 }
             } else {
-                // Show first page
                 createPageButton(1, paginationContainer);
 
                 if (currentPage > 4) {
-                    // Show ellipsis
                     const ellipsis = document.createElement('span');
                     ellipsis.className = 'px-2 text-muted-foreground';
                     ellipsis.textContent = '...';
                     paginationContainer.appendChild(ellipsis);
                 }
 
-                // Show pages around current page
                 const start = Math.max(2, currentPage - 2);
                 const end = Math.min(totalPages - 1, currentPage + 2);
 
@@ -1027,14 +1154,12 @@
                 }
 
                 if (currentPage < totalPages - 3) {
-                    // Show ellipsis
                     const ellipsis = document.createElement('span');
                     ellipsis.className = 'px-2 text-muted-foreground';
                     ellipsis.textContent = '...';
                     paginationContainer.appendChild(ellipsis);
                 }
 
-                // Show last page
                 if (totalPages > 1) {
                     createPageButton(totalPages, paginationContainer);
                 }
@@ -1049,12 +1174,12 @@
             container.appendChild(button);
         }
 
-        // Product Management Functions
         function openProductModal(productId = null) {
             editingProductId = productId;
             const modal = document.getElementById('productModal');
             const modalTitle = document.getElementById('modalTitle');
             const submitButton = document.getElementById('submitButtonText');
+            const submitIcon = document.getElementById('submitIcon');
             const form = document.getElementById('productForm');
 
             if (productId) {
@@ -1062,143 +1187,228 @@
                 if (product) {
                     modalTitle.textContent = 'Modifier le produit';
                     submitButton.textContent = 'Modifier';
+                    submitIcon.setAttribute('data-lucide', 'save');
                     
                     // Fill form with product data
                     document.getElementById('productName').value = product.name;
-                    document.getElementById('productCategory').value = product.categoryId;
-                    document.getElementById('productSku').value = product.sku;
                     document.getElementById('productDescription').value = product.description || '';
                     document.getElementById('productPrice').value = product.price;
-                    document.getElementById('productStock').value = product.stock;
-                    document.getElementById('productMinStock').value = product.minStock;
-                    document.getElementById('productBrand').value = product.brand || '';
-                    document.getElementById('productStatus').value = product.status;
-                    document.getElementById('productImage').value = product.image || '';
+                    document.getElementById('productCategory').value = product.categoryId;
                 }
             } else {
                 modalTitle.textContent = 'Ajouter un produit';
                 submitButton.textContent = 'Ajouter';
+                submitIcon.setAttribute('data-lucide', 'plus');
                 form.reset();
-                document.getElementById('productStatus').value = 'disponible';
-                document.getElementById('productMinStock').value = '5';
             }
 
-            modal.style.display = 'flex';
+            modal.classList.add('show');
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
         }
 
         function closeProductModal() {
-            document.getElementById('productModal').style.display = 'none';
+            document.getElementById('productModal').classList.remove('show');
             editingProductId = null;
         }
 
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            
-            const formData = {
-                name: document.getElementById('productName').value,
-                categoryId: parseInt(document.getElementById('productCategory').value),
-                sku: document.getElementById('productSku').value,
-                description: document.getElementById('productDescription').value,
-                price: parseFloat(document.getElementById('productPrice').value),
-                stock: parseInt(document.getElementById('productStock').value),
-                minStock: parseInt(document.getElementById('productMinStock').value),
-                brand: document.getElementById('productBrand').value,
-                status: document.getElementById('productStatus').value,
-                image: document.getElementById('productImage').value || ''
-            };
-
-            if (editingProductId) {
-                // Update existing product
-                const productIndex = productsData.findIndex(p => p.id === editingProductId);
-                if (productIndex !== -1) {
-                    productsData[productIndex] = {
-                        ...productsData[productIndex],
-                        ...formData
-                    };
-                    showNotification('Produit modifié avec succès', 'success');
-                }
-            } else {
-                // Add new product
-                const newProduct = {
-                    id: Math.max(...productsData.map(p => p.id)) + 1,
-                    ...formData,
-                    created: new Date().toISOString().split('T')[0]
-                };
-                productsData.push(newProduct);
-                showNotification('Produit ajouté avec succès', 'success');
-            }
-
-            closeProductModal();
-            filterData(); // Refresh the table
-        }
-
         function viewProduct(productId) {
+            viewingProductId = productId;
             const product = productsData.find(p => p.id === productId);
             if (product) {
-                const category = categoriesData[product.categoryId];
-                alert(`Détails du produit:\n\nNom: ${product.name}\nSKU: ${product.sku}\nCatégorie: ${category?.name || 'Sans catégorie'}\nPrix: ${formatPrice(product.price)}\nStock: ${product.stock}\nMarque: ${product.brand}\nStatut: ${getStatusText(product.status)}\nCréé le: ${formatDate(product.created)}\n\nDescription: ${product.description || 'Aucune description'}`);
+                const category = categoriesData[product.categoryId] || product.category;
+                
+                document.getElementById('viewProductImage').textContent = '📦';
+                document.getElementById('viewProductName').textContent = product.name;
+                document.getElementById('viewProductCategory').textContent = category?.name || 'Sans catégorie';
+                document.getElementById('viewProductPrice').textContent = formatPrice(product.price);
+                document.getElementById('viewProductId').textContent = product.id;
+                document.getElementById('viewProductDescription').textContent = product.description || 'Aucune description';
+                
+                document.getElementById('viewProductModal').classList.add('show');
             }
+        }
+
+        function closeViewProductModal() {
+            document.getElementById('viewProductModal').classList.remove('show');
+            viewingProductId = null;
+        }
+
+        function editProductFromView() {
+            closeViewProductModal();
+            openProductModal(viewingProductId);
+        }
+
+        function deleteProduct(productId) {
+            deletingProductId = productId;
+            const product = productsData.find(p => p.id === productId);
+            if (product) {
+                document.getElementById('deleteProductName').textContent = product.name;
+                document.getElementById('deleteModal').classList.add('show');
+            }
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            deletingProductId = null;
+        }
+
+        async function confirmDelete() {
+            if (!deletingProductId) return;
+            
+            const deleteButton = document.getElementById('deleteButton');
+            const originalContent = deleteButton.innerHTML;
+            
+            // Set loading state
+            deleteButton.disabled = true;
+            deleteButton.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 mr-2 animate-spin"></i>Suppression...';
+            
+            try {
+                await productService.deleteProduct(deletingProductId);
+                
+                // Remove from local data
+                const index = productsData.findIndex(p => p.id === deletingProductId);
+                if (index !== -1) {
+                    productsData.splice(index, 1);
+                }
+                
+                showToast('Produit supprimé avec succès', 'success');
+                updateStats();
+                filterData();
+                closeDeleteModal();
+                
+            } catch (error) {
+                console.error('Erreur lors de la suppression:', error);
+                showToast('Erreur lors de la suppression du produit', 'error');
+            } finally {
+                deleteButton.disabled = false;
+                deleteButton.innerHTML = originalContent;
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+        }
+
+        function closeAllModals() {
+            closeProductModal();
+            closeViewProductModal();
+            closeDeleteModal();
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const submitButton = document.getElementById('submitButton');
+            const originalContent = submitButton.innerHTML;
+            
+            const name = document.getElementById('productName').value;
+            const description = document.getElementById('productDescription').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const categoryId = parseInt(document.getElementById('productCategory').value);
+            
+            // Validate price
+            if (price <= 0) {
+                showToast('Le prix doit être supérieur à 0', 'error');
+                return;
+            }
+            
+            // Set loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 mr-2 animate-spin"></i>Traitement...';
+            
+            try {
+                if (editingProductId) {
+                    // Update existing product
+                    const productData = {
+                        name: name,
+                        description: description,
+                        price: price,
+                        categoryId: categoryId
+                    };
+                    
+                    await productService.updateProduct(editingProductId, productData);
+                    
+                    // Update local data
+                    const productIndex = productsData.findIndex(p => p.id === editingProductId);
+                    if (productIndex !== -1) {
+                        productsData[productIndex] = {
+                            ...productsData[productIndex],
+                            ...productData,
+                            category: categoriesData[categoryId],
+                            updatedAt: new Date().toISOString()
+                        };
+                    }
+                    
+                    showToast('Produit modifié avec succès', 'success');
+                    
+                } else {
+                    // Create new product
+                    const productData = {
+                        name: name,
+                        description: description,
+                        price: price,
+                        categoryId: categoryId
+                    };
+                    
+                    const newProduct = await productService.createProduct(productData);
+                    
+                    // Add to local data
+                    const productToAdd = {
+                        id: newProduct.data.id,
+                        name: name,
+                        description: description,
+                        price: price,
+                        categoryId: categoryId,
+                        category: categoriesData[categoryId],
+                        sku: `SKU-${String(newProduct.data.id).padStart(4, '0')}`,
+                        brand: 'Generic',
+                        status: 'disponible',
+                        stock: 0,
+                        minStock: 1,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+                    
+                    productsData.push(productToAdd);
+                    showToast('Produit ajouté avec succès', 'success');
+                }
+                
+                updateStats();
+                filterData();
+                closeProductModal();
+                
+            } catch (error) {
+                console.error('Erreur lors de l\'opération:', error);
+                showToast(error.message || 'Erreur lors de l\'opération', 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalContent;
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalProducts').textContent = productsData.length;
+            document.getElementById('totalCategories').textContent = Object.keys(categoriesData).length;
+            
+            // Calculate average price
+            const avgPrice = productsData.length > 0 ? 
+                productsData.reduce((sum, p) => sum + p.price, 0) / productsData.length : 0;
+            document.getElementById('avgPrice').textContent = avgPrice.toFixed(2) + '€';
+            
+            // Find most expensive product
+            const mostExpensive = productsData.reduce((max, p) => 
+                p.price > (max?.price || 0) ? p : max, 
+                productsData[0] || null
+            );
+            document.getElementById('mostExpensive').textContent = mostExpensive ? mostExpensive.name : '-';
         }
 
         function editProduct(productId) {
             openProductModal(productId);
-        }
-
-        function deleteProduct(productId) {
-            const product = productsData.find(p => p.id === productId);
-            if (product && confirm(`Êtes-vous sûr de vouloir supprimer le produit "${product.name}" ?\n\nCette action est irréversible.`)) {
-                const index = productsData.findIndex(p => p.id === productId);
-                productsData.splice(index, 1);
-                showNotification('Produit supprimé avec succès', 'success');
-                filterData(); // Refresh the table
-            }
-        }
-
-        function showNotification(message, type = 'info') {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-full`;
-            
-            switch (type) {
-                case 'success':
-                    notification.className += ' bg-success text-success-foreground';
-                    break;
-                case 'error':
-                    notification.className += ' bg-destructive text-destructive-foreground';
-                    break;
-                default:
-                    notification.className += ' bg-info text-info-foreground';
-            }
-
-            notification.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info'}" class="w-4 h-4"></i>
-                    <span>${message}</span>
-                    <button onclick="this.parentElement.parentElement.remove()" class="ml-2">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            `;
-
-            document.body.appendChild(notification);
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-
-            // Animate in
-            setTimeout(() => {
-                notification.classList.remove('translate-x-full');
-            }, 100);
-
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                notification.classList.add('translate-x-full');
-                setTimeout(() => {
-                    if (notification.parentElement) {
-                        notification.remove();
-                    }
-                }, 300);
-            }, 5000);
         }
     </script>
 </body>

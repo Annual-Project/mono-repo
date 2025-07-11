@@ -219,7 +219,7 @@ class AuthUtils {
 
     if (!fingerprintVerify) return false;
 
-    return true;
+    return accessToken;
   
   }
 
@@ -242,7 +242,7 @@ class AuthUtils {
 
     if (!fingerprintVerify) return false;
 
-    return true;
+    return refreshToken;
 
   }
 
