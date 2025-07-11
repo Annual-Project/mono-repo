@@ -937,7 +937,7 @@
             
             try {
                 // Appel de l'API PUT /api/v1/user/:id
-                const response = await fetch(`/api/v1/user/<%= user.id %>`, {
+                const response = await fetch(`/api/v1/users/<%= user.id %>`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
